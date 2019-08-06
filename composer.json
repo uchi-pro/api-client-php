@@ -1,0 +1,7 @@
+{
+  "name": "uchi-pro/uchi-pro",
+  "description": "Клиент для работы с API СДО Uchi.pro",
+  "require": {
+    "php": ">=5.4.0"
+  }
+}
