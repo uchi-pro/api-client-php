@@ -4,6 +4,7 @@ namespace UchiPro;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\GuzzleException;
+use UchiPro\Courses\Courses;
 use UchiPro\Exception\AccessDeniedException;
 use UchiPro\Users\Users;
 
@@ -108,6 +109,14 @@ class ApiClient
     public function users()
     {
         return Users::create($this);
+    }
+
+    /**
+     * @return Courses
+     */
+    public function courses()
+    {
+        return Courses::create($this);
     }
 
     /**

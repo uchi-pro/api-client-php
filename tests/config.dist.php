@@ -4,7 +4,7 @@ return [
     'url' => 'https://example.com',
     'users' => [
         [
-            'role' => 'admin',
+            'role' => 'administrator',
             'login' => 'root',
             'password' => '123456',
         ],
