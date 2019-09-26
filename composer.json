@@ -1,6 +1,7 @@
 {
   "name": "uchi-pro/uchi-pro",
   "description": "Клиент для работы с API СДО Uchi.pro.",
+  "license": "MIT",
   "require": {
     "php": ">=7.0",
     "guzzlehttp/guzzle": "~6.0",
