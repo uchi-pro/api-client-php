@@ -2,7 +2,9 @@
 
 namespace UchiPro\Courses;
 
+use GuzzleHttp\Exception\GuzzleException;
 use UchiPro\ApiClient;
+use UchiPro\Exception\BadResponseException;
 use UchiPro\Vendors\Vendor;
 
 class Courses
@@ -17,6 +19,13 @@ class Courses
         $this->apiClient = $apiClient;
     }
 
+    /**
+     * @param array $criteria
+     *
+     * @return Course[]|array
+     *
+     * @throws GuzzleException
+     */
     public function findAll(array $criteria = [])
     {
         $courses = [];
@@ -28,6 +37,10 @@ class Courses
         }
 
         $responseData = $this->apiClient->request($url);
+
+        if (!isset($responseData['courses'])) {
+            throw new BadResponseException('Не удалось получить список курсов.');
+        }
 
         foreach ($responseData['courses'] as $item) {
             $course = new Course();

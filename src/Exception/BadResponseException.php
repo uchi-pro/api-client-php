@@ -4,7 +4,7 @@ namespace UchiPro\Exception;
 
 use RuntimeException;
 
-class AccessDeniedException extends RuntimeException
+class BadResponseException extends RuntimeException
 {
 
 }

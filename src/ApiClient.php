@@ -6,6 +6,7 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\GuzzleException;
 use UchiPro\Courses\Courses;
 use UchiPro\Exception\AccessDeniedException;
+use UchiPro\Exception\BadResponseException;
 use UchiPro\Users\Users;
 
 class ApiClient
@@ -97,6 +98,10 @@ class ApiClient
     {
         $method = empty($params) ? 'get' : 'post';
         $response = $this->getHttpClient()->request($method, $url);
+
+        if ($response->getStatusCode() != 200) {
+            throw new BadResponseException('Код ответа не 200.');
+        }
 
         $responseData = json_decode($response->getBody()->getContents(), true);
 
