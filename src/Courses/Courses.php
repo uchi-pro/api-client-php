@@ -2,9 +2,9 @@
 
 namespace UchiPro\Courses;
 
-use GuzzleHttp\Exception\GuzzleException;
 use UchiPro\ApiClient;
 use UchiPro\Exception\BadResponseException;
+use UchiPro\Exception\RequestException;
 use UchiPro\Vendors\Vendor;
 
 class Courses
@@ -22,9 +22,10 @@ class Courses
     /**
      * @param array $criteria
      *
-     * @return Course[]|array
+     * @return array|Course[]
      *
-     * @throws GuzzleException
+     * @throws RequestException
+     * @throws BadResponseException
      */
     public function findAll(array $criteria = [])
     {
@@ -42,15 +43,17 @@ class Courses
             throw new BadResponseException('Не удалось получить список курсов.');
         }
 
-        foreach ($responseData['courses'] as $item) {
-            $course = new Course();
-            $course->id = $item['uuid'] ?? null;
-            $course->title = $item['title'] ?? null;
-            $course->parentId = $item['parent_uuid'] ?? null;
-            $course->hours = $item['hours'] ?? null;
-            $course->price = $item['price'] ?? null;
+        if (is_array($responseData['courses'])) {
+            foreach ($responseData['courses'] as $item) {
+                $course = new Course();
+                $course->id = $item['uuid'] ?? null;
+                $course->title = $item['title'] ?? null;
+                $course->parentId = $item['parent_uuid'] ?? null;
+                $course->hours = $item['hours'] ?? null;
+                $course->price = $item['price'] ?? null;
 
-            $courses[] = $course;
+                $courses[] = $course;
+            }
         }
 
         return $courses;
