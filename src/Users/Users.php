@@ -4,6 +4,7 @@ namespace UchiPro\Users;
 
 use Exception;
 use UchiPro\ApiClient;
+use UchiPro\Vendors\Vendor;
 
 class Users
 {
@@ -19,6 +20,8 @@ class Users
 
     /**
      * @return User
+     *
+     * @throws Exception
      */
     public function getMe()
     {
@@ -28,13 +31,23 @@ class Users
             throw new Exception('Не удалось получить данные пользователя.');
         }
 
+        $vendor = new Vendor();
+        $vendor->id = $responseData['account']['vendor_uuid'] ?? null;
+        $vendor->title = $responseData['account']['vendor_title'] ?? null;
+
         $user = new User();
-        $user->id = $responseData['account']['uuid'];
-        $user->name = $responseData['account']['title'];
+        $user->id = $responseData['account']['uuid'] ?? null;
+        $user->name = $responseData['account']['title'] ?? null;
+        $user->vendor = $vendor;
 
         return $user;
     }
 
+    /**
+     * @param ApiClient $apiClient
+     *
+     * @return static
+     */
     public static function create(ApiClient $apiClient)
     {
         return new static($apiClient);

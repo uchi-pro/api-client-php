@@ -8,4 +8,9 @@ class Vendor
      * @var string
      */
     public $id;
+
+    /**
+     * @var $title
+     */
+    public $title;
 }
