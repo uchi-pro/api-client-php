@@ -2,8 +2,8 @@
 
 namespace UchiPro\Users;
 
-use Exception;
 use UchiPro\ApiClient;
+use UchiPro\Exception\BadResponseException;
 use UchiPro\Vendors\Vendor;
 
 class Users
@@ -21,14 +21,14 @@ class Users
     /**
      * @return User
      *
-     * @throws Exception
+     * @throws BadResponseException
      */
     public function getMe()
     {
         $responseData = $this->apiClient->request('/account/login');
 
         if (!isset($responseData['account'])) {
-            throw new Exception('Не удалось получить данные пользователя.');
+            throw new BadResponseException('Не удалось получить данные пользователя.');
         }
 
         $vendor = new Vendor();
