@@ -31,7 +31,7 @@ class Courses
     {
         $courses = [];
 
-        $url = '/courses';
+        $url = '/courses?_tree=1';
 
         if (isset($criteria['vendor']) && ($criteria['vendor'] instanceof Vendor)) {
             $url = "/vendors/{$criteria['vendor']->id}/courses";
