@@ -51,6 +51,9 @@ class Courses
                 $course->parentId = $item['parent_uuid'] ?? null;
                 $course->hours = $item['hours'] ?? null;
                 $course->price = $item['price'] ?? null;
+                $course->depth = isset($item['depth']) ? (int)$item['depth'] : 0;
+                $course->childrenCount = isset($item['children_count']) ? (int)$item['children_count'] : 0;
+                $course->lessonsCount = isset($item['lessons_count']) ? (int)$item['lessons_count'] : 0;
 
                 $courses[] = $course;
             }

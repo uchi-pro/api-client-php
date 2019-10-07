@@ -28,4 +28,19 @@ class Course
      * @var int
      */
     public $price;
+
+    /**
+     * @var int
+     */
+    public $depth = 0;
+
+    /**
+     * @var int
+     */
+    public $childrenCount = 0;
+
+    /**
+     * @var int
+     */
+    public $lessonsCount = 0;
 }
