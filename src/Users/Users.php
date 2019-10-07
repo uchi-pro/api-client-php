@@ -29,7 +29,7 @@ class Users
         }
 
         $user = new User();
-        $user->id = $responseData['account']['id'];
+        $user->id = $responseData['account']['uuid'];
         $user->name = $responseData['account']['title'];
 
         return $user;
