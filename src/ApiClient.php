@@ -8,6 +8,7 @@ use UchiPro\Courses\Courses;
 use UchiPro\Exception\AccessDeniedException;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Exception\RequestException;
+use UchiPro\Sessions\Sessions;
 use UchiPro\Users\Users;
 
 class ApiClient
@@ -127,6 +128,14 @@ class ApiClient
     public function courses()
     {
         return Courses::create($this);
+    }
+
+    /**
+     * @return Sessions
+     */
+    public function sessions()
+    {
+        return Sessions::create($this);
     }
 
     /**
