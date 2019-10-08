@@ -43,4 +43,9 @@ class Course
      * @var int
      */
     public $lessonsCount = 0;
+
+    /**
+     * @var CourseType
+     */
+    public $type;
 }

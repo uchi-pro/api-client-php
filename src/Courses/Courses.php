@@ -45,6 +45,9 @@ class Courses
 
         if (is_array($responseData['courses'])) {
             foreach ($responseData['courses'] as $item) {
+                $courseType = new CourseType();
+                $courseType->title = $item['type']['title'] ?? null;
+
                 $course = new Course();
                 $course->id = $item['uuid'] ?? null;
                 $course->title = $item['title'] ?? null;
@@ -54,6 +57,7 @@ class Courses
                 $course->depth = isset($item['depth']) ? (int)$item['depth'] : 0;
                 $course->childrenCount = isset($item['children_count']) ? (int)$item['children_count'] : 0;
                 $course->lessonsCount = isset($item['lessons_count']) ? (int)$item['lessons_count'] : 0;
+                $course->type = $courseType;
 
                 $courses[] = $course;
             }
