@@ -57,7 +57,7 @@ class CoursesTest extends TestCase
 
     public function testGetCourses()
     {
-        $courses = $this->getApiClient()->courses()->findAll();
+        $courses = $this->getApiClient()->courses()->findBy();
 
         $this->assertTrue(is_array($courses));
     }

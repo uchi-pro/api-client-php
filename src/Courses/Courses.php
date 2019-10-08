@@ -27,7 +27,7 @@ class Courses
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findAll(array $criteria = [])
+    public function findBy(array $criteria = [])
     {
         $courses = [];
 
