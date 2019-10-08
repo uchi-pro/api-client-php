@@ -39,7 +39,7 @@ class Sessions
 
         $responseData = $this->apiClient->request($url);
 
-        if (!isset($responseData['sessions'])) {
+        if (!array_key_exists('sessions', $responseData)) {
             throw new BadResponseException('Не удалось получить список сессий.');
         }
 

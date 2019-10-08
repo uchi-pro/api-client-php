@@ -39,7 +39,7 @@ class Courses
 
         $responseData = $this->apiClient->request($url);
 
-        if (!isset($responseData['courses'])) {
+        if (!array_key_exists('courses', $responseData)) {
             throw new BadResponseException('Не удалось получить список курсов.');
         }
 
