@@ -2,6 +2,8 @@
 
 namespace UchiPro\Courses;
 
+use DateTime;
+use DateTimeImmutable;
 use UchiPro\ApiClient;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Exception\RequestException;
@@ -50,6 +52,7 @@ class Courses
 
                 $course = new Course();
                 $course->id = $item['uuid'] ?? null;
+                $course->createdAt = DateTimeImmutable::createFromFormat(DateTime::RFC3339, $item['created_at']);
                 $course->title = $item['title'] ?? null;
                 $course->parentId = $item['parent_uuid'] ?? null;
                 $course->hours = $item['hours'] ?? null;

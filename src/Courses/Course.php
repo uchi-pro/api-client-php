@@ -2,12 +2,19 @@
 
 namespace UchiPro\Courses;
 
+use DateTimeImmutable;
+
 class Course
 {
     /**
      * @var string
      */
     public $id;
+
+    /**
+     * @var DateTimeImmutable
+     */
+    public $createdAt;
 
     /**
      * @var string
