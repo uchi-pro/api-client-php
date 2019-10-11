@@ -46,23 +46,38 @@ class Courses
         }
 
         if (is_array($responseData['courses'])) {
-            foreach ($responseData['courses'] as $item) {
-                $courseType = new CourseType();
-                $courseType->title = $item['type']['title'] ?? null;
+            $courses = $this->parseCourses($responseData['courses']);
+        }
 
-                $course = new Course();
-                $course->id = $item['uuid'] ?? null;
-                $course->createdAt = DateTimeImmutable::createFromFormat(DateTime::RFC3339, $item['created_at']);
-                $course->title = $item['title'] ?? null;
-                $course->parentId = $item['parent_uuid'] ?? null;
-                $course->hours = $item['hours'] ?? null;
-                $course->price = $item['price'] ?? null;
-                $course->depth = isset($item['depth']) ? (int)$item['depth'] : 0;
-                $course->childrenCount = isset($item['children_count']) ? (int)$item['children_count'] : 0;
-                $course->lessonsCount = isset($item['lessons_count']) ? (int)$item['lessons_count'] : 0;
-                $course->type = $courseType;
+        return $courses;
+    }
 
-                $courses[] = $course;
+    protected function parseCourses(array $list)
+    {
+        $courses = [];
+
+        foreach ($list as $item) {
+            $courseType = new CourseType();
+            $courseType->title = $item['type']['title'] ?? null;
+
+            $course = new Course();
+            $course->id = $item['uuid'] ?? null;
+            $course->createdAt = DateTimeImmutable::createFromFormat(DateTime::RFC3339, $item['created_at']);
+            $course->title = $item['title'] ?? null;
+            $course->parentId = $item['parent_uuid'] ?? null;
+            $course->hours = $item['hours'] ?? null;
+            $course->price = $item['price'] ?? null;
+            $course->depth = isset($item['depth']) ? (int)$item['depth'] : 0;
+            $course->childrenCount = isset($item['children_count']) ? (int)$item['children_count'] : 0;
+            $course->lessonsCount = isset($item['lessons_count']) ? (int)$item['lessons_count'] : 0;
+            $course->type = $courseType;
+
+            $courses[] = $course;
+
+            if (!empty($item['children'])) {
+                foreach ($this->parseCourses($item['children']) as $childCourse) {
+                    $courses[] = $childCourse;
+                }
             }
         }
 
