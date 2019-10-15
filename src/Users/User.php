@@ -17,6 +17,11 @@ class User
     public $name;
 
     /**
+     * @var Role
+     */
+    public $role;
+
+    /**
      * @var Vendor
      */
     public $vendor;

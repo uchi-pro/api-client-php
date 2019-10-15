@@ -31,6 +31,10 @@ class Users
             throw new BadResponseException('Не удалось получить данные пользователя.');
         }
 
+        $role = new Role();
+        $role->id = $responseData['account']['role']['code'] ?? null;
+        $role->title = $responseData['account']['role']['title'] ?? null;
+
         $vendor = new Vendor();
         $vendor->id = $responseData['account']['vendor_uuid'] ?? null;
         $vendor->title = $responseData['account']['vendor_title'] ?? null;
@@ -38,6 +42,7 @@ class Users
         $user = new User();
         $user->id = $responseData['account']['uuid'] ?? null;
         $user->name = $responseData['account']['title'] ?? null;
+        $user->role = $role;
         $user->vendor = $vendor;
 
         return $user;

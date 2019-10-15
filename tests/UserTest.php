@@ -25,6 +25,13 @@ class UserTest extends TestCase
                     return Identity::createByLogin($url, $user['login'], $user['password']);
                 }
             }
+            if ($user['role'] === 'administrator') {
+                if (!empty($user['token'])) {
+                    return Identity::createByAccessToken($url, $user['token']);
+                } elseif (!empty($user['login']) && !empty($user['password'])) {
+                    return Identity::createByLogin($url, $user['login'], $user['password']);
+                }
+            }
         }
 
         return null;
@@ -43,5 +50,7 @@ class UserTest extends TestCase
         $me = $this->getApiClient()->users()->getMe();
 
         $this->assertNotEmpty($me->id);
+        $this->assertNotEmpty($me->vendor->id);
+        $this->assertNotEmpty($me->role->id);
     }
 }
