@@ -1,5 +1,5 @@
 {
-  "name": "uchi-pro/uchi-pro",
+  "name": "uchi-pro/api-client",
   "description": "Клиент для работы с API СДО Uchi.pro.",
   "license": "MIT",
   "require": {
