@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use UchiPro\ApiClient;
+use UchiPro\Courses\Course;
 use UchiPro\Identity;
 
 class CoursesTest extends TestCase
@@ -60,5 +61,11 @@ class CoursesTest extends TestCase
         $courses = $this->getApiClient()->courses()->findBy();
 
         $this->assertTrue(is_array($courses));
+
+        $lessonsCount = array_reduce($courses, function ($total, Course $course) {
+            return $total + count($course->lessons);
+        }, 0);
+
+        $this->assertTrue($lessonsCount > 0);
     }
 }

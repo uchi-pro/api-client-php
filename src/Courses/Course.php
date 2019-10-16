@@ -27,6 +27,11 @@ class Course
     public $parentId;
 
     /**
+     * @var CourseType
+     */
+    public $type;
+
+    /**
      * @var int
      */
     public $hours;
@@ -52,7 +57,7 @@ class Course
     public $lessonsCount = 0;
 
     /**
-     * @var CourseType
+     * @var array|Lesson[]
      */
-    public $type;
+    public $lessons = [];
 }
