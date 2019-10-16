@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use UchiPro\ApiClient;
 use UchiPro\Courses\Course;
+use UchiPro\Courses\Query;
 use UchiPro\Identity;
 
 class CoursesTest extends TestCase
@@ -58,7 +59,9 @@ class CoursesTest extends TestCase
 
     public function testGetCourses()
     {
-        $courses = $this->getApiClient()->courses()->findBy();
+        $query = new Query();
+        $query->withLessons = true;
+        $courses = $this->getApiClient()->courses()->findBy($query);
 
         $this->assertTrue(is_array($courses));
 

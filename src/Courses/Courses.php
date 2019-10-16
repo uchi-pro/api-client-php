@@ -22,24 +22,19 @@ class Courses
     }
 
     /**
-     * @param array $criteria
+     * @param Query|null $query
      *
      * @return array|Course[]
      *
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(array $criteria = [])
+    public function findBy(Query $query = null)
     {
         $courses = [];
 
-        $url = '/courses?_tree=1&with_lessons=1';
-
-        if (isset($criteria['vendor']) && ($criteria['vendor'] instanceof Vendor)) {
-            $url = "/vendors/{$criteria['vendor']->id}/courses";
-        }
-
-        $responseData = $this->apiClient->request($url);
+        $uri = $this->buildUri($query);
+        $responseData = $this->apiClient->request($uri);
 
         if (!array_key_exists('courses', $responseData)) {
             throw new BadResponseException('Не удалось получить список курсов.');
@@ -50,6 +45,27 @@ class Courses
         }
 
         return $courses;
+    }
+
+    protected function buildUri(Query $query = null)
+    {
+        $uri = '/courses?_tree=1';
+
+        if ($query) {
+            if ($query->vendor && ($query->vendor instanceof Vendor)) {
+                $uri = "/vendors/{$query->vendor->id}/courses?_tree=1";
+            }
+
+            if ($query->withLessons) {
+                $uri .= '&with_lessons=1';
+            }
+
+            if ($query->parent && ($query->parent instanceof Course)) {
+                $uri = "?parent={$query->parent->id}";
+            }
+        }
+
+        return $uri;
     }
 
     protected function parseCourses(array $list)
