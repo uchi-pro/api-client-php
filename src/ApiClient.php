@@ -7,7 +7,9 @@ use GuzzleHttp\Exception\GuzzleException;
 use UchiPro\Courses\Courses;
 use UchiPro\Exception\AccessDeniedException;
 use UchiPro\Exception\BadResponseException;
+use UchiPro\Exception\InvalidUrlException;
 use UchiPro\Exception\RequestException;
+use UchiPro\Exception\UnreachableUrlException;
 use UchiPro\Sessions\Sessions;
 use UchiPro\Users\Users;
 
@@ -26,6 +28,40 @@ class ApiClient
     private function __construct(Identity $identity)
     {
         $this->identity = $identity;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return string
+     *
+     * @throws UnreachableUrlException
+     */
+    public function prepareUrl(string $url)
+    {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            throw new InvalidUrlException();
+        }
+
+        try {
+            $httpClient = new HttpClient();
+
+            $response = $httpClient->request('GET', $url, ['allow_redirects' => false]);
+
+            $isRedirect = substr($response->getStatusCode(), 0, 1) == '3';
+            if ($isRedirect && $response->hasHeader('Location')) {
+                $location = $response->getHeaderLine('Location');
+                if (filter_var($location, FILTER_VALIDATE_URL)) {
+                    $url = $location;
+                }
+            }
+        } catch (GuzzleException $e) {
+            throw new UnreachableUrlException('', 0, $e);
+        }
+
+        $components = parse_url($url);
+
+        return "{$components['scheme']}://{$components['host']}";
     }
 
     /**
