@@ -37,7 +37,7 @@ class ApiClient
      *
      * @throws UnreachableUrlException
      */
-    public function prepareUrl(string $url)
+    public static function prepareUrl(string $url)
     {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
             throw new InvalidUrlException();
