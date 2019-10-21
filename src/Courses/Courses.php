@@ -11,6 +11,8 @@ use UchiPro\Vendors\Vendor;
 
 class Courses
 {
+    const NULL_VALUE = '00000000-0000-0000-0000-000000000000';
+
     /**
      * @var ApiClient
      */
@@ -75,6 +77,9 @@ class Courses
         foreach ($list as $item) {
             $courseType = new CourseType();
             $courseType->id = $item['type']['uuid'] ?? null;
+            if ($courseType->id === self::NULL_VALUE) {
+                $courseType->id = null;
+            }
             $courseType->title = $item['type']['title'] ?? null;
 
             $lessons = [];
@@ -95,6 +100,9 @@ class Courses
 
             $course = new Course();
             $course->id = $item['uuid'] ?? null;
+            if ($course->id === self::NULL_VALUE) {
+                $course->id = null;
+            }
             $course->createdAt = DateTimeImmutable::createFromFormat(DateTime::RFC3339, $item['created_at']);
             $course->title = $item['title'] ?? null;
             $course->parentId = $item['parent_uuid'] ?? null;
