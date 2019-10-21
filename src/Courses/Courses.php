@@ -74,6 +74,7 @@ class Courses
 
         foreach ($list as $item) {
             $courseType = new CourseType();
+            $courseType->id = $item['type']['uuid'] ?? null;
             $courseType->title = $item['type']['title'] ?? null;
 
             $lessons = [];
