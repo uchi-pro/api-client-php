@@ -70,5 +70,15 @@ class CoursesTest extends TestCase
         }, 0);
 
         $this->assertTrue($lessonsCount > 0);
+
+        $hours = 0;
+        foreach ($courses as $course) {
+            if ($course->academicPlan) {
+                foreach ($course->academicPlan->items as $item) {
+                    $hours += $item->hours;
+                }
+            }
+        }
+        $this->assertTrue($hours > 0);
     }
 }

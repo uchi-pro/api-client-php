@@ -4,7 +4,11 @@ namespace UchiPro\Courses;
 
 use DateTime;
 use DateTimeImmutable;
+use Exception;
 use UchiPro\ApiClient;
+use UchiPro\Courses\AcademicPlan\Item;
+use UchiPro\Courses\AcademicPlan\ItemType;
+use UchiPro\Courses\AcademicPlan\Plan;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Exception\RequestException;
 use UchiPro\Vendors\Vendor;
@@ -49,7 +53,7 @@ class Courses
         return $courses;
     }
 
-    protected function buildUri(Query $query = null)
+    private function buildUri(Query $query = null)
     {
         $uri = '/courses?_tree=1';
 
@@ -70,34 +74,11 @@ class Courses
         return $uri;
     }
 
-    protected function parseCourses(array $list)
+    private function parseCourses(array $list)
     {
         $courses = [];
 
         foreach ($list as $item) {
-            $courseType = new CourseType();
-            $courseType->id = $item['type']['uuid'] ?? null;
-            if ($courseType->id === self::NULL_VALUE) {
-                $courseType->id = null;
-            }
-            $courseType->title = $item['type']['title'] ?? null;
-
-            $lessons = [];
-            if (isset($item['lessons']) && is_array($item['lessons'])) {
-                foreach ($item['lessons'] as $lessonItem) {
-                    $lessonType = new LessonType();
-                    $lessonType->id = $lessonItem['type'] ?? null;
-                    $lessonType->title = $lessonItem['type_title'] ?? null;
-
-                    $lesson = new Lesson();
-                    $lesson->id = $lessonItem['uuid'] ?? null;
-                    $lesson->title = $lessonItem['title'] ?? null;
-                    $lesson->type = $lessonType;
-
-                    $lessons[] = $lesson;
-                }
-            }
-
             $course = new Course();
             $course->id = $item['uuid'] ?? null;
             if ($course->id === self::NULL_VALUE) {
@@ -106,13 +87,18 @@ class Courses
             $course->createdAt = DateTimeImmutable::createFromFormat(DateTime::RFC3339, $item['created_at']);
             $course->title = $item['title'] ?? null;
             $course->parentId = $item['parent_uuid'] ?? null;
-            $course->type = $courseType;
+            if ($course->parentId === self::NULL_VALUE) {
+                $course->parentId = null;
+            }
+            $course->type = $this->parseCourseType($item);
             $course->hours = $item['hours'] ?? null;
             $course->price = $item['price'] ?? null;
             $course->depth = isset($item['depth']) ? (int)$item['depth'] : 0;
             $course->childrenCount = isset($item['children_count']) ? (int)$item['children_count'] : 0;
             $course->lessonsCount = isset($item['lessons_count']) ? (int)$item['lessons_count'] : 0;
-            $course->lessons = $lessons;
+            $course->lessons = $this->parseLessons($item);
+            $course->academicPlan = $this->parseAcademicPlan($item);
+
 
             $courses[] = $course;
 
@@ -124,6 +110,88 @@ class Courses
         }
 
         return $courses;
+    }
+
+    /**
+     * @param array $item
+     *
+     * @return CourseType
+     */
+    private function parseCourseType(array $item)
+    {
+        $courseType = new CourseType();
+        $courseType->id = $item['type']['uuid'] ?? null;
+        if ($courseType->id === self::NULL_VALUE) {
+            $courseType->id = null;
+        }
+        $courseType->title = $item['type']['title'] ?? null;
+
+        return $courseType;
+    }
+
+    /**
+     * @param array $item
+     *
+     * @return array|Lesson[]
+     */
+    private function parseLessons(array $item)
+    {
+        $lessons = [];
+        if (isset($item['lessons']) && is_array($item['lessons'])) {
+            foreach ($item['lessons'] as $lessonItem) {
+                $lessonType = new LessonType();
+                $lessonType->id = $lessonItem['type'] ?? null;
+                $lessonType->title = $lessonItem['type_title'] ?? null;
+
+                $lesson = new Lesson();
+                $lesson->id = $lessonItem['uuid'] ?? null;
+                $lesson->title = $lessonItem['title'] ?? null;
+                $lesson->type = $lessonType;
+
+                $lessons[] = $lesson;
+            }
+        }
+
+        return $lessons;
+    }
+
+    /**
+     * @param array $item
+     *
+     * @return Plan|null
+     */
+    private function parseAcademicPlan(array $item)
+    {
+        $planItems = [];
+
+        if (!empty($item['settings']['academic_plan'])) {
+            try {
+                $json = json_decode($item['settings']['academic_plan'], true);
+                if (is_array($json)) {
+                    foreach ($json as $jsonItem) {
+                        $itemType = new ItemType();
+                        $itemType->id = $jsonItem['type'] ?? '';
+                        $itemType->title = $jsonItem['type_title'] ?? '';
+
+                        $planTtem = new Item();
+                        $planTtem->title = $jsonItem['title'] ?? '';
+                        $planTtem->type = $itemType;
+                        $planTtem->hours = $jsonItem['hours'] ?? null;
+
+                        $planItems[] = $planTtem;
+                    }
+                }
+            } catch (Exception $e) {}
+        }
+
+        if (empty($planItems)) {
+            return null;
+        }
+
+        $academicPlan = new Plan();
+        $academicPlan->items = $planItems;
+
+        return $academicPlan;
     }
 
     public static function create(ApiClient $apiClient)
