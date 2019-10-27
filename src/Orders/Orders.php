@@ -85,6 +85,53 @@ class Orders
     }
 
     /**
+     * @param Order $order
+     *
+     * @return array|Listener[]
+     */
+    public function getOrderListeners(Order $order)
+    {
+        $listeners = [];
+
+        $uri = "/orders/{$order->id}/listeners";
+        $responseData = $this->apiClient->request($uri);
+
+        if (!array_key_exists('listeners', $responseData)) {
+            throw new BadResponseException('Не удалось получить слушателей по заявке.');
+        }
+
+        if (is_array($responseData['listeners'])) {
+            $listeners = $this->parseListeners($responseData['listeners']);
+        }
+
+        return $listeners;
+    }
+
+    /**
+     * @param array $list
+     *
+     * @return array|Listener[]
+     */
+    private function parseListeners(array $list)
+    {
+        $listeners = [];
+
+        foreach ($list as $item) {
+            $listener = new Listener();
+            $listener->id = $item['uuid'] ?? null;
+            $listener->name = $item['title'] ?? null;
+            $listener->username = $item['username'] ?? null;
+            $listener->password = $item['password'] ?? null;
+            $listener->email = $item['email'] ?? null;
+            $listener->phone = $item['phone'] ?? null;
+
+            $listeners[] = $listener;
+        }
+
+        return $listeners;
+    }
+
+    /**
      * @param ApiClient $apiClient
      *
      * @return static
