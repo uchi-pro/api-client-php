@@ -42,9 +42,16 @@ class OrdersTest extends TestCase
     public function testGetOrders()
     {
         $query = new Query();
-        $query->number = '28486/2019-2';
+        $query->number = '111/2019-1';
         $orders = $this->getApiClient()->orders()->findBy($query);
 
         $this->assertTrue(is_array($orders));
+
+        if (isset($orders[0])) {
+            $order = $orders[0];
+            $listeners = $this->getApiClient()->orders()->getOrderListeners($order);
+            $this->assertTrue(is_array($listeners));
+            $this->assertTrue(count($listeners) > 0);
+        }
     }
 }
