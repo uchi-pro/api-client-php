@@ -7,28 +7,18 @@ use UchiPro\Orders\Query;
 
 class OrdersTest extends TestCase
 {
-    private $config;
+    /**
+     * @var Identity
+     */
+    private $identity;
 
     public function setUp()
     {
-        $this->config = require 'config.php';
-    }
+        $url = getenv('UCHIPRO_URL');
+        $login = getenv('UCHIPRO_LOGIN');
+        $password = getenv('UCHIPRO_PASSWORD');
 
-    private function getAdministratorIdentity()
-    {
-        $url = $this->config['url'];
-
-        foreach ($this->config['users'] as $user) {
-            if ($user['role'] === 'administrator') {
-                if (!empty($user['token'])) {
-                    return Identity::createByAccessToken($url, $user['token']);
-                } elseif (!empty($user['login']) && !empty($user['password'])) {
-                    return Identity::createByLogin($url, $user['login'], $user['password']);
-                }
-            }
-        }
-
-        return null;
+        $this->identity = Identity::createByLogin($url, $login, $password);
     }
 
     /**
@@ -36,7 +26,7 @@ class OrdersTest extends TestCase
      */
     public function getApiClient()
     {
-        return ApiClient::create($this->getAdministratorIdentity());
+        return ApiClient::create($this->identity);
     }
 
     public function testGetOrders()
@@ -51,7 +41,7 @@ class OrdersTest extends TestCase
     public function testGetOrder()
     {
         $query = new Query();
-        $query->number = '111/2019-1';
+        $query->number = '1804/2019-1';
         $orders = $this->getApiClient()->orders()->findBy($query);
 
         $this->assertTrue(is_array($orders));

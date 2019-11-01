@@ -6,26 +6,25 @@ use UchiPro\Identity;
 
 class ConnectionTest extends TestCase
 {
-    private $config;
+    /**
+     * @var Identity
+     */
+    private $identity;
 
     public function setUp()
     {
-        $this->config = require 'config.php';
-    }
+        $url = getenv('UCHIPRO_URL');
+        $login = getenv('UCHIPRO_LOGIN');
+        $password = getenv('UCHIPRO_PASSWORD');
 
-    /**
-     * @return ApiClient
-     */
-    public function getApiClient()
-    {
-        return ApiClient::create(Identity::createByAccessToken('', ''));
+        $this->identity = Identity::createByLogin($url, $login, $password);
     }
 
     public function testPrepareUrl()
     {
-        $apiClient = $this->getApiClient();
+        $apiClient = ApiClient::create($this->identity);
 
-        $url = str_replace('https://', 'http://', $this->config['url']) . '/';
+        $url = str_replace('https://', 'http://', $this->identity->url) . '/';
 
         $preparedUrl = $apiClient->prepareUrl($url);
 
