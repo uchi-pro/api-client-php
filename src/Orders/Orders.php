@@ -84,6 +84,7 @@ class Orders
             $order->status = $item['status']['code'] ?? null;
             $order->course = $course;
             $order->listenersCount = (int)$item['listeners_count'];
+            $order->listenersFinished = (int)$item['listeners_finished'];
 
             $orders[] = $order;
         }

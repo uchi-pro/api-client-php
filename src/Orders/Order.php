@@ -30,4 +30,9 @@ class Order
      * @var int
      */
     public $listenersCount;
+
+    /**
+     * @var int
+     */
+    public $listenersFinished;
 }
