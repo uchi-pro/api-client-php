@@ -42,6 +42,15 @@ class OrdersTest extends TestCase
     public function testGetOrders()
     {
         $query = new Query();
+        $query->status = $query::STATUS_COMPLETED;
+        $orders = $this->getApiClient()->orders()->findBy($query);
+
+        $this->assertTrue(is_array($orders));
+    }
+
+    public function testGetOrder()
+    {
+        $query = new Query();
         $query->number = '111/2019-1';
         $orders = $this->getApiClient()->orders()->findBy($query);
 
