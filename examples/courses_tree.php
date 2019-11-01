@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Приме построения дерева курсов.
+ * Пример построения дерева курсов.
  */
 
 use UchiPro\{ApiClient, Courses\Course, Identity};
