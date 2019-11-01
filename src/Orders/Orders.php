@@ -54,6 +54,12 @@ class Orders
             if (!empty($searchQuery->number)) {
                 $uriQuery['q'] = $searchQuery->number;
             }
+
+            if (!empty($searchQuery->status)) {
+                $uriQuery['status'] = is_array($searchQuery->status)
+                  ? implode(',', $searchQuery->status)
+                  : $searchQuery->status;
+            }
         }
 
         if (!empty($uriQuery)) {
@@ -75,6 +81,7 @@ class Orders
             $order = new Order();
             $order->id = $item['uuid'] ?? null;
             $order->number = $item['number'] ?? null;
+            $order->status = $item['status']['code'] ?? null;
             $order->course = $course;
             $order->listenersCount = (int)$item['listeners_count'];
 

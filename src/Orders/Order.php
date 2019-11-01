@@ -17,6 +17,11 @@ class Order
     public $number;
 
     /**
+     * @var string
+     */
+    public $status;
+
+    /**
      * @var Course
      */
     public $course;
