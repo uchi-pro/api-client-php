@@ -13,6 +13,7 @@ use UchiPro\Exception\UnreachableUrlException;
 use UchiPro\Orders\Orders;
 use UchiPro\Sessions\Sessions;
 use UchiPro\Users\Users;
+use UchiPro\Vendors\Vendors;
 
 class ApiClient
 {
@@ -181,6 +182,14 @@ class ApiClient
     public function orders()
     {
         return Orders::create($this);
+    }
+
+    /**
+     * @return Vendors
+     */
+    public function vendors()
+    {
+        return Vendors::create($this);
     }
 
     /**
