@@ -49,6 +49,20 @@ class Users
     }
 
     /**
+     * @return int
+     */
+    public function getListenersNumber()
+    {
+        $responseData = $this->apiClient->request('/users?role=listener&_items_per_page=1');
+
+        if (empty($responseData['pager'])) {
+            throw new BadResponseException('Не удалось получить список слушателей.');
+        }
+
+        return (int)$responseData['pager']['total_items'];
+    }
+
+    /**
      * @param ApiClient $apiClient
      *
      * @return static
