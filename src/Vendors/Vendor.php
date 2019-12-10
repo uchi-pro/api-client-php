@@ -10,7 +10,12 @@ class Vendor
     public $id;
 
     /**
-     * @var $title
+     * @var string
      */
     public $title;
+
+    /**
+     * @var Settings
+     */
+    public $settings;
 }

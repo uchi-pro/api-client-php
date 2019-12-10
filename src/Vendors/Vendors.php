@@ -53,6 +53,12 @@ class Vendors
             $vendor->id = $item['uuid'] ?? null;
             $vendor->title = $item['title'] ?? null;
 
+            $settings = new Settings();
+            $settings->selfRegistrationEnabled = !empty($item['settings']['self_registration_enabled']);
+            $settings->smtpHost = $item['settings']['smtp_host'] ?? null;
+            $settings->smtpUsername = $item['settings']['smtp_username'] ?? null;
+            $vendor->settings = $settings;
+
             $vendors[] = $vendor;
         }
 
