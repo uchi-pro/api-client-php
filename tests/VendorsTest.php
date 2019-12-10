@@ -17,8 +17,13 @@ class VendorsTest extends TestCase
         $url = getenv('UCHIPRO_URL');
         $login = getenv('UCHIPRO_LOGIN');
         $password = getenv('UCHIPRO_PASSWORD');
+        $accessToken = getenv('UCHIPRO_ACCESS_TOKEN');
 
-        $this->identity = Identity::createByLogin($url, $login, $password);
+        if (!empty($accessToken)) {
+            $this->identity = Identity::createByAccessToken($url, $accessToken);
+        } else {
+            $this->identity = Identity::createByLogin($url, $login, $password);
+        }
     }
 
     /**
