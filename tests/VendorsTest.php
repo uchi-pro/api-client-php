@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use UchiPro\ApiClient;
 use UchiPro\Identity;
-use UchiPro\Vendors\Query;
+use UchiPro\Vendors\Criteria;
 
 class VendorsTest extends TestCase
 {
@@ -36,8 +36,8 @@ class VendorsTest extends TestCase
 
     public function testGetVendors()
     {
-        $query = new Query();
-        $vendors = $this->getApiClient()->vendors()->findBy($query);
+        $criteria = new Criteria();
+        $vendors = $this->getApiClient()->vendors()->findBy($criteria);
 
         $this->assertTrue(is_array($vendors));
     }

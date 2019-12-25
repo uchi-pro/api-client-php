@@ -4,7 +4,7 @@
  * Пример сбора статистики по самым популярным курсам в системе.
  */
 
-use UchiPro\{ApiClient, Courses\Course, Identity, Orders\Order, Orders\Query};
+use UchiPro\{ApiClient, Courses\Course, Identity, Orders\Order, Orders\Criteria};
 
 require '../vendor/autoload.php';
 
@@ -114,7 +114,7 @@ function fetchCompletedOrders()
 
     $apiClient = getApiClient();
 
-    $query = new Query();
+    $query = new Criteria();
     $query->status = $query::STATUS_COMPLETED;
     foreach ($apiClient->orders()->findBy() as $order) {
         if ($order->listenersCount === $order->listenersFinished) {

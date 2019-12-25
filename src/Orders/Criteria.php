@@ -2,7 +2,7 @@
 
 namespace UchiPro\Orders;
 
-class Query
+class Criteria
 {
     const STATUS_PENDING = 'pending';
     const STATUS_ACCEPTED = 'accepted';

@@ -73,7 +73,7 @@ function findOrder($orderNumber)
 {
     $apiClient = getApiClient();
 
-    $quary = new \UchiPro\Orders\Query();
+    $quary = new \UchiPro\Orders\Criteria();
     $quary->number = $orderNumber;
     $orders = $apiClient->orders()->findBy($quary);
 

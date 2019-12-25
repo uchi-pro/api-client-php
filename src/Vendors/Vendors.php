@@ -19,14 +19,14 @@ class Vendors
     }
 
     /**
-     * @param Query|null $query
+     * @param Criteria|null $query
      *
      * @return array|Vendor[]
      *
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(Query $query = null)
+    public function findBy(Criteria $query = null)
     {
         $vendors = [];
 
@@ -65,7 +65,7 @@ class Vendors
         return $vendors;
     }
 
-    private function buildUri(Query $searchQuery = null)
+    private function buildUri(Criteria $searchQuery = null)
     {
         $uri = '/vendors';
         return $uri;

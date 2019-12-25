@@ -28,14 +28,14 @@ class Courses
     }
 
     /**
-     * @param Query|null $query
+     * @param Criteria|null $query
      *
      * @return array|Course[]
      *
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(Query $query = null)
+    public function findBy(Criteria $query = null)
     {
         $courses = [];
 
@@ -53,7 +53,7 @@ class Courses
         return $courses;
     }
 
-    private function buildUri(Query $query = null)
+    private function buildUri(Criteria $query = null)
     {
         $uri = '/courses?_tree=1';
 

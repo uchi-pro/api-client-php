@@ -4,7 +4,7 @@ namespace UchiPro\Courses;
 
 use UchiPro\Vendors\Vendor;
 
-class Query
+class Criteria
 {
     /**
      * @var Vendor

@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use UchiPro\ApiClient;
 use UchiPro\Identity;
-use UchiPro\Orders\Query;
+use UchiPro\Orders\Criteria;
 
 class OrdersTest extends TestCase
 {
@@ -36,7 +36,7 @@ class OrdersTest extends TestCase
 
     public function testGetOrders()
     {
-        $query = new Query();
+        $query = new Criteria();
         $query->status = $query::STATUS_COMPLETED;
         $orders = $this->getApiClient()->orders()->findBy($query);
 
@@ -45,9 +45,9 @@ class OrdersTest extends TestCase
 
     public function testGetOrder()
     {
-        $query = new Query();
-        $query->number = '1804/2019-1';
-        $orders = $this->getApiClient()->orders()->findBy($query);
+        $criteria = new Criteria();
+        $criteria->number = '1804/2019-1';
+        $orders = $this->getApiClient()->orders()->findBy($criteria);
 
         $this->assertTrue(is_array($orders));
 

@@ -2,7 +2,7 @@
 
 namespace UchiPro\Vendors;
 
-class Query
+class Criteria
 {
 
 }

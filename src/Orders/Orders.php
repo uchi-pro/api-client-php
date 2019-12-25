@@ -20,14 +20,14 @@ class Orders
     }
 
     /**
-     * @param Query|null $query
+     * @param Criteria|null $query
      *
      * @return array|Order[]
      *
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(Query $query = null)
+    public function findBy(Criteria $query = null)
     {
         $orders = [];
 
@@ -45,7 +45,7 @@ class Orders
         return $orders;
     }
 
-    private function buildUri(Query $searchQuery = null)
+    private function buildUri(Criteria $searchQuery = null)
     {
         $uri = '/orders';
 
