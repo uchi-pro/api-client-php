@@ -11,14 +11,20 @@ $ composer require uchi-pro/api-client
 ```php
 use UchiPro\ApiClient;
 use UchiPro\Identity;
+use UchiPro\Orders\Criteria as OrdersCriteria;
 
 $apiClient = ApiClient::create(Identity::createByAccessToken('BASE_URL', 'ACCESS_TOKEN'));
 
-// Получение данных пользоявателя, из под которого происходит работа с СДО.
-$me = $apiClient->users()->getMe();
-print_r($me);
+$currentUser = $apiClient->users()->getMe();
+print 'Меня зовут: '.$currentUser->name.PHP_EOL;
 
-// Получение списка всех курсов.
 $courses = $apiClient->courses()->findBy();
-print_r($courses);
+print 'Найдено курсов: '.count($courses).PHP_EOL;
+
+$ordersCriteria = new OrdersCriteria();
+$ordersCriteria->status = $ordersCriteria::STATUS_TRAINING;
+$orders = $apiClient->orders()->findBy($ordersCriteria);
+print 'Заявок в статусе обучения: '.count($orders).PHP_EOL;
 ```
+
+Больше примеров в каталоге _examples_.
