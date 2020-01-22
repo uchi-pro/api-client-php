@@ -20,18 +20,26 @@ class Orders
     }
 
     /**
-     * @param Criteria|null $query
+     * @return Criteria
+     */
+    public function createCriteria()
+    {
+        return new Criteria();
+    }
+
+    /**
+     * @param Criteria|null $criteria
      *
      * @return array|Order[]
      *
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(Criteria $query = null)
+    public function findBy(Criteria $criteria = null)
     {
         $orders = [];
 
-        $uri = $this->buildUri($query);
+        $uri = $this->buildUri($criteria);
         $responseData = $this->apiClient->request($uri);
 
         if (!array_key_exists('orders', $responseData)) {
@@ -45,20 +53,29 @@ class Orders
         return $orders;
     }
 
-    private function buildUri(Criteria $searchQuery = null)
+    /**
+     * @param Criteria|null $criteria
+     *
+     * @return string
+     */
+    private function buildUri(Criteria $criteria = null)
     {
         $uri = '/orders';
 
-        $uriQuery = [];
-        if ($searchQuery) {
-            if (!empty($searchQuery->number)) {
-                $uriQuery['q'] = $searchQuery->number;
+        $uriQuery = ['vendor' => 0];
+        if ($criteria) {
+            if (!empty($criteria->number)) {
+                $uriQuery['q'] = $criteria->number;
             }
 
-            if (!empty($searchQuery->status)) {
-                $uriQuery['status'] = is_array($searchQuery->status)
-                  ? implode(',', $searchQuery->status)
-                  : $searchQuery->status;
+            if (!empty($criteria->status)) {
+                $uriQuery['status'] = is_array($criteria->status)
+                  ? implode(',', $criteria->status)
+                  : $criteria->status;
+            }
+
+            if (!empty($criteria->vendor)) {
+                $uriQuery['vendor'] = $criteria->vendor->id;
             }
         }
 
@@ -69,6 +86,11 @@ class Orders
         return $uri;
     }
 
+    /**
+     * @param array|Order[] $list
+     *
+     * @return array
+     */
     private function parseOrders(array $list)
     {
         $orders = [];

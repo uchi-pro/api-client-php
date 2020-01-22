@@ -2,6 +2,8 @@
 
 namespace UchiPro\Orders;
 
+use UchiPro\Vendors\Vendor;
+
 class Criteria
 {
     const STATUS_PENDING = 'pending';
@@ -22,4 +24,9 @@ class Criteria
      * @var string|string[]
      */
     public $status;
+
+    /**
+     * @var Vendor
+     */
+    public $vendor;
 }

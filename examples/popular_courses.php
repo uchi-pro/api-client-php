@@ -100,9 +100,7 @@ function getApiClient()
     $password = getenv('UCHIPRO_PASSWORD');
 
     $identity = Identity::createByLogin($url, $login, $password);
-    $apiClient = ApiClient::create($identity);
-
-    return $apiClient;
+    return ApiClient::create($identity);
 }
 
 /**
@@ -112,11 +110,11 @@ function fetchCompletedOrders()
 {
     $orders = [];
 
-    $apiClient = getApiClient();
+    $ordersApi = getApiClient()->orders();
 
-    $query = new Criteria();
-    $query->status = $query::STATUS_COMPLETED;
-    foreach ($apiClient->orders()->findBy() as $order) {
+    $criteria = $ordersApi->createCriteria();
+    $criteria->status = $criteria::STATUS_COMPLETED;
+    foreach ($ordersApi->findBy($criteria) as $order) {
         if ($order->listenersCount === $order->listenersFinished) {
             $orders[] = $order;
         }
