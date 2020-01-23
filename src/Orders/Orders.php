@@ -70,7 +70,7 @@ class Orders
 
             if (!empty($criteria->status)) {
                 $uriQuery['status'] = is_array($criteria->status)
-                  ? implode(',', $criteria->status)
+                  ? array_values($criteria->status)
                   : $criteria->status;
             }
 
@@ -80,7 +80,7 @@ class Orders
         }
 
         if (!empty($uriQuery)) {
-            $uri .= '?'.http_build_query($uriQuery);
+            $uri .= '?'.$this->apiClient::httpBuildQuery($uriQuery);
         }
 
         return $uri;

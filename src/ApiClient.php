@@ -67,6 +67,28 @@ class ApiClient
     }
 
     /**
+     * @param array $query
+     *
+     * @return string
+     */
+    public static function httpBuildQuery(array $query)
+    {
+        $queryString = [];
+
+        foreach($query as $key => $value) {
+            if (is_array($value)) {
+                foreach ($value as $subValue) {
+                    $queryString[] = urlencode($key).'='.urlencode($subValue);
+                }
+            } else {
+                $queryString[] = urlencode($key).'='.urlencode($value);
+            }
+        }
+
+        return implode('&', $queryString);
+    }
+
+    /**
      * @return HttpClient
      *
      * @throws AccessDeniedException

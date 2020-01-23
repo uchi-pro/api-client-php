@@ -113,11 +113,9 @@ function fetchCompletedOrders()
     $ordersApi = getApiClient()->orders();
 
     $criteria = $ordersApi->createCriteria();
-    $criteria->status = $criteria::STATUS_COMPLETED;
+    $criteria->status = [$criteria::STATUS_TRAINING, $criteria::STATUS_TRAINING_COMPLETE, $criteria::STATUS_DOCUMENTS_READY, $criteria::STATUS_COMPLETED];
     foreach ($ordersApi->findBy($criteria) as $order) {
-        if ($order->listenersCount === $order->listenersFinished) {
-            $orders[] = $order;
-        }
+        $orders[] = $order;
     }
 
     return $orders;
