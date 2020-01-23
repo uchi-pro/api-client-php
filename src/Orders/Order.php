@@ -3,6 +3,7 @@
 namespace UchiPro\Orders;
 
 use UchiPro\Courses\Course;
+use UchiPro\Vendors\Vendor;
 
 class Order
 {
@@ -25,6 +26,11 @@ class Order
      * @var Course
      */
     public $course;
+
+    /**
+     * @var Vendor
+     */
+    public $vendor;
 
     /**
      * @var int
