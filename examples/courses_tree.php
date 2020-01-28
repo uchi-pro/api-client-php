@@ -6,18 +6,22 @@
 
 use UchiPro\{ApiClient, Courses\Course, Identity};
 
-require '../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
 $courses = fetchCourses();
 
-print buildCouresesTree($courses);
+print buildCoursesTree($courses);
 
 /**
  * @param Course[] $courses
  *
+ * @param int $parentId
+ * @param int $level
+ * @param int $i
+ *
  * @return string
  */
-function buildCouresesTree($courses, $parentId = null, $level = 0, $i = 0)
+function buildCoursesTree($courses, $parentId = null, $level = 0, $i = 0)
 {
     $output = '';
 
@@ -36,7 +40,7 @@ function buildCouresesTree($courses, $parentId = null, $level = 0, $i = 0)
 
         $output .= $prefix.$course->title.$suffix.PHP_EOL;
 
-        $output .= buildCouresesTree($courses, $course->id, $level + 1, $j);
+        $output .= buildCoursesTree($courses, $course->id, $level + 1, $j);
     }
 
     return $output;
@@ -52,9 +56,7 @@ function getApiClient()
     $password = getenv('UCHIPRO_PASSWORD');
 
     $identity = Identity::createByLogin($url, $login, $password);
-    $apiClient = ApiClient::create($identity);
-
-    return $apiClient;
+    return ApiClient::create($identity);
 }
 
 /**

@@ -4,9 +4,9 @@
  * Пример сбора статистики по самым популярным курсам в системе.
  */
 
-use UchiPro\{ApiClient, Courses\Course, Identity, Orders\Order, Orders\Criteria};
+use UchiPro\{ApiClient, Courses\Course, Identity, Orders\Order};
 
-require '../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
 $orders = fetchCompletedOrders();
 $statistics = collectStatistics($orders);

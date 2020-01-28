@@ -11,7 +11,7 @@
 
 use UchiPro\{ApiClient, Identity, Orders\Listener, Orders\Order};
 
-require '../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
 if (empty($argv[1])) {
     exit('Укажите номер заявки.');
@@ -26,7 +26,7 @@ if (empty($order)) {
 
 $listeners = getOrderListeners($order);
 foreach ($listeners as $listener) {
-    sendNofication($order, $listener);
+    sendNotification($order, $listener);
     print PHP_EOL;
 }
 
@@ -35,7 +35,7 @@ foreach ($listeners as $listener) {
  *
  * @param Listener $listener
  */
-function sendNofication(Order $order, Listener $listener)
+function sendNotification(Order $order, Listener $listener)
 {
     // Можно отправить сообщение с доступами по электронной почте или в sms.
 
@@ -59,9 +59,7 @@ function getApiClient()
     $password = getenv('UCHIPRO_PASSWORD');
 
     $identity = Identity::createByLogin($url, $login, $password);
-    $apiClient = ApiClient::create($identity);
-
-    return $apiClient;
+    return ApiClient::create($identity);
 }
 
 /**
@@ -71,11 +69,11 @@ function getApiClient()
  */
 function findOrder($orderNumber)
 {
-    $apiClient = getApiClient();
+    $ordersApi = getApiClient()->orders();
 
-    $quary = new \UchiPro\Orders\Criteria();
+    $quary = $ordersApi->createCriteria();
     $quary->number = $orderNumber;
-    $orders = $apiClient->orders()->findBy($quary);
+    $orders = $ordersApi->findBy($quary);
 
     return isset($orders[0]) ? $orders[0] : null;
 }
@@ -88,8 +86,5 @@ function findOrder($orderNumber)
 function getOrderListeners(Order $order)
 {
     $apiClient = getApiClient();
-
-    $listeners = $apiClient->orders()->getOrderListeners($order);
-
-    return $listeners;
+    return $apiClient->orders()->getOrderListeners($order);
 }

@@ -11,9 +11,8 @@ $ composer require uchi-pro/api-client
 ```php
 use UchiPro\ApiClient;
 use UchiPro\Identity;
-use UchiPro\Orders\Criteria as OrdersCriteria;
 
-$apiClient = ApiClient::create(Identity::createByAccessToken('BASE_URL', 'ACCESS_TOKEN'));
+$apiClient = ApiClient::create(Identity::createByLogin('UCHIPRO_URL', 'UCHIPRO_LOGIN', 'UCHIPRO_PASSWORD'));
 
 $currentUser = $apiClient->users()->getMe();
 print 'Меня зовут: '.$currentUser->name.PHP_EOL;
@@ -21,9 +20,10 @@ print 'Меня зовут: '.$currentUser->name.PHP_EOL;
 $courses = $apiClient->courses()->findBy();
 print 'Найдено курсов: '.count($courses).PHP_EOL;
 
-$ordersCriteria = new OrdersCriteria();
+$ordersApi = $apiClient->orders();
+$ordersCriteria = $ordersApi->createCriteria();
 $ordersCriteria->status = $ordersCriteria::STATUS_TRAINING;
-$orders = $apiClient->orders()->findBy($ordersCriteria);
+$orders = $ordersApi->findBy($ordersCriteria);
 print 'Заявок в статусе обучения: '.count($orders).PHP_EOL;
 ```
 
