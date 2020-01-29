@@ -41,9 +41,18 @@ class Vendors
             $vendors = $this->parseVendors($responseData['vendors']);
         }
 
+        foreach ($vendors as $vendor) {
+            $vendor->domains = $this->fetchVendorDomains($vendor);
+        }
+
         return $vendors;
     }
 
+    /**
+     * @param array $list
+     *
+     * @return Vendor[]
+     */
     private function parseVendors(array $list)
     {
         $vendors = [];
@@ -52,6 +61,7 @@ class Vendors
             $vendor = new Vendor();
             $vendor->id = $item['uuid'] ?? null;
             $vendor->title = $item['title'] ?? null;
+            $vendor->domains = $item['domains'] ?? [];
 
             $settings = new Settings();
             $settings->selfRegistrationEnabled = !empty($item['settings']['self_registration_enabled']);
@@ -69,6 +79,19 @@ class Vendors
     {
         $uri = '/vendors';
         return $uri;
+    }
+
+    /**
+     * @param Vendor $vendor
+     *
+     * @return array|string[]
+     */
+    private function fetchVendorDomains(Vendor $vendor)
+    {
+        $uri = "/vendors/{$vendor->id}/domains";
+        $responseData = $this->apiClient->request($uri);
+
+        return $responseData['domains'] ?? [];
     }
 
     /**

@@ -15,6 +15,11 @@ class Vendor
     public $title;
 
     /**
+     * @var array|string[]
+     */
+    public $domains = [];
+
+    /**
      * @var Settings
      */
     public $settings;
