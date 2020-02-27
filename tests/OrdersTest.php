@@ -48,15 +48,27 @@ class OrdersTest extends TestCase
     public function testGetOrder()
     {
         $ordersApi = $this->getApiClient()->orders();
-        $criteria = $ordersApi->createCriteria();
-        $criteria->number = '1804/2019-1';
-        $orders = $ordersApi->findBy($criteria);
+        $orders = $ordersApi->findBy();
 
-        $this->assertTrue(is_array($orders));
+        $this->assertTrue(is_array($orders), 'Не удалось получить список заявок.');
 
-        if (isset($orders[0])) {
+        if (empty($orders)) {
+            return;
+        }
+
+        $order = $orders[0];
+
+        $ordersApi = $this->getApiClient()->orders();
+        $ordersCriteria = $ordersApi->createCriteria();
+        $ordersCriteria->number = $order->number;
+        $ordersCriteria->vendor = $order->vendor;
+        $orders = $ordersApi->findBy($ordersCriteria);
+
+        $this->assertTrue(count($orders) === 1, 'Заявка по номеру не найдена.');
+
+        if (!empty($orders[0])) {
             $order = $orders[0];
-            $listeners = $this->getApiClient()->orders()->getOrderListeners($order);
+            $listeners = $ordersApi->getOrderListeners($order);
             $this->assertTrue(is_array($listeners));
             $this->assertTrue(count($listeners) > 0);
         }
@@ -65,26 +77,29 @@ class OrdersTest extends TestCase
     public function testGetOrderSessions()
     {
         $ordersApi = $this->getApiClient()->orders();
-        $ordersCriteria = $ordersApi->createCriteria();
-        $ordersCriteria->number = '1804/2019-1';
-        $orders = $ordersApi->findBy($ordersCriteria);
+        $orders = $ordersApi->findBy();
 
-        if (isset($orders[0])) {
-            $order = $orders[0];
-            $sessionsApi = $this->getApiClient()->sessions();
+        $this->assertTrue(is_array($orders), 'Не удалось получить список заявок.');
 
-            $sessionsCriteria = $sessionsApi->createCriteria();
-            $sessionsCriteria->order = $order;
-            $sessions = $sessionsApi->findBy($sessionsCriteria);
-            $this->assertTrue(is_array($sessions));
+        if (empty($orders)) {
+            return;
+        }
 
-            $sessions = $sessionsApi->findActiveByOrder($order);
-            foreach ($sessions as $session) {
-                $this->assertTrue($session->isActive(), 'Найденная сессия не активна.');
-            }
+        $order = $orders[0];
+
+        $sessionsApi = $this->getApiClient()->sessions();
+        $sessionsCriteria = $sessionsApi->createCriteria();
+        $sessionsCriteria->order = $order;
+        $sessions = $sessionsApi->findBy($sessionsCriteria);
+        $this->assertTrue(is_array($sessions));
+
+        $sessions = $sessionsApi->findActiveByOrder($order);
+        foreach ($sessions as $session) {
+            $this->assertTrue($session->isActive(), 'Найденная сессия не активна.');
         }
 
         foreach ($this->getSessionsAvailableStatuses() as $status => $checkFunction) {
+            $sessionsApi = $this->getApiClient()->sessions();
             $sessionsCriteria = $sessionsApi->createCriteria();
             $sessionsCriteria->status = $status;
             $sessions = $sessionsApi->findBy($sessionsCriteria);
