@@ -26,6 +26,14 @@ class Courses
     }
 
     /**
+     * @return Criteria
+     */
+    public function createCriteria()
+    {
+        return new Criteria();
+    }
+
+    /**
      * @param Criteria|null $query
      *
      * @return array|Course[]
