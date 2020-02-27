@@ -6,6 +6,7 @@ use DateTimeImmutable;
 use DateTimeZone;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\ServerException;
 use UchiPro\Courses\Courses;
 use UchiPro\Exception\AccessDeniedException;
 use UchiPro\Exception\BadResponseException;
@@ -16,6 +17,8 @@ use UchiPro\Orders\Orders;
 use UchiPro\Sessions\Sessions;
 use UchiPro\Users\Users;
 use UchiPro\Vendors\Vendors;
+
+use function GuzzleHttp\Psr7\build_query;
 
 class ApiClient
 {
@@ -75,19 +78,7 @@ class ApiClient
      */
     public static function httpBuildQuery(array $query)
     {
-        $queryString = [];
-
-        foreach($query as $key => $value) {
-            if (is_array($value)) {
-                foreach ($value as $subValue) {
-                    $queryString[] = urlencode($key).'='.urlencode($subValue);
-                }
-            } else {
-                $queryString[] = urlencode($key).'='.urlencode($value);
-            }
-        }
-
-        return implode('&', $queryString);
+        return build_query($query, PHP_QUERY_RFC1738);
     }
 
     /**
@@ -160,11 +151,27 @@ class ApiClient
      */
     public function request($url, $params = [])
     {
-        $method = empty($params) ? 'get' : 'post';
         try {
-            $response = $this->getHttpClient()->request($method, $url);
+            if (empty($params)) {
+                $response = $this->getHttpClient()->request('get', $url);
+            } else {
+                $response = $this->getHttpClient()->request('post', $url, [
+                  'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                  ],
+                  'body' => $this::httpBuildQuery($params),
+                ]);
+            }
         } catch (GuzzleException $e) {
-            throw new RequestException('Ошибка запроса.', 0, $e);
+            $errors = [];
+            if ($e instanceof ServerException) {
+                $responseData = json_decode($e->getResponse()->getBody()->getContents(), true);
+                if (!empty($responseData['errors'])) {
+                    $errors = $responseData['errors'];
+                }
+            }
+            $errorsOutput = implode(' ', $errors);
+            throw new RequestException("Ошибка запроса: {$errorsOutput}", 0, $e);
         }
 
         $responseData = json_decode($response->getBody()->getContents(), true);
