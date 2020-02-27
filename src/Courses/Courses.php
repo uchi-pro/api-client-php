@@ -2,8 +2,6 @@
 
 namespace UchiPro\Courses;
 
-use DateTime;
-use DateTimeImmutable;
 use Exception;
 use UchiPro\ApiClient;
 use UchiPro\Courses\AcademicPlan\Item;
@@ -84,7 +82,7 @@ class Courses
             if ($course->id === self::NULL_VALUE) {
                 $course->id = null;
             }
-            $course->createdAt = DateTimeImmutable::createFromFormat(DateTime::RFC3339, $item['created_at']);
+            $course->createdAt = $this->apiClient->parseDate($item['created_at']);
             $course->title = $item['title'] ?? null;
             $course->parentId = $item['parent_uuid'] ?? null;
             if ($course->parentId === self::NULL_VALUE) {
@@ -98,7 +96,6 @@ class Courses
             $course->lessonsCount = isset($item['lessons_count']) ? (int)$item['lessons_count'] : 0;
             $course->lessons = $this->parseLessons($item);
             $course->academicPlan = $this->parseAcademicPlan($item);
-
 
             $courses[] = $course;
 

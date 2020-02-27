@@ -3,9 +3,11 @@
 namespace UchiPro\Sessions;
 
 use UchiPro\ApiClient;
+use UchiPro\Courses\Course;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Exception\RequestException;
 use UchiPro\Orders\Order;
+use UchiPro\Users\User;
 
 class Sessions
 {
@@ -20,36 +22,118 @@ class Sessions
     }
 
     /**
-     * @param array $criteria
+     * @return Criteria
+     */
+    public function createCriteria()
+    {
+        return new Criteria();
+    }
+
+    /**
+     * @param Criteria|null $criteria
      *
      * @return array|Session[]
      *
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(array $criteria = [])
+    public function findBy(Criteria $criteria = null)
     {
         $sessions = [];
 
-        $url = '/training/sessions';
-
-        if (isset($criteria['order']) && ($criteria['order'] instanceof Order)) {
-            $url = "/orders/{$criteria['order']->id}/sessions";
-        }
-
-        $responseData = $this->apiClient->request($url);
+        $uri = $this->buildUri($criteria);
+        $responseData = $this->apiClient->request($uri);
 
         if (!array_key_exists('sessions', $responseData)) {
             throw new BadResponseException('Не удалось получить список сессий.');
         }
 
         if (is_array($responseData['sessions'])) {
-            foreach ($responseData['sessions'] as $item) {
-                $session = new Session();
-                $session->id = $item['uuid'] ?? null;
+            $sessions = $this->parseSessions($responseData['sessions']);
 
-                $sessions[] = $session;
+            if ($criteria->order) {
+                foreach ($sessions as $session) {
+                    $session->order = $criteria->order;
+                }
             }
+        }
+
+        return $sessions;
+    }
+
+    /**
+     * @param Order $order
+     *
+     * @return array|Session[]
+     */
+    public function findActiveByOrder(Order $order)
+    {
+        $criteria = $this->createCriteria();
+        $criteria->order = $order;
+        return array_filter($this->findBy($criteria), function (Session $session) {
+            return $session->isActive();
+        });
+    }
+
+    /**
+     * @param Criteria|null $criteria
+     *
+     * @return string
+     */
+    private function buildUri(Criteria $criteria = null)
+    {
+        $uri = '/training/sessions';
+
+        $uriQuery = [];
+        if ($criteria) {
+            if (!empty($criteria->order)) {
+                $uriQuery['order'] = $criteria->order->id;
+            }
+
+            if (!empty($criteria->status)) {
+                $uriQuery['status'] = is_array($criteria->status)
+                  ? array_values($criteria->status)
+                  : $criteria->status;
+            }
+        }
+
+        if (!empty($uriQuery)) {
+            $uri .= '?'.$this->apiClient::httpBuildQuery($uriQuery);
+        }
+
+        return $uri;
+    }
+
+    /**
+     * @param array $list
+     *
+     * @return array|Session[]
+     */
+    private function parseSessions(array $list)
+    {
+        $sessions = [];
+
+        foreach ($list as $item) {
+            $listener = new User();
+            $listener->id = $item['listener_uuid'] ?? null;
+            $listener->name = $item['listener_title'] ?? null;
+
+            $course = new Course();
+            $course->id = $item['course_uuid'] ?? null;
+            $course->title = $item['course_title'] ?? null;
+
+            $order = new Order();
+            $order->id = $item['order_uuid'] ?? null;
+            $order->course = $course;
+
+            $session = new Session();
+            $session->id = $item['uuid'] ?? null;
+            $session->deletedAt = !empty($item['is_deleted']) ? $this->apiClient->parseDate($item['deleted_at']) : null;
+            $session->createdAt = $this->apiClient->parseDate($item['created_at']);
+            $session->status = $item['status']['code'] ?? null;
+            $session->listener = $listener;
+            $session->order = $order;
+            $sessions[] = $session;
         }
 
         return $sessions;

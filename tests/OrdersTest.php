@@ -3,7 +3,8 @@
 use PHPUnit\Framework\TestCase;
 use UchiPro\ApiClient;
 use UchiPro\Identity;
-use UchiPro\Orders\Criteria;
+use UchiPro\Sessions\Criteria as SessionsCriteria;
+use UchiPro\Sessions\Session;
 
 class OrdersTest extends TestCase
 {
@@ -36,18 +37,20 @@ class OrdersTest extends TestCase
 
     public function testGetOrders()
     {
-        $query = new Criteria();
-        $query->status = $query::STATUS_COMPLETED;
-        $orders = $this->getApiClient()->orders()->findBy($query);
+        $ordersApi = $this->getApiClient()->orders();
+        $criteria = $ordersApi->createCriteria();
+        $criteria->status = $criteria::STATUS_COMPLETED;
+        $orders = $this->getApiClient()->orders()->findBy($criteria);
 
         $this->assertTrue(is_array($orders));
     }
 
     public function testGetOrder()
     {
-        $criteria = new Criteria();
+        $ordersApi = $this->getApiClient()->orders();
+        $criteria = $ordersApi->createCriteria();
         $criteria->number = '1804/2019-1';
-        $orders = $this->getApiClient()->orders()->findBy($criteria);
+        $orders = $ordersApi->findBy($criteria);
 
         $this->assertTrue(is_array($orders));
 
@@ -57,5 +60,48 @@ class OrdersTest extends TestCase
             $this->assertTrue(is_array($listeners));
             $this->assertTrue(count($listeners) > 0);
         }
+    }
+
+    public function testGetOrderSessions()
+    {
+        $ordersApi = $this->getApiClient()->orders();
+        $ordersCriteria = $ordersApi->createCriteria();
+        $ordersCriteria->number = '1804/2019-1';
+        $orders = $ordersApi->findBy($ordersCriteria);
+
+        if (isset($orders[0])) {
+            $order = $orders[0];
+            $sessionsApi = $this->getApiClient()->sessions();
+
+            $sessionsCriteria = $sessionsApi->createCriteria();
+            $sessionsCriteria->order = $order;
+            $sessions = $sessionsApi->findBy($sessionsCriteria);
+            $this->assertTrue(is_array($sessions));
+
+            $sessions = $sessionsApi->findActiveByOrder($order);
+            foreach ($sessions as $session) {
+                $this->assertTrue($session->isActive(), 'Найденная сессия не активна.');
+            }
+        }
+
+        foreach ($this->getSessionsAvailableStatuses() as $status => $checkFunction) {
+            $sessionsCriteria = $sessionsApi->createCriteria();
+            $sessionsCriteria->status = $status;
+            $sessions = $sessionsApi->findBy($sessionsCriteria);
+            if (!empty($sessions[0])) {
+                $session = $sessions[0];
+                $this->assertTrue($checkFunction($session), "Статус найденной сессии {$session->status} (id: {$session->id}) не соответсвует искомому {$status}.");
+            }
+        }
+    }
+
+    private function getSessionsAvailableStatuses(): array
+    {
+        return [
+          SessionsCriteria::STATUS_STARTED => function (Session $session) { return $session->isStarted(); },
+          SessionsCriteria::STATUS_COMPLETED => function (Session $session) { return $session->isCompleted(); },
+          SessionsCriteria::STATUS_ACCEPTED => function (Session $session) { return $session->isAccepted(); },
+          SessionsCriteria::STATUS_REJECTED => function (Session $session) { return $session->isRejected(); },
+        ];
     }
 }

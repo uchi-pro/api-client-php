@@ -2,6 +2,8 @@
 
 namespace UchiPro;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\GuzzleException;
 use UchiPro\Courses\Courses;
@@ -172,6 +174,11 @@ class ApiClient
         }
 
         return $responseData;
+    }
+
+    public function parseDate($string)
+    {
+        return DateTimeImmutable::createFromFormat(DateTimeImmutable::RFC3339, $string, new DateTimeZone('UTC'));
     }
 
     /**
