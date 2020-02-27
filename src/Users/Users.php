@@ -36,8 +36,18 @@ class Users
         $role->title = $responseData['account']['role']['title'] ?? null;
 
         $vendor = new Vendor();
-        $vendor->id = $responseData['account']['vendor_uuid'] ?? null;
-        $vendor->title = $responseData['account']['vendor_title'] ?? null;
+        $isVendorNotEmpty = isset($responseData['account']['vendor_uuid']) && ($responseData['account']['vendor_uuid'] !== $this->apiClient::EMPTY_UUID_VALUE);
+        if ($isVendorNotEmpty) {
+            $vendor->id = $responseData['account']['vendor_uuid'] ?? null;
+            $vendor->title = $responseData['account']['vendor_title'] ?? null;
+        }
+        if (empty($vendor->id)) {
+            $isDomainVendorNotEmpty = isset($responseData['vendor']['uuid']) && ($responseData['vendor']['uuid'] !== $this->apiClient::EMPTY_UUID_VALUE);
+            if ($isDomainVendorNotEmpty) {
+                $vendor->id = $responseData['vendor']['uuid'] ?? null;
+                $vendor->title = $responseData['vendor']['title'] ?? null;
+            }
+        }
 
         $user = new User();
         $user->id = $responseData['account']['uuid'] ?? null;
