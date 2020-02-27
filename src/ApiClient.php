@@ -13,6 +13,7 @@ use UchiPro\Exception\BadResponseException;
 use UchiPro\Exception\InvalidUrlException;
 use UchiPro\Exception\RequestException;
 use UchiPro\Exception\UnreachableUrlException;
+use UchiPro\Leads\Leads;
 use UchiPro\Orders\Orders;
 use UchiPro\Sessions\Sessions;
 use UchiPro\Users\Users;
@@ -228,6 +229,14 @@ class ApiClient
     public function vendors()
     {
         return Vendors::create($this);
+    }
+
+    /**
+     * @return Leads
+     */
+    public function leads()
+    {
+        return Leads::create($this);
     }
 
     /**
