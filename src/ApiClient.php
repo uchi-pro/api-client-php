@@ -22,6 +22,8 @@ use function GuzzleHttp\Psr7\build_query;
 
 class ApiClient
 {
+    const EMPTY_UUID_VALUE = '00000000-0000-0000-0000-000000000000';
+
     /**
      * @var Identity
      */

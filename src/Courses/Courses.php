@@ -13,8 +13,6 @@ use UchiPro\Vendors\Vendor;
 
 class Courses
 {
-    const NULL_VALUE = '00000000-0000-0000-0000-000000000000';
-
     /**
      * @var ApiClient
      */
@@ -87,13 +85,13 @@ class Courses
         foreach ($list as $item) {
             $course = new Course();
             $course->id = $item['uuid'] ?? null;
-            if ($course->id === self::NULL_VALUE) {
+            if ($course->id === $this->apiClient::EMPTY_UUID_VALUE) {
                 $course->id = null;
             }
             $course->createdAt = $this->apiClient->parseDate($item['created_at']);
             $course->title = $item['title'] ?? null;
             $course->parentId = $item['parent_uuid'] ?? null;
-            if ($course->parentId === self::NULL_VALUE) {
+            if ($course->parentId === $this->apiClient::EMPTY_UUID_VALUE) {
                 $course->parentId = null;
             }
             $course->type = $this->parseCourseType($item);
@@ -126,7 +124,7 @@ class Courses
     {
         $courseType = new CourseType();
         $courseType->id = $item['type']['uuid'] ?? null;
-        if ($courseType->id === self::NULL_VALUE) {
+        if ($courseType->id === $this->apiClient::EMPTY_UUID_VALUE) {
             $courseType->id = null;
         }
         $courseType->title = $item['type']['title'] ?? null;
