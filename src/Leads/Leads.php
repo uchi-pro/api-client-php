@@ -43,7 +43,13 @@ class Leads
 
         $responseData = $this->apiClient->request('leads/0/edit', $params);
 
-        $lead->id = $responseData['uuid'] ?? null;
+        if (isset($responseData['lead']['uuid'])) {
+            $lead->id = $responseData['lead']['uuid'] ?? null;
+        } else if (isset($responseData['uuid'])) {
+            // @todo Устаревшее -- после обновления убрать.
+            $lead->id = $responseData['uuid'] ?? null;
+        }
+
         return $lead;
     }
 
