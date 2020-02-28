@@ -188,7 +188,7 @@ class ApiClient
 
     public function parseDate($string)
     {
-        return DateTimeImmutable::createFromFormat(DateTimeImmutable::RFC3339, $string, new DateTimeZone('UTC'));
+        return DateTimeImmutable::createFromFormat('Y-m-d\TH:i:sP', $string, new DateTimeZone('UTC'));
     }
 
     /**
