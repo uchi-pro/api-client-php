@@ -66,12 +66,8 @@ class Courses
                 $uri = "/vendors/{$query->vendor->id}/courses?_tree=1";
             }
 
-            if ($query->withLessons) {
-                $uri .= '&with_lessons=1';
-            }
-
             if ($query->parent && ($query->parent instanceof Course)) {
-                $uri = "?parent={$query->parent->id}";
+                $uri = "&parent={$query->parent->id}";
             }
         }
 
@@ -100,7 +96,6 @@ class Courses
             $course->depth = isset($item['depth']) ? (int)$item['depth'] : 0;
             $course->childrenCount = isset($item['children_count']) ? (int)$item['children_count'] : 0;
             $course->lessonsCount = isset($item['lessons_count']) ? (int)$item['lessons_count'] : 0;
-            $course->lessons = $this->parseLessons($item);
             $course->academicPlan = $this->parseAcademicPlan($item);
 
             $courses[] = $course;
@@ -130,32 +125,6 @@ class Courses
         $courseType->title = $item['type']['title'] ?? null;
 
         return $courseType;
-    }
-
-    /**
-     * @param array $item
-     *
-     * @return array|Lesson[]
-     */
-    private function parseLessons(array $item)
-    {
-        $lessons = [];
-        if (isset($item['lessons']) && is_array($item['lessons'])) {
-            foreach ($item['lessons'] as $lessonItem) {
-                $lessonType = new LessonType();
-                $lessonType->id = $lessonItem['type'] ?? null;
-                $lessonType->title = $lessonItem['type_title'] ?? null;
-
-                $lesson = new Lesson();
-                $lesson->id = $lessonItem['uuid'] ?? null;
-                $lesson->title = $lessonItem['title'] ?? null;
-                $lesson->type = $lessonType;
-
-                $lessons[] = $lesson;
-            }
-        }
-
-        return $lessons;
     }
 
     /**

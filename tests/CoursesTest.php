@@ -38,16 +38,9 @@ class CoursesTest extends TestCase
     {
         $coursesApi = $this->getApiClient()->courses();
         $coursesCriteria = $coursesApi->createCriteria();
-        $coursesCriteria->withLessons = true;
         $courses = $coursesApi->findBy($coursesCriteria);
 
         $this->assertTrue(is_array($courses));
-
-        $lessonsCount = array_reduce($courses, function ($total, Course $course) {
-            return $total + count($course->lessons);
-        }, 0);
-
-        $this->assertTrue($lessonsCount > 0);
 
         $hours = 0;
         foreach ($courses as $course) {

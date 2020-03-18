@@ -57,11 +57,6 @@ class Course
     public $lessonsCount = 0;
 
     /**
-     * @var array|Lesson[]
-     */
-    public $lessons = [];
-
-    /**
      * @var AcademicPlan\Plan
      */
     public $academicPlan;

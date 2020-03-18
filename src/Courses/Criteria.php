@@ -12,11 +12,6 @@ class Criteria
     public $vendor;
 
     /**
-     * @var bool
-     */
-    public $withLessons = false;
-
-    /**
      * @var Course
      */
     public $parent;
