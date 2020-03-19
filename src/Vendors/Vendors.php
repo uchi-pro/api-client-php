@@ -19,6 +19,17 @@ class Vendors
     }
 
     /**
+     * @param string $id
+     * @param string $title
+     *
+     * @return Vendor
+     */
+    public function createVendor($id = '', $title = '')
+    {
+        return Vendor::create($id, $title);
+    }
+
+    /**
      * @param Criteria|null $query
      *
      * @return array|Vendor[]

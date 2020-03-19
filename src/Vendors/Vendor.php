@@ -23,4 +23,18 @@ class Vendor
      * @var Settings
      */
     public $settings;
+
+    /**
+     * @param $id
+     * @param $title
+     *
+     * @return Vendor
+     */
+    public static function create($id, $title)
+    {
+        $vendor = new self();
+        $vendor->id = $id;
+        $vendor->title = $title;
+        return $vendor;
+    }
 }
