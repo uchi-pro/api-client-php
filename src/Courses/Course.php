@@ -60,4 +60,18 @@ class Course
      * @var AcademicPlan\Plan
      */
     public $academicPlan;
+
+    /**
+     * @param string $id
+     * @param string $title
+     *
+     * @return Course
+     */
+    public static function create($id, $title)
+    {
+        $course = new self();
+        $course->id = $id;
+        $course->title = $title;
+        return $course;
+    }
 }

@@ -24,6 +24,17 @@ class Courses
     }
 
     /**
+     * @param null $id
+     * @param null $title
+     *
+     * @return Course
+     */
+    public function createCourse($id = null, $title = null)
+    {
+        return Course::create($id, $title);
+    }
+
+    /**
      * @return Criteria
      */
     public function createCriteria()
