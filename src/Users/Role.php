@@ -27,4 +27,68 @@ class Role
         $role->title = $title;
         return $role;
     }
+
+    /**
+     * @return Role
+     */
+    public static function createAdministrator()
+    {
+        return self::create('administrator', 'Администратор');
+    }
+
+    /**
+     * @return Role
+     */
+    public static function createManager()
+    {
+        return self::create('manager', 'Менеджер');
+    }
+
+    /**
+     * @return Role
+     */
+    public static function createEditor()
+    {
+        return self::create('editor', 'Редактор');
+    }
+
+    /**
+     * @return Role
+     */
+    public static function createTeacher()
+    {
+        return self::create('teacher', 'Преподаватель');
+    }
+
+    /**
+     * @return Role
+     */
+    public static function createAgent()
+    {
+        return self::create('agent', 'Агент');
+    }
+
+    /**
+     * @return Role
+     */
+    public static function createContractor()
+    {
+        return self::create('contractor', 'Контрагент');
+    }
+
+    /**
+     * @return Role
+     */
+    public static function createListener()
+    {
+        return self::create('listener', 'Слушатель');
+    }
+
+    /**
+     * @return Role
+     */
+    public static function createGuest()
+    {
+        return self::create('guest', 'Гость');
+    }
 }
