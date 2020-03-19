@@ -18,6 +18,14 @@ class Leads
     }
 
     /**
+     * @return Lead
+     */
+    public function createLead()
+    {
+        return new Lead();
+    }
+
+    /**
      * @param Lead $lead
      *
      * @return Lead
