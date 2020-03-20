@@ -39,8 +39,30 @@ class UsersTest extends TestCase
         $me = $this->getApiClient()->users()->getMe();
 
         $this->assertNotEmpty($me->id);
-        $this->assertNotEmpty($me->vendor->id);
         $this->assertNotEmpty($me->role->id);
+    }
+
+    public function testFindContratorByEmail()
+    {
+        $usersApi = $this->getApiClient()->users();
+        $criteria = $usersApi->createCriteria();
+        $criteria->role = Role::createContractor();
+        $contractors = $usersApi->findBy($criteria);
+
+        $contractorWithEmail = null;
+        foreach ($contractors as $contractor) {
+            if (!empty($contractor->email)) {
+                $contractorWithEmail = $contractor;
+                break;
+            }
+        }
+
+        $this->assertTrue($contractorWithEmail->role->id === 'contractor');
+
+        if (!empty($contractorWithEmail)) {
+            $foundContractor = $usersApi->findContractorByEmail($contractorWithEmail->email);
+            $this->assertTrue($foundContractor->id === $contractorWithEmail->id);
+        }
     }
 
     public function testRoleAdministrator()
