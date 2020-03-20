@@ -144,9 +144,10 @@ class Users
         $role->id = $item['role']['code'] ?? null;
         $role->title = $item['role']['title'] ?? null;
 
-        $vendor = new Vendor();
+        $vendor = null;
         $isVendorNotEmpty = isset($item['vendor_uuid']) && ($item['vendor_uuid'] !== $this->apiClient::EMPTY_UUID_VALUE);
         if ($isVendorNotEmpty) {
+            $vendor = new Vendor();
             $vendor->id = $item['vendor_uuid'] ?? null;
             $vendor->title = $item['vendor_title'] ?? null;
         }

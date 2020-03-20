@@ -68,17 +68,22 @@ class Courses
         return $courses;
     }
 
-    private function buildUri(Criteria $query = null)
+    /**
+     * @param Criteria|null $criteria
+     *
+     * @return string
+     */
+    private function buildUri(Criteria $criteria = null)
     {
         $uri = '/courses?_tree=1';
 
-        if ($query) {
-            if ($query->vendor && ($query->vendor instanceof Vendor)) {
-                $uri = "/vendors/{$query->vendor->id}/courses?_tree=1";
+        if (!empty($criteria)) {
+            if ($criteria->vendor instanceof Vendor) {
+                $uri = "/vendors/{$criteria->vendor->id}/courses?_tree=1";
             }
 
-            if ($query->parent && ($query->parent instanceof Course)) {
-                $uri = "&parent={$query->parent->id}";
+            if ($criteria->parent instanceof Course) {
+                $uri = "&parent={$criteria->parent->id}";
             }
         }
 
