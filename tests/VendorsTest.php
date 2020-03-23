@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use UchiPro\ApiClient;
 use UchiPro\Identity;
+use UchiPro\Vendors\Limits;
 
 class VendorsTest extends TestCase
 {
@@ -40,5 +41,18 @@ class VendorsTest extends TestCase
         $vendors = $vendorsApi->findBy();
 
         $this->assertTrue(is_array($vendors));
+    }
+
+    public function testGetVendorLimits()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $vendors = $vendorsApi->findBy();
+
+        if (isset($vendors[0])) {
+            $vendor = $vendors[0];
+            $limits = $vendorsApi->getVendorLimits($vendor);
+            $this->assertInstanceOf(Limits::class, $limits);
+        }
     }
 }

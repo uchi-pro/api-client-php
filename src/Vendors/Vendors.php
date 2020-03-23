@@ -30,6 +30,22 @@ class Vendors
     }
 
     /**
+     * @param Vendor $vendor
+     *
+     * @return Limits
+     */
+    public function getVendorLimits(Vendor $vendor)
+    {
+        $responseData = $this->apiClient->request("/vendors/{$vendor->id}");
+
+        $limits = new Limits();
+        $limits->meetingsAvailable = !empty($responseData['limits']['meetings_available']);
+        $limits->leadsEventsAvailable = !empty($responseData['limits']['leads_events_available']);
+
+        return $limits;
+    }
+
+    /**
      * @param Criteria|null $criteria
      *
      * @return array|Vendor[]
