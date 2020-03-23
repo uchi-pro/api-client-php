@@ -39,6 +39,9 @@ class Vendors
         $responseData = $this->apiClient->request("/vendors/{$vendor->id}");
 
         $limits = new Limits();
+        $limits->maxCustomCoursesFilesize = !empty($responseData['vendor']['limits']['max_custom_courses_filesize'])
+            ? (int)$responseData['vendor']['limits']['max_custom_courses_filesize']
+            : null;
         $limits->meetingsAvailable = !empty($responseData['vendor']['limits']['meetings_available']);
         $limits->leadsEventsAvailable = !empty($responseData['vendor']['limits']['leads_events_available']);
 
