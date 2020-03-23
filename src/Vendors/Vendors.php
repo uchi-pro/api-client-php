@@ -39,8 +39,8 @@ class Vendors
         $responseData = $this->apiClient->request("/vendors/{$vendor->id}");
 
         $limits = new Limits();
-        $limits->meetingsAvailable = !empty($responseData['limits']['meetings_available']);
-        $limits->leadsEventsAvailable = !empty($responseData['limits']['leads_events_available']);
+        $limits->meetingsAvailable = !empty($responseData['vendor']['limits']['meetings_available']);
+        $limits->leadsEventsAvailable = !empty($responseData['vendor']['limits']['leads_events_available']);
 
         return $limits;
     }
