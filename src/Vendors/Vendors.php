@@ -30,18 +30,18 @@ class Vendors
     }
 
     /**
-     * @param Criteria|null $query
+     * @param Criteria|null $criteria
      *
      * @return array|Vendor[]
      *
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(Criteria $query = null)
+    public function findBy(Criteria $criteria = null)
     {
         $vendors = [];
 
-        $uri = $this->buildUri($query);
+        $uri = $this->buildUri($criteria);
         $responseData = $this->apiClient->request($uri);
 
         if (!array_key_exists('vendors', $responseData)) {
