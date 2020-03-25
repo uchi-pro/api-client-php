@@ -4,7 +4,6 @@ use PHPUnit\Framework\TestCase;
 use UchiPro\ApiClient;
 use UchiPro\Courses\Course;
 use UchiPro\Identity;
-use UchiPro\Leads\Lead;
 use UchiPro\Users\User;
 
 class LeadsTest extends TestCase
@@ -42,7 +41,7 @@ class LeadsTest extends TestCase
 
         $stamp = date('YmdHms');
 
-        $lead = new Lead();
+        $lead = $leadsApi->createLead();
         $lead->email = "u{$stamp}@uchi.pro";
 
         $lead = $leadsApi->save($lead);
@@ -57,15 +56,20 @@ class LeadsTest extends TestCase
 
         $stamp = date('YmdHms');
 
-        $lead = new Lead();
+        $lead = $leadsApi->createLead();
         $lead->number = "{$stamp}";
         $lead->contactPerson = "Гражданин {$stamp}";
         $lead->email = "u{$stamp}@uchi.pro";
         $lead->phone = "+7{$stamp}";
         $lead->courses = $this->selectMyCoursesForLead($me);
 
-        $lead = $leadsApi->save($lead);
-        $this->assertNotEmpty($lead->id);
+        $mainComment = $leadsApi->createComment(null, 'Первый комментарий.');
+        $lead = $leadsApi->save($lead, $mainComment);
+
+        $additionalComment = $leadsApi->createComment(null, "Дополнительный комментарий.\nДля тестирования переносов.");
+        $additionalComment = $leadsApi->saveLeadComment($lead, $additionalComment);
+
+        $this->assertNotEmpty($additionalComment->id);
     }
 
     /**

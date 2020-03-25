@@ -26,11 +26,23 @@ class Leads
     }
 
     /**
+     * @param string|null $id
+     * @param string|null $text
+     *
+     * @return Comment
+     */
+    public function createComment($id = null, $text = null)
+    {
+        return Comment::create($id, $text);
+    }
+
+    /**
      * @param Lead $lead
+     * @param Comment $comment
      *
      * @return Lead
      */
-    public function save(Lead $lead)
+    public function save(Lead $lead, Comment $comment = null)
     {
         $params = [
           'number' => $lead->number,
@@ -38,6 +50,10 @@ class Leads
           'email' => $lead->email,
           'phone' => $lead->phone,
         ];
+
+        if (!empty($comment->text)) {
+            $params['comments'] = $comment->text;
+        }
 
         if (!empty($lead->contractor->id)) {
             $params['contractor'] = $lead->contractor->id;
@@ -59,6 +75,26 @@ class Leads
         }
 
         return $lead;
+    }
+
+    /**
+     * @param Lead $lead
+     * @param Comment $comment
+     *
+     * @return Comment
+     */
+    public function saveLeadComment(Lead $lead, Comment $comment)
+    {
+        $params = [
+            'comments' => $comment->text,
+        ];
+        $responseData = $this->apiClient->request("leads/{$lead->id}/comments/0", $params);
+
+        if (isset($responseData['comment']['uuid'])) {
+            $comment->id = $responseData['comment']['uuid'] ?? null;
+        }
+
+        return $comment;
     }
 
     public static function create(ApiClient $apiClient)
