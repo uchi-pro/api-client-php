@@ -44,6 +44,8 @@ class Vendors
             : null;
         $limits->meetingsAvailable = !empty($responseData['vendor']['limits']['meetings_available']);
         $limits->leadsEventsAvailable = !empty($responseData['vendor']['limits']['leads_events_available']);
+        $limits->groupsWritsAvailable = !empty($responseData['vendor']['limits']['groups_writs_available']);
+        $limits->billingDocsAvailable = !!empty($responseData['vendor']['limits']['billing_docs_disabled']);
 
         return $limits;
     }

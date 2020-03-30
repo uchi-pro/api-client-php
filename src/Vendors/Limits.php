@@ -18,4 +18,14 @@ class Limits
      * @var bool
      */
     public $leadsEventsAvailable;
+
+    /**
+     * @var bool
+     */
+    public $billingDocsAvailable;
+
+    /**
+     * @var bool
+     */
+    public $groupsWritsAvailable;
 }
