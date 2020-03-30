@@ -43,17 +43,38 @@ class VendorsTest extends TestCase
         $this->assertTrue(is_array($vendors));
     }
 
+    public function testFindVendorById()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $vendors = $vendorsApi->findAll();
+
+        if (empty($vendors[0])) {
+            $this->markTestSkipped(
+                'Вендор для теста не найден.'
+            );
+        }
+
+        $vendor = $vendors[0];
+        $foundVendor = $vendorsApi->findById($vendor->id);
+        $this->assertEquals($vendor->id, $foundVendor->id);
+    }
+
     public function testGetVendorLimits()
     {
         $vendorsApi = $this->getApiClient()->vendors();
 
         $vendors = $vendorsApi->findAll();
 
-        if (isset($vendors[0])) {
-            $vendor = $vendors[0];
-            $limits = $vendorsApi->getVendorLimits($vendor);
-            $this->assertInstanceOf(Limits::class, $limits);
+        if (empty($vendors[0])) {
+            $this->markTestSkipped(
+                'Вендор для теста не найден.'
+            );
         }
+
+        $vendor = $vendors[0];
+        $limits = $vendorsApi->getVendorLimits($vendor);
+        $this->assertInstanceOf(Limits::class, $limits);
     }
 
     public function testFindVendorByDomain()
@@ -72,7 +93,7 @@ class VendorsTest extends TestCase
 
         if (empty($vendorWithDomain)) {
             $this->markTestSkipped(
-                'Вендор с доменом не найден.'
+                'Вендор для теста не найден.'
             );
         }
 

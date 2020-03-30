@@ -89,6 +89,25 @@ class Vendors
     }
 
     /**
+     * @param string $id
+     *
+     * @return Vendor|null
+     */
+    public function findById(string $id)
+    {
+        $responseData = $this->apiClient->request("/vendors/{$id}");
+
+        if (empty($responseData['vendor']['uuid'])) {
+            return null;
+        }
+
+        $vendor = $this->parseVendor($responseData['vendor']);
+        $vendor->domains = $this->fetchVendorDomains($vendor);
+
+        return $vendor;
+    }
+
+    /**
      * @param string $domain
      *
      * @return Vendor|null
@@ -119,21 +138,31 @@ class Vendors
         $vendors = [];
 
         foreach ($list as $item) {
-            $vendor = new Vendor();
-            $vendor->id = $item['uuid'] ?? null;
-            $vendor->title = $item['title'] ?? null;
-            $vendor->domains = $item['domains'] ?? [];
-
-            $settings = new Settings();
-            $settings->selfRegistrationEnabled = !empty($item['settings']['self_registration_enabled']);
-            $settings->smtpHost = $item['settings']['smtp_host'] ?? null;
-            $settings->smtpUsername = $item['settings']['smtp_username'] ?? null;
-            $vendor->settings = $settings;
-
-            $vendors[] = $vendor;
+            $vendors[] = $this->parseVendor($item);
         }
 
         return $vendors;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return Vendor
+     */
+    private function parseVendor(array $item): Vendor
+    {
+        $vendor = $this->createVendor();
+        $vendor->id = $item['uuid'] ?? null;
+        $vendor->title = $item['title'] ?? null;
+        $vendor->domains = $item['domains'] ?? [];
+
+        $settings = new Settings();
+        $settings->selfRegistrationEnabled = !empty($item['settings']['self_registration_enabled']);
+        $settings->smtpHost = $item['settings']['smtp_host'] ?? null;
+        $settings->smtpUsername = $item['settings']['smtp_username'] ?? null;
+        $vendor->settings = $settings;
+
+        return $vendor;
     }
 
     private function buildUri(Criteria $searchQuery = null)
