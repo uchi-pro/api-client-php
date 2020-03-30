@@ -55,4 +55,31 @@ class VendorsTest extends TestCase
             $this->assertInstanceOf(Limits::class, $limits);
         }
     }
+
+    public function testFindVendorByDomain()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $vendors = $vendorsApi->findBy();
+
+        $vendorWithDomain = null;
+        foreach ($vendors as $vendor) {
+            if (!empty($vendor->domains)) {
+                $vendorWithDomain = $vendor;
+                break;
+            }
+        }
+
+        if (empty($vendorWithDomain)) {
+            $this->markTestSkipped(
+                'Вендор с доменом не найден.'
+            );
+        }
+
+        $domain = array_reverse($vendorWithDomain->domains)[0];
+
+        $foundVendor = $vendorsApi->findByDomain($domain);
+
+        $this->assertEquals($vendorWithDomain->id, $foundVendor->id);
+    }
 }

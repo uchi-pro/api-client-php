@@ -81,6 +81,27 @@ class Vendors
     }
 
     /**
+     * @param string $domain
+     *
+     * @return Vendor|null
+     *
+     * @throws RequestException
+     * @throws BadResponseException
+     */
+    public function findByDomain(string $domain)
+    {
+        $vendors = $this->findBy();
+
+        foreach ($vendors as $vendor) {
+            if (in_array($domain, $vendor->domains)) {
+                return $vendor;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @param array $list
      *
      * @return Vendor[]
