@@ -81,6 +81,14 @@ class Vendors
     }
 
     /**
+     * @return array|Vendor[]
+     */
+    public function findAll()
+    {
+        return $this->findBy();
+    }
+
+    /**
      * @param string $domain
      *
      * @return Vendor|null

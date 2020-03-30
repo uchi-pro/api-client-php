@@ -38,7 +38,7 @@ class VendorsTest extends TestCase
     {
         $vendorsApi = $this->getApiClient()->vendors();
 
-        $vendors = $vendorsApi->findBy();
+        $vendors = $vendorsApi->findAll();
 
         $this->assertTrue(is_array($vendors));
     }
@@ -47,7 +47,7 @@ class VendorsTest extends TestCase
     {
         $vendorsApi = $this->getApiClient()->vendors();
 
-        $vendors = $vendorsApi->findBy();
+        $vendors = $vendorsApi->findAll();
 
         if (isset($vendors[0])) {
             $vendor = $vendors[0];
@@ -60,7 +60,7 @@ class VendorsTest extends TestCase
     {
         $vendorsApi = $this->getApiClient()->vendors();
 
-        $vendors = $vendorsApi->findBy();
+        $vendors = $vendorsApi->findAll();
 
         $vendorWithDomain = null;
         foreach ($vendors as $vendor) {
