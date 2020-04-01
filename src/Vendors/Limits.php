@@ -28,4 +28,14 @@ class Limits
      * @var bool
      */
     public $groupsWritsAvailable;
+
+    /**
+     * @var bool
+     */
+    public $infobaseAvailable;
+
+    /**
+     * @var bool
+     */
+    public $shopAvailable;
 }
