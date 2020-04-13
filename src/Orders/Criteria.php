@@ -29,4 +29,9 @@ class Criteria
      * @var Vendor
      */
     public $vendor;
+
+    /**
+     * @var bool
+     */
+    public $withFullAcceptedOnly;
 }

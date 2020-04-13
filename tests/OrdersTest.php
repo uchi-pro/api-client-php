@@ -77,12 +77,12 @@ class OrdersTest extends TestCase
     public function testGetOrderSessions()
     {
         $ordersApi = $this->getApiClient()->orders();
-        $orders = $ordersApi->findBy();
-
-        $this->assertTrue(is_array($orders), 'Не удалось получить список заявок.');
+        $ordersCriteria = $ordersApi->createCriteria();
+        $ordersCriteria->withFullAcceptedOnly = true;
+        $orders = $ordersApi->findBy($ordersCriteria);
 
         if (empty($orders)) {
-            return;
+            $this->markTestSkipped('Не найдено курсов с сессиями.');
         }
 
         $order = $orders[0];

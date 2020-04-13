@@ -78,6 +78,10 @@ class Orders
             if (!empty($criteria->vendor)) {
                 $uriQuery['vendor'] = $criteria->vendor->id;
             }
+
+            if (!empty($criteria->withFullAcceptedOnly)) {
+                $uriQuery['with_full_accepted_only'] = 1;
+            }
         }
 
         if (!empty($uriQuery)) {
