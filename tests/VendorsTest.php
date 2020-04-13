@@ -67,9 +67,7 @@ class VendorsTest extends TestCase
         $vendors = $vendorsApi->findAll();
 
         if (empty($vendors[0])) {
-            $this->markTestSkipped(
-                'Вендор для теста не найден.'
-            );
+            $this->markTestSkipped('Вендор для теста не найден.');
         }
 
         $vendor = $vendors[0];

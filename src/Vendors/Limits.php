@@ -10,6 +10,11 @@ class Limits
     public $maxCustomCoursesFilesize;
 
     /**
+     * @var int
+     */
+    public $customCoursesFilesize;
+
+    /**
      * @var bool
      */
     public $meetingsAvailable;
