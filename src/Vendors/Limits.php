@@ -12,6 +12,11 @@ class Limits
     /**
      * @var int
      */
+    public $totalFilesize;
+
+    /**
+     * @var int
+     */
     public $customCoursesFilesize;
 
     /**

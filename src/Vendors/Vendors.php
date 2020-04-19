@@ -46,6 +46,9 @@ class Vendors
         $limits->customCoursesFilesize = !empty($responseData['vendor']['limits']['custom_courses_filesize'])
             ? (int)$responseData['vendor']['limits']['custom_courses_filesize']
             : null;
+        $limits->totalFilesize = !empty($responseData['vendor']['limits']['total_filesize'])
+            ? (int)$responseData['vendor']['limits']['total_filesize']
+            : null;
         $limits->meetingsAvailable = !empty($responseData['vendor']['limits']['meetings_available']);
         $limits->leadsEventsAvailable = !empty($responseData['vendor']['limits']['leads_events_available']);
         $limits->groupsWritsAvailable = !empty($responseData['vendor']['limits']['groups_writs_available']);
