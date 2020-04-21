@@ -19,6 +19,14 @@ class Users
     }
 
     /**
+     * @return User
+     */
+    public function createUser()
+    {
+        return new User();
+    }
+
+    /**
      * @return Criteria
      */
     public function createCriteria()

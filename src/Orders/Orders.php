@@ -21,6 +21,14 @@ class Orders
     }
 
     /**
+     * @return Order
+     */
+    public function createOrder()
+    {
+        return new Order();
+    }
+
+    /**
      * @return Criteria
      */
     public function createCriteria()

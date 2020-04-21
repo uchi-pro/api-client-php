@@ -22,6 +22,14 @@ class Sessions
     }
 
     /**
+     * @return Session
+     */
+    public function createSession()
+    {
+        return new Session();
+    }
+
+    /**
      * @return Criteria
      */
     public function createCriteria()
