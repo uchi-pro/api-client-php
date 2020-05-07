@@ -24,6 +24,26 @@ class Session
     public $deletedAt;
 
     /**
+     * @var DateTimeImmutable
+     */
+    public $startedAt;
+
+    /**
+     * @var DateTimeImmutable
+     */
+    public $skippedAt;
+
+    /**
+     * @var DateTimeImmutable
+     */
+    public $acceptedAt;
+
+    /**
+     * @var DateTimeImmutable
+     */
+    public $completedAt;
+
+    /**
      * @var string
      */
     public $status;

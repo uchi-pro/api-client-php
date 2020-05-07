@@ -136,8 +136,12 @@ class Sessions
 
             $session = new Session();
             $session->id = $item['uuid'] ?? null;
-            $session->deletedAt = !empty($item['is_deleted']) ? $this->apiClient->parseDate($item['deleted_at']) : null;
             $session->createdAt = $this->apiClient->parseDate($item['created_at']);
+            $session->deletedAt = !empty($item['is_deleted']) ? $this->apiClient->parseDate($item['deleted_at']) : null;
+            $session->startedAt = !empty($item['is_started']) ? $this->apiClient->parseDate($item['started_at']) : null;
+            $session->skippedAt = !empty($item['is_skipped']) ? $this->apiClient->parseDate($item['skipped_at']) : null;
+            $session->acceptedAt = !empty($item['is_accepted']) ? $this->apiClient->parseDate($item['accepted_at']) : null;
+            $session->completedAt = !empty($item['is_completed']) ? $this->apiClient->parseDate($item['completed_at']) : null;
             $session->status = $item['status']['code'] ?? null;
             $session->listener = $listener;
             $session->order = $order;
