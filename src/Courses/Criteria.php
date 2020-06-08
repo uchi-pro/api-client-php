@@ -15,4 +15,9 @@ class Criteria
      * @var Course
      */
     public $parent;
+
+    /**
+     * @var string
+     */
+    public $gid;
 }

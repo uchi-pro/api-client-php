@@ -12,6 +12,11 @@ class Course
     public $id;
 
     /**
+     * @var string
+     */
+    public $gid;
+
+    /**
      * @var DateTimeImmutable
      */
     public $createdAt;

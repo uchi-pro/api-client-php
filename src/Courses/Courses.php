@@ -85,6 +85,10 @@ class Courses
             if ($criteria->parent instanceof Course) {
                 $uri = "&parent={$criteria->parent->id}";
             }
+
+            if (!empty($criteria->gid)) {
+                $uri = "&guid={$criteria->gid}";
+            }
         }
 
         return $uri;
@@ -99,6 +103,10 @@ class Courses
             $course->id = $item['uuid'] ?? null;
             if ($course->id === $this->apiClient::EMPTY_UUID_VALUE) {
                 $course->id = null;
+            }
+            $course->gid = $item['guid'] ?? null;
+            if ($course->gid === $this->apiClient::EMPTY_UUID_VALUE) {
+                $course->gid = null;
             }
             $course->createdAt = $this->apiClient->parseDate($item['created_at']);
             $course->title = $item['title'] ?? null;
