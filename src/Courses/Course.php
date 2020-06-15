@@ -29,6 +29,11 @@ class Course
     /**
      * @var string
      */
+    public $description;
+
+    /**
+     * @var string
+     */
     public $parentId;
 
     /**

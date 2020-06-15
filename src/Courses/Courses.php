@@ -110,6 +110,7 @@ class Courses
             }
             $course->createdAt = $this->apiClient->parseDate($item['created_at']);
             $course->title = $item['title'] ?? null;
+            $course->description = $item['description'] ?? null;
             $course->parentId = $item['parent_uuid'] ?? null;
             if ($course->parentId === $this->apiClient::EMPTY_UUID_VALUE) {
                 $course->parentId = null;
