@@ -191,6 +191,50 @@ class Courses
         return $academicPlan;
     }
 
+    /**
+     * @param Course $course
+     *
+     * @return CourseFeatures
+     */
+    public function getCourseFeatures(Course $course)
+    {
+        $courseFeatures = new CourseFeatures();
+
+        $lessonsResponseData = $this->apiClient->request("/courses/{$course->id}/lessons");
+        foreach ($lessonsResponseData['lessons'] as $lesson) {
+            if (!empty($lesson['resources'])) {
+                foreach ($lesson['resources'] as $resource) {
+                    if ($resource['slides_count']) {
+                        $courseFeatures->slides = true;
+                    }
+                    if ($resource['videos_count']) {
+                        $courseFeatures->video = true;
+                    }
+
+                    if (!$courseFeatures->interactive) {
+                        $resourcesResponseData = $this->apiClient->request("/resources/{$resource['id']}/contents");
+                        foreach ($resourcesResponseData['contents'] as $content) {
+                            $contentResponseData = $this->apiClient->request(
+                              "/resources/{$resource['id']}/contents/{$content['id']}"
+                            );
+                            if (strpos($contentResponseData['content']['body'], 'h5p/embed/') > 0) {
+                                $courseFeatures->interactive = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if ($lesson['type'] === 'quiz') {
+                $courseFeatures->testing = true;
+            }
+            if ($lesson['type'] === 'essay') {
+                $courseFeatures->practice = true;
+            }
+        }
+
+        return $courseFeatures;
+    }
+
     public static function create(ApiClient $apiClient)
     {
         return new static($apiClient);

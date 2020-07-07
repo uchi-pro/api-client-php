@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use UchiPro\ApiClient;
-use UchiPro\Courses\Course;
+use UchiPro\Courses\CourseFeatures;
 use UchiPro\Identity;
 
 class CoursesTest extends TestCase
@@ -51,5 +51,20 @@ class CoursesTest extends TestCase
             }
         }
         $this->assertTrue($hours > 0);
+    }
+
+    public function testGetCourseFeatures()
+    {
+        $coursesApi = $this->getApiClient()->courses();
+        $coursesCriteria = $coursesApi->createCriteria();
+        $courses = $coursesApi->findBy($coursesCriteria);
+
+        if (empty($courses[0])) {
+            $this->markTestSkipped('Курс для теста не найден.');
+        }
+        $course = $courses[0];
+
+        $courseFeatures = $coursesApi->getCourseFeatures($course);
+        $this->assertInstanceOf(CourseFeatures::class, $courseFeatures);
     }
 }
