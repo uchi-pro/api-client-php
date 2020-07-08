@@ -202,6 +202,12 @@ class Courses
 
         $lessonsResponseData = $this->apiClient->request("/courses/{$course->id}/lessons");
         foreach ($lessonsResponseData['lessons'] as $lesson) {
+            if (!$courseFeatures->interactive) {
+                if ($this->checkForInteractiveContent($lesson['description'])) {
+                    $courseFeatures->interactive = true;
+                }
+            }
+
             if (!empty($lesson['resources'])) {
                 foreach ($lesson['resources'] as $resource) {
                     if ($resource['slides_count']) {
@@ -233,6 +239,19 @@ class Courses
         }
 
         return $courseFeatures;
+    }
+
+    /**
+     * @param $content
+     *
+     * @return bool
+     */
+    private function checkForInteractiveContent($content)
+    {
+        if (strpos($content, 'h5p/embed/') > 0) {
+            return true;
+        }
+        return false;
     }
 
     public static function create(ApiClient $apiClient)
