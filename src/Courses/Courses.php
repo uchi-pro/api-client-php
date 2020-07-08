@@ -219,12 +219,14 @@ class Courses
 
                     if (!$courseFeatures->interactive) {
                         $resourcesResponseData = $this->apiClient->request("/resources/{$resource['id']}/contents");
-                        foreach ($resourcesResponseData['contents'] as $content) {
-                            $contentResponseData = $this->apiClient->request(
-                              "/resources/{$resource['id']}/contents/{$content['id']}"
-                            );
-                            if (strpos($contentResponseData['content']['body'], 'h5p/embed/') > 0) {
-                                $courseFeatures->interactive = true;
+                        if (!empty($resourcesResponseData['contents'])) {
+                            foreach ($resourcesResponseData['contents'] as $content) {
+                                $contentResponseData = $this->apiClient->request(
+                                  "/resources/{$resource['id']}/contents/{$content['id']}"
+                                );
+                                if ($this->checkForInteractiveContent($contentResponseData['content']['body'])) {
+                                    $courseFeatures->interactive = true;
+                                }
                             }
                         }
                     }
