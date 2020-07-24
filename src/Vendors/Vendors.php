@@ -53,7 +53,7 @@ class Vendors
         $limits->leadsEventsAvailable = !empty($responseData['vendor']['limits']['leads_events_available']);
         $limits->groupsWritsAvailable = !empty($responseData['vendor']['limits']['groups_writs_available']);
         $limits->billingDocsAvailable = !!empty($responseData['vendor']['limits']['billing_docs_disabled']);
-        $limits->infobaseAvailable = !empty($responseData['vendor']['limits']['infobase_enabled']);
+        $limits->infobaseAvailable = !empty($responseData['vendor']['limits']['infobase_available']);
 
         try {
             $responseData = $this->apiClient->request("/shop/{$vendor->id}/settings");
