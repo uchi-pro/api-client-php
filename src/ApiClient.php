@@ -191,6 +191,15 @@ class ApiClient
         return DateTimeImmutable::createFromFormat('Y-m-d\TH:i:sP', $string, new DateTimeZone('UTC'));
     }
 
+    public function parseId($array, $key)
+    {
+        $id = $array[$key] ?? null;
+        if ($id === self::EMPTY_UUID_VALUE) {
+            $id = null;
+        }
+        return $id;
+    }
+
     /**
      * @return Users
      */

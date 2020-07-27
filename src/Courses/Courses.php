@@ -100,21 +100,12 @@ class Courses
 
         foreach ($list as $item) {
             $course = new Course();
-            $course->id = $item['uuid'] ?? null;
-            if ($course->id === $this->apiClient::EMPTY_UUID_VALUE) {
-                $course->id = null;
-            }
-            $course->gid = $item['guid'] ?? null;
-            if ($course->gid === $this->apiClient::EMPTY_UUID_VALUE) {
-                $course->gid = null;
-            }
+            $course->id = $this->apiClient->parseId($item, 'uuid');
+            $course->gid = $this->apiClient->parseId($item, 'guid');
             $course->createdAt = $this->apiClient->parseDate($item['created_at']);
             $course->title = $item['title'] ?? null;
             $course->description = $item['description'] ?? null;
-            $course->parentId = $item['parent_uuid'] ?? null;
-            if ($course->parentId === $this->apiClient::EMPTY_UUID_VALUE) {
-                $course->parentId = null;
-            }
+            $course->parentId = $this->apiClient->parseId($item, 'parent_uuid');
             $course->type = $this->parseCourseType($item);
             $course->hours = $item['hours'] ?? null;
             $course->price = $item['price'] ?? null;
