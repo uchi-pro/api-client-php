@@ -3,6 +3,7 @@
 namespace UchiPro\Courses;
 
 use DateTimeImmutable;
+use UchiPro\Users\User;
 
 class Course
 {
@@ -20,6 +21,11 @@ class Course
      * @var DateTimeImmutable
      */
     public $createdAt;
+
+    /**
+     * @var User
+     */
+    public $author;
 
     /**
      * @var string

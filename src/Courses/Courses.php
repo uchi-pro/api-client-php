@@ -9,6 +9,7 @@ use UchiPro\Courses\AcademicPlan\ItemType;
 use UchiPro\Courses\AcademicPlan\Plan;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Exception\RequestException;
+use UchiPro\Users\User;
 use UchiPro\Vendors\Vendor;
 
 class Courses
@@ -127,6 +128,7 @@ class Courses
         $course->id = $this->apiClient->parseId($data, 'uuid');
         $course->gid = $this->apiClient->parseId($data, 'guid');
         $course->createdAt = $this->apiClient->parseDate($data['created_at']);
+        $course->author = $this->parseCourseAuthor($data);
         $course->title = $data['title'] ?? null;
         $course->description = $data['description'] ?? null;
         $course->parentId = $this->apiClient->parseId($data, 'parent_uuid');
@@ -155,6 +157,24 @@ class Courses
         $courseType->title = $item['type']['title'] ?? null;
 
         return $courseType;
+    }
+
+    /**
+     * @param array $item
+     *
+     * @return User|null
+     */
+    private function parseCourseAuthor(array $item)
+    {
+        $user = null;
+
+        if (!empty($item['author_uuid'])) {
+            $user = new User();
+            $user->id = $this->apiClient->parseId($item, 'author_uuid');
+            $user->name = $item['author_title'] ?? null;
+        }
+
+        return $user;
     }
 
     /**
