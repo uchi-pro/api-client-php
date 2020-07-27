@@ -94,27 +94,17 @@ class Courses
         return $uri;
     }
 
+    /**
+     * @param array $list
+     *
+     * @return array|Course[]
+     */
     private function parseCourses(array $list)
     {
         $courses = [];
 
         foreach ($list as $item) {
-            $course = new Course();
-            $course->id = $this->apiClient->parseId($item, 'uuid');
-            $course->gid = $this->apiClient->parseId($item, 'guid');
-            $course->createdAt = $this->apiClient->parseDate($item['created_at']);
-            $course->title = $item['title'] ?? null;
-            $course->description = $item['description'] ?? null;
-            $course->parentId = $this->apiClient->parseId($item, 'parent_uuid');
-            $course->type = $this->parseCourseType($item);
-            $course->hours = $item['hours'] ?? null;
-            $course->price = $item['price'] ?? null;
-            $course->depth = isset($item['depth']) ? (int)$item['depth'] : 0;
-            $course->childrenCount = isset($item['children_count']) ? (int)$item['children_count'] : 0;
-            $course->lessonsCount = isset($item['lessons_count']) ? (int)$item['lessons_count'] : 0;
-            $course->academicPlan = $this->parseAcademicPlan($item);
-
-            $courses[] = $course;
+            $courses[] = $this->parseCourse($item);
 
             if (!empty($item['children'])) {
                 foreach ($this->parseCourses($item['children']) as $childCourse) {
@@ -124,6 +114,30 @@ class Courses
         }
 
         return $courses;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return Course
+     */
+    private function parseCourse($data)
+    {
+        $course = new Course();
+        $course->id = $this->apiClient->parseId($data, 'uuid');
+        $course->gid = $this->apiClient->parseId($data, 'guid');
+        $course->createdAt = $this->apiClient->parseDate($data['created_at']);
+        $course->title = $data['title'] ?? null;
+        $course->description = $data['description'] ?? null;
+        $course->parentId = $this->apiClient->parseId($data, 'parent_uuid');
+        $course->type = $this->parseCourseType($data);
+        $course->hours = $data['hours'] ?? null;
+        $course->price = $data['price'] ?? null;
+        $course->depth = isset($data['depth']) ? (int)$data['depth'] : 0;
+        $course->childrenCount = isset($data['children_count']) ? (int)$data['children_count'] : 0;
+        $course->lessonsCount = isset($data['lessons_count']) ? (int)$data['lessons_count'] : 0;
+        $course->academicPlan = $this->parseAcademicPlan($data);
+        return $course;
     }
 
     /**
