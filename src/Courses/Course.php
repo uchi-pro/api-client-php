@@ -40,6 +40,11 @@ class Course
     /**
      * @var string
      */
+    public $comments;
+
+    /**
+     * @var string
+     */
     public $parentId;
 
     /**

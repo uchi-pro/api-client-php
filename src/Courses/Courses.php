@@ -131,6 +131,7 @@ class Courses
         $course->author = $this->parseCourseAuthor($data);
         $course->title = $data['title'] ?? null;
         $course->description = $data['description'] ?? null;
+        $course->comments = $data['comments'] ?? null;
         $course->parentId = $this->apiClient->parseId($data, 'parent_uuid');
         $course->type = $this->parseCourseType($data);
         $course->hours = $data['hours'] ?? null;
