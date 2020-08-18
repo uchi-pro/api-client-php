@@ -3,6 +3,8 @@
 use PHPUnit\Framework\TestCase;
 use UchiPro\ApiClient;
 use UchiPro\Identity;
+use UchiPro\Orders\Criteria as OrdersCriteria;
+use UchiPro\Orders\Status;
 use UchiPro\Sessions\Criteria as SessionsCriteria;
 use UchiPro\Sessions\Session;
 
@@ -118,5 +120,25 @@ class OrdersTest extends TestCase
           SessionsCriteria::STATUS_ACCEPTED => function (Session $session) { return $session->isAccepted(); },
           SessionsCriteria::STATUS_REJECTED => function (Session $session) { return $session->isRejected(); },
         ];
+    }
+
+    public function testChangeOrderStatus()
+    {
+        $ordersApi = $this->getApiClient()->orders();
+        $orders = $ordersApi->findBy();
+
+        if (empty($orders)) {
+            $this->markTestSkipped('Не найдено курсов с сессиями.');
+        }
+
+        $order = $orders[0];
+
+        $newStatus = $order->status !== OrdersCriteria::STATUS_PENDING
+          ? Status::create(0, OrdersCriteria::STATUS_PENDING, '')
+          : Status::create(0, OrdersCriteria::STATUS_TRAINING, '');
+
+        $changedStatus = $ordersApi->changeOrderStatus($order, $newStatus);
+
+        $this->assertTrue($newStatus->code === $changedStatus->code);
     }
 }

@@ -179,6 +179,23 @@ class Orders
         return $listeners;
     }
 
+    public function changeOrderStatus(Order $order, Status $newStatus)
+    {
+        $uri = "/orders/{$order->id}/status";
+        $params = ['status' => $newStatus->code];
+        $responseData = $this->apiClient->request($uri, $params);
+
+        if (empty($responseData['status']['code'])) {
+            throw new BadResponseException('Не удалось изменить статус заявки.');
+        }
+
+        return Status::create(
+          $responseData['status']['id'],
+          $responseData['status']['code'],
+          $responseData['status']['title']
+        );
+    }
+
     /**
      * @param ApiClient $apiClient
      *
