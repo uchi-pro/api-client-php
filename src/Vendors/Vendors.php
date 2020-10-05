@@ -37,23 +37,26 @@ class Vendors
      */
     public function getVendorLimits(Vendor $vendor)
     {
-        $responseData = $this->apiClient->request("/vendors/{$vendor->id}");
+        $responseData = $this->apiClient->request("/vendors/{$vendor->id}/limits");
+        if (empty($responseData['limits']) && is_array($responseData['vendor'])) {
+          $responseData['limits'] = $responseData['vendor']['limits'];
+        }
 
         $limits = new Limits();
-        $limits->maxCustomCoursesFilesize = !empty($responseData['vendor']['limits']['max_custom_courses_filesize'])
-            ? (int)$responseData['vendor']['limits']['max_custom_courses_filesize']
+        $limits->maxCustomCoursesFilesize = !empty($responseData['limits']['max_custom_courses_filesize'])
+            ? (int)$responseData['limits']['max_custom_courses_filesize']
             : null;
-        $limits->customCoursesFilesize = !empty($responseData['vendor']['limits']['custom_courses_filesize'])
-            ? (int)$responseData['vendor']['limits']['custom_courses_filesize']
+        $limits->customCoursesFilesize = !empty($responseData['limits']['custom_courses_filesize'])
+            ? (int)$responseData['limits']['custom_courses_filesize']
             : null;
-        $limits->totalFilesize = !empty($responseData['vendor']['limits']['total_filesize'])
-            ? (int)$responseData['vendor']['limits']['total_filesize']
+        $limits->totalFilesize = !empty($responseData['limits']['total_filesize'])
+            ? (int)$responseData['limits']['total_filesize']
             : null;
-        $limits->meetingsAvailable = !empty($responseData['vendor']['limits']['meetings_available']);
-        $limits->leadsEventsAvailable = !empty($responseData['vendor']['limits']['leads_events_available']);
-        $limits->groupsWritsAvailable = !empty($responseData['vendor']['limits']['groups_writs_available']);
-        $limits->billingDocsAvailable = !!empty($responseData['vendor']['limits']['billing_docs_disabled']);
-        $limits->infobaseAvailable = !empty($responseData['vendor']['limits']['infobase_available']);
+        $limits->meetingsAvailable = !empty($responseData['limits']['meetings_available']);
+        $limits->leadsEventsAvailable = !empty($responseData['limits']['leads_events_available']);
+        $limits->groupsWritsAvailable = !empty($responseData['limits']['groups_writs_available']);
+        $limits->billingDocsAvailable = !!empty($responseData['limits']['billing_docs_disabled']);
+        $limits->infobaseAvailable = !empty($responseData['limits']['infobase_available']);
 
         try {
             $responseData = $this->apiClient->request("/shop/{$vendor->id}/settings");
