@@ -92,7 +92,7 @@ class Sessions
     {
         $uri = '/training/sessions';
 
-        $uriQuery = ['vendor' => 0];
+        $uriQuery = ['vendor' => 0, 'active_orders_only' => 0];
         if ($criteria) {
             if (!empty($criteria->order)) {
                 $uriQuery['order'] = $criteria->order->id;
