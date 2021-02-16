@@ -72,12 +72,10 @@ class VendorsTest extends TestCase
 
         $vendor = $vendors[0];
         $limits = $vendorsApi->getVendorLimits($vendor);
+
         $this->assertInstanceOf(Limits::class, $limits);
-
-        if (property_exists($limits, 'totalFilesize') && empty($limits->totalFilesize)) {
-            $this->markTestSkipped('У вендора нет файлов.');
-        }
-
+        $this->assertNotNull($limits->totalFilesize);
+        $this->assertNotNull($limits->customCoursesFilesize);
         $this->assertGreaterThanOrEqual($limits->totalFilesize, $limits->customCoursesFilesize);
     }
 

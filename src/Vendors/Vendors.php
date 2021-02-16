@@ -43,13 +43,13 @@ class Vendors
         }
 
         $limits = new Limits();
-        $limits->maxCustomCoursesFilesize = !empty($responseData['limits']['max_custom_courses_filesize'])
+        $limits->maxCustomCoursesFilesize = isset($responseData['limits']['max_custom_courses_filesize'])
             ? (int)$responseData['limits']['max_custom_courses_filesize']
             : null;
-        $limits->customCoursesFilesize = !empty($responseData['limits']['custom_courses_filesize'])
+        $limits->customCoursesFilesize = isset($responseData['limits']['custom_courses_filesize'])
             ? (int)$responseData['limits']['custom_courses_filesize']
             : null;
-        $limits->totalFilesize = !empty($responseData['limits']['total_filesize'])
+        $limits->totalFilesize = isset($responseData['limits']['total_filesize'])
             ? (int)$responseData['limits']['total_filesize']
             : null;
         $limits->meetingsAvailable = !empty($responseData['limits']['meetings_available']);
