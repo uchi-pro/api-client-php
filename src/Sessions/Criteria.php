@@ -3,6 +3,7 @@
 namespace UchiPro\Sessions;
 
 use UchiPro\Orders\Order;
+use UchiPro\Vendors\Vendor;
 
 class Criteria
 {
@@ -20,4 +21,9 @@ class Criteria
      * @var Order
      */
     public $order;
+
+    /**
+     * @var Vendor
+     */
+    public $vendor;
 }

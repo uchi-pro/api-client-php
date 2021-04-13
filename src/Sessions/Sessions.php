@@ -96,6 +96,13 @@ class Sessions
         if ($criteria) {
             if (!empty($criteria->order)) {
                 $uriQuery['order'] = $criteria->order->id;
+                if (!empty($criteria->order->vendor->id)) {
+                    $uriQuery['vendor'] = $criteria->order->vendor->id;
+                }
+            }
+
+            if (!empty($criteria->vendor)) {
+                $uriQuery['vendor'] = $criteria->vendor->id;
             }
 
             if (!empty($criteria->status)) {
