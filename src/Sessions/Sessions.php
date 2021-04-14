@@ -95,10 +95,7 @@ class Sessions
         $uriQuery = ['vendor' => 0, 'active_orders_only' => 0];
         if ($criteria) {
             if (!empty($criteria->order)) {
-                $uriQuery['order'] = $criteria->order->id;
-                if (!empty($criteria->order->vendor->id)) {
-                    $uriQuery['vendor'] = $criteria->order->vendor->id;
-                }
+                $uri = "/orders/{$criteria->order->id}/sessions";
             }
 
             if (!empty($criteria->vendor)) {
