@@ -171,7 +171,9 @@ class Vendors
     {
         $vendor = $this->createVendor();
         $vendor->id = $item['uuid'] ?? null;
+        $vendor->createdAt = $this->apiClient->parseDate($item['created_at']);
         $vendor->title = $item['title'] ?? null;
+        $vendor->email = $item['email'] ?? null;
         $vendor->domains = $item['domains'] ?? [];
 
         $settings = new Settings();

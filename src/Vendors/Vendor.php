@@ -2,6 +2,8 @@
 
 namespace UchiPro\Vendors;
 
+use DateTimeImmutable;
+
 class Vendor
 {
     /**
@@ -10,9 +12,19 @@ class Vendor
     public $id;
 
     /**
+     * @var DateTimeImmutable
+     */
+    public $createdAt;
+
+    /**
      * @var string
      */
     public $title;
+
+    /**
+     * @var string
+     */
+    public $email;
 
     /**
      * @var array|string[]
