@@ -53,6 +53,23 @@ class CoursesTest extends TestCase
         $this->assertTrue($hours > 0);
     }
 
+    public function testFindCourseById()
+    {
+        $coursesApi = $this->getApiClient()->courses();
+
+        $courses = $coursesApi->findBy();
+
+        if (empty($courses[0])) {
+            $this->markTestSkipped(
+              'Курс для теста не найден.'
+            );
+        }
+
+        $course = $courses[0];
+        $foundCourse = $coursesApi->findById($course->id);
+        $this->assertEquals($course->id, $foundCourse->id);
+    }
+
     public function testGetCourseFeatures()
     {
         $coursesApi = $this->getApiClient()->courses();

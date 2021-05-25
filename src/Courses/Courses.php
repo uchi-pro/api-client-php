@@ -44,6 +44,22 @@ class Courses
     }
 
     /**
+     * @param string $id
+     *
+     * @return Course|null
+     */
+    public function findById(string $id)
+    {
+        $responseData = $this->apiClient->request("/courses/{$id}");
+
+        if (empty($responseData['course']['uuid'])) {
+            return null;
+        }
+
+        return $this->parseCourse($responseData['course']);
+    }
+
+    /**
      * @param Criteria|null $query
      *
      * @return array|Course[]
