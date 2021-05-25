@@ -72,6 +72,27 @@ class Users
     }
 
     /**
+     * @param $email
+     *
+     * @return User
+     */
+    public function findListenerByEmail($email)
+    {
+        $criteria = $this->createCriteria();
+        $criteria->q = $email;
+        $criteria->role = Role::createListener();
+
+        $users = $this->findBy($criteria);
+        foreach ($users as $user) {
+            if ($user->email === $email) {
+                return $user;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @param Criteria|null $criteria
      *
      * @return array|User[]
