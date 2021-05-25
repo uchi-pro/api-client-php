@@ -58,7 +58,17 @@ class OrdersTest extends TestCase
             return;
         }
 
-        $order = $orders[0];
+        $order = null;
+        foreach ($orders as $existsOrder) {
+            if ($existsOrder->listenersCount > 0) {
+                $order = $existsOrder;
+                break;
+            }
+        }
+
+        if (empty($order)) {
+            $this->markTestSkipped('Не найдена заявка со слушателями.');
+        }
 
         $ordersApi = $this->getApiClient()->orders();
         $ordersCriteria = $ordersApi->createCriteria();
