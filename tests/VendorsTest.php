@@ -58,6 +58,9 @@ class VendorsTest extends TestCase
         $vendor = $vendors[0];
         $foundVendor = $vendorsApi->findById($vendor->id);
         $this->assertEquals($vendor->id, $foundVendor->id);
+
+        $notExistsVendor = $vendorsApi->findById("{$vendor->id}1");
+        $this->assertEmpty($notExistsVendor);
     }
 
     public function testGetVendorLimits()

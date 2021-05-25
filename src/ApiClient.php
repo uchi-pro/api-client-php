@@ -5,6 +5,7 @@ namespace UchiPro;
 use DateTimeImmutable;
 use DateTimeZone;
 use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ServerException;
 use UchiPro\Courses\Courses;
@@ -166,6 +167,10 @@ class ApiClient
                 ]);
             }
         } catch (GuzzleException $e) {
+            if ($e instanceof ClientException && $e->getCode() == '404') {
+                return json_decode($e->getResponse()->getBody()->getContents(), true);
+            }
+
             $errors = [];
             if ($e instanceof ServerException) {
                 $responseData = json_decode($e->getResponse()->getBody()->getContents(), true);

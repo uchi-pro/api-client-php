@@ -68,6 +68,9 @@ class CoursesTest extends TestCase
         $course = $courses[0];
         $foundCourse = $coursesApi->findById($course->id);
         $this->assertEquals($course->id, $foundCourse->id);
+
+        $notExistsCourse = $coursesApi->findById("{$course->id}1");
+        $this->assertEmpty($notExistsCourse);
     }
 
     public function testGetCourseFeatures()
