@@ -6,6 +6,7 @@ use UchiPro\ApiClient;
 use UchiPro\Courses\Course;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Exception\RequestException;
+use UchiPro\Users\User;
 use UchiPro\Vendors\Vendor;
 
 class Orders
@@ -117,12 +118,17 @@ class Orders
             $vendor->id = $item['vendor_uuid'] ?? null;
             $vendor->title = $item['vendor_title'] ?? null;
 
+            $contractor = new User();
+            $contractor->id = $item['contractor_uuid'] ?? null;
+            $contractor->name = $item['contractor_title'] ?? null;
+
             $order = new Order();
             $order->id = $item['uuid'] ?? null;
             $order->number = $item['number'] ?? null;
             $order->status = $item['status']['code'] ?? null;
             $order->course = $course;
             $order->vendor = $vendor;
+            $order->contractor = $contractor;
             $order->listenersCount = (int)$item['listeners_count'];
             $order->listenersFinished = (int)$item['listeners_finished'];
 

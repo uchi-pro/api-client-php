@@ -81,6 +81,7 @@ class OrdersTest extends TestCase
         if (!empty($orders[0])) {
             $order = $orders[0];
             $listeners = $ordersApi->getOrderListeners($order);
+            $this->assertTrue(!empty($order->contractor->id));
             $this->assertTrue(is_array($listeners));
             $this->assertTrue(count($listeners) > 0);
         }
