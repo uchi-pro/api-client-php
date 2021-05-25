@@ -93,6 +93,31 @@ class Users
     }
 
     /**
+     * @param User $user
+     * @param string|null $password
+     *
+     * @return User
+     */
+    public function saveUser(User $user, $password = null)
+    {
+        $formParams = [
+          'role' => $user->role->id,
+          'password' => $password,
+          'username' => $user->email,
+          'active' => 1,
+          'vendor' => $user->vendor->id,
+          'email' => $user->email,
+          'title' => $user->name,
+          'phone' => $user->phone,
+        ];
+
+        $uri = "/users/$user->id/edit?role={$user->role->id}";
+        $responseData = $this->apiClient->request($uri, $formParams);
+
+        return $this->parseUser($responseData['user']);
+    }
+
+    /**
      * @param Criteria|null $criteria
      *
      * @return array|User[]

@@ -104,4 +104,41 @@ class UsersTest extends TestCase
     {
         $this->assertTrue(Role::createGuest()->id === 'guest');
     }
+
+    public function testSaveUser()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+        $vendors = $vendorsApi->findAll();
+
+        if (empty($vendors[0])) {
+            $this->markTestSkipped('Нет ни одного вендора.');
+        }
+        $vendor = $vendors[0];
+
+        $usersApi = $this->getApiClient()->users();
+        $rand = time();
+
+        $user = $usersApi->createUser();
+        $user->id = 0;
+        $user->name = "test$rand-{$vendor->domains[0]}";
+        $user->email = "test$rand@test.ru";
+        $user->phone = "+7$rand";
+        $user->role = Role::createContractor();
+        $user->vendor = $vendor;
+
+        $password = $user->email;
+        $usersApi->saveUser($user, $password);
+
+        $criteria = $usersApi->createCriteria();
+        $criteria->q = $user->email;
+        $criteria->role = Role::createContractor();
+        $foundContractors = $usersApi->findBy($criteria);
+
+        $criteria = $usersApi->createCriteria();
+        $criteria->q = $user->email;
+        $criteria->role = Role::createListener();
+        $foundListeners = $usersApi->findBy($criteria);
+
+        $this->assertSame($foundContractors[0]->name, $foundListeners[0]->name);
+    }
 }
