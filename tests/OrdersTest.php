@@ -87,6 +87,21 @@ class OrdersTest extends TestCase
         }
     }
 
+    public function testFindOrderById()
+    {
+        $ordersApi = $this->getApiClient()->orders();
+
+        $orders = $ordersApi->findBy();
+        if (empty($orders)) {
+            $this->markTestSkipped('В СДО нет заявок.');
+        }
+
+        $existsOrder = $orders[0];
+        $foundOrder = $ordersApi->findById($existsOrder->id);
+
+        $this->assertSame($foundOrder->id, $existsOrder->id);
+    }
+
     public function testGetOrderSessions()
     {
         $ordersApi = $this->getApiClient()->orders();

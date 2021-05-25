@@ -38,6 +38,22 @@ class Orders
     }
 
     /**
+     * @param string $id
+     *
+     * @return Order|null
+     */
+    public function findById(string $id)
+    {
+        $responseData = $this->apiClient->request("/orders/{$id}");
+
+        if (empty($responseData['order']['uuid'])) {
+            return null;
+        }
+
+        return $this->parseOrder($responseData['order']);
+    }
+
+    /**
      * @param Criteria|null $criteria
      *
      * @return array|Order[]
@@ -110,32 +126,37 @@ class Orders
         $orders = [];
 
         foreach ($list as $item) {
-            $course = new Course();
-            $course->id = $item['course_uuid'] ?? null;
-            $course->title = $item['course_title'] ?? null;
-
-            $vendor = new Vendor();
-            $vendor->id = $item['vendor_uuid'] ?? null;
-            $vendor->title = $item['vendor_title'] ?? null;
-
-            $contractor = new User();
-            $contractor->id = $item['contractor_uuid'] ?? null;
-            $contractor->name = $item['contractor_title'] ?? null;
-
-            $order = new Order();
-            $order->id = $item['uuid'] ?? null;
-            $order->number = $item['number'] ?? null;
-            $order->status = $item['status']['code'] ?? null;
-            $order->course = $course;
-            $order->vendor = $vendor;
-            $order->contractor = $contractor;
-            $order->listenersCount = (int)$item['listeners_count'];
-            $order->listenersFinished = (int)$item['listeners_finished'];
-
-            $orders[] = $order;
+            $orders[] = $this->parseOrder($item);
         }
 
         return $orders;
+    }
+
+    private function parseOrder(array $item)
+    {
+        $course = new Course();
+        $course->id = $item['course_uuid'] ?? null;
+        $course->title = $item['course_title'] ?? null;
+
+        $vendor = new Vendor();
+        $vendor->id = $item['vendor_uuid'] ?? null;
+        $vendor->title = $item['vendor_title'] ?? null;
+
+        $contractor = new User();
+        $contractor->id = $item['contractor_uuid'] ?? null;
+        $contractor->name = $item['contractor_title'] ?? null;
+
+        $order = new Order();
+        $order->id = $item['uuid'] ?? null;
+        $order->number = $item['number'] ?? null;
+        $order->status = $item['status']['code'] ?? null;
+        $order->course = $course;
+        $order->vendor = $vendor;
+        $order->contractor = $contractor;
+        $order->listenersCount = (int)$item['listeners_count'];
+        $order->listenersFinished = (int)$item['listeners_finished'];
+
+        return $order;
     }
 
     /**
