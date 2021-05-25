@@ -39,6 +39,11 @@ class Order
     public $contractor;
 
     /**
+     * @var array|User[]
+     */
+    public $listeners;
+
+    /**
      * @var int
      */
     public $listenersCount;
