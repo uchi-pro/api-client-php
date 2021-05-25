@@ -223,6 +223,22 @@ class Orders
         );
     }
 
+    public function saveOrder(Order $order)
+    {
+        $formParams = [
+          'course' => $order->course->id,
+          'contractor' => $order->contractor->id,
+          'status' => $order->status,
+        ];
+        foreach ($order->listeners as $listener) {
+           $formParams['listeners'][] = $listener->id;
+        }
+
+        $responseData = $this->apiClient->request("/orders/$order->id", $formParams);
+
+        return $this->parseOrder($responseData['order']);
+    }
+
     /**
      * @param ApiClient $apiClient
      *

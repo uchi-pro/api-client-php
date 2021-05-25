@@ -167,4 +167,35 @@ class OrdersTest extends TestCase
 
         $this->assertTrue($newStatus->code === $changedStatus->code);
     }
+
+    public function testSaveOrder()
+    {
+        $ordersApi = $this->getApiClient()->orders();
+
+        $orders = $ordersApi->findBy();
+
+        if (empty($orders)) {
+            $this->markTestSkipped('Заявки не найдены.');
+        }
+
+        $originalOrder = null;
+        foreach ($orders as $existsOrder) {
+            if ($existsOrder->listenersCount > 5) {
+                $originalOrder = $existsOrder;
+            }
+        }
+
+        if (empty($originalOrder)) {
+            $this->markTestSkipped('Заявка не найдена.');
+        }
+
+        $originalOrder->listeners = $ordersApi->getOrderListeners($originalOrder);
+
+        $originalOrder->id = 0;
+        $newOrder = $ordersApi->saveOrder($originalOrder);
+
+        $this->assertNotSame($originalOrder->id, $newOrder->id);
+        $this->assertSame($originalOrder->listenersCount, $newOrder->listenersCount);
+        $this->assertSame($originalOrder->course->id, $newOrder->course->id);
+    }
 }
