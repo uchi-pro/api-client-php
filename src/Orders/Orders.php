@@ -240,6 +240,26 @@ class Orders
     }
 
     /**
+     * @param Order $order
+     * @param array $listeners
+     * @param string|null $copyTo
+     */
+    public function sendCredential(Order $order, array $listeners, $copyTo = null)
+    {
+        $formParams = [];
+
+        if (!empty($copyTo)) {
+            $formParams['send_copy_to'] = $copyTo;
+        }
+
+        foreach ($listeners as $listener) {
+            $formParams['listener'][] = $listener->id;
+        }
+
+        return $this->apiClient->request("/orders/$order->id/listeners/send-credentials", $formParams);
+    }
+
+    /**
      * @param ApiClient $apiClient
      *
      * @return static

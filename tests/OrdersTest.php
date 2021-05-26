@@ -198,4 +198,31 @@ class OrdersTest extends TestCase
         $this->assertSame($originalOrder->listenersCount, $newOrder->listenersCount);
         $this->assertSame($originalOrder->course->id, $newOrder->course->id);
     }
+
+    public function testSendCredential()
+    {
+        $ordersApi = $this->getApiClient()->orders();
+
+        $orders = $ordersApi->findBy();
+
+        if (empty($orders)) {
+            $this->markTestSkipped('Заявки не найдены.');
+        }
+
+        $order = null;
+        foreach ($orders as $existsOrder) {
+            if ($existsOrder->listenersCount > 5) {
+                $order = $existsOrder;
+            }
+        }
+
+        if (empty($order)) {
+            $this->markTestSkipped('Заявка не найдена.');
+        }
+
+        $copyTo = null;
+        $listeners = $ordersApi->getOrderListeners($order);
+        $result = $ordersApi->sendCredential($order, $listeners, $copyTo);
+        $this->assertNotEmpty($result['success']);
+    }
 }
