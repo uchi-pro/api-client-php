@@ -42,6 +42,42 @@ class UsersTest extends TestCase
         $this->assertNotEmpty($me->role->id);
     }
 
+    public function testFindById()
+    {
+        $usersApi = $this->getApiClient()->users();
+        $criteria = $usersApi->createCriteria();
+        $criteria->role = Role::createContractor();
+        $contractors = $usersApi->findBy($criteria);
+
+        if (empty($contractors)) {
+            $this->markTestSkipped('Контрагенты не найдены.');
+        }
+
+        $contractor = $contractors[0];
+
+        $foundContractor = $usersApi->findById($contractor->id);
+
+        $this->assertSame($contractor->id, $foundContractor->id);
+    }
+
+    public function testFetchUserSettings()
+    {
+        $usersApi = $this->getApiClient()->users();
+        $criteria = $usersApi->createCriteria();
+        $criteria->role = Role::createContractor();
+        $contractors = $usersApi->findBy($criteria);
+
+        foreach ($contractors as $contractor) {
+            $listener = $usersApi->fetchContractorDefaultListener($contractor);
+            if (!is_null($listener)) {
+                $this->assertNotEmpty($listener);
+                return;
+            }
+        }
+
+        $this->markTestSkipped('Контрагенты со слушателями по умолчанию не найдены.');
+    }
+
     public function testFindContratorByEmail()
     {
         $usersApi = $this->getApiClient()->users();

@@ -51,6 +51,38 @@ class Users
     }
 
     /**
+     * @param string $id
+     *
+     * @return User|null
+     */
+    public function findById(string $id)
+    {
+        $responseData = $this->apiClient->request("/users/$id");
+
+        if (empty($responseData['user']['uuid'])) {
+            return null;
+        }
+
+        return $this->parseUser($responseData['user']);
+    }
+
+    /**
+     * @param User $contractor
+     *
+     * @return User|null
+     */
+    public function fetchContractorDefaultListener(User $contractor)
+    {
+        $responseData = $this->apiClient->request("/users/$contractor->id/settings");
+
+        if (empty($responseData['settings']['default_listener'])) {
+            return null;
+        }
+
+        return $this->findById((string)$responseData['settings']['default_listener']);
+    }
+
+    /**
      * @param $email
      *
      * @return User
