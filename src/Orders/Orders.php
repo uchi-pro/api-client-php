@@ -234,7 +234,8 @@ class Orders
            $formParams['listeners'][] = $listener->id;
         }
 
-        $responseData = $this->apiClient->request("/orders/$order->id", $formParams);
+        $orderId = !empty($order->id) ? $order->id : 0;
+        $responseData = $this->apiClient->request("/orders/$orderId/edit", $formParams);
 
         return $this->parseOrder($responseData['order']);
     }
