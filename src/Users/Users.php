@@ -111,7 +111,8 @@ class Users
           'phone' => $user->phone,
         ];
 
-        $uri = "/users/$user->id/edit?role={$user->role->id}";
+        $userId = !empty($user->id) ? $user->id : 0;
+        $uri = "/users/$userId/edit?role={$user->role->id}";
         $responseData = $this->apiClient->request($uri, $formParams);
 
         return $this->parseUser($responseData['user']);
