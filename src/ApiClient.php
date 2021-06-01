@@ -145,7 +145,7 @@ class ApiClient
     }
 
     /**
-     * @param $url
+     * @param string $url
      * @param array $params
      *
      * @return array
@@ -153,7 +153,7 @@ class ApiClient
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function request($url, $params = [])
+    public function request($url, $params = []): array
     {
         try {
             if (empty($params)) {

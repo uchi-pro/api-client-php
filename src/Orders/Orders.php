@@ -243,9 +243,11 @@ class Orders
     /**
      * @param Order $order
      * @param array $listeners
-     * @param string|null $copyTo
+     * @param array $copyTo
+     *
+     * @return array
      */
-    public function sendCredential(Order $order, array $listeners, $copyTo = null)
+    public function sendCredential(Order $order, array $listeners, array $copyTo = []): array
     {
         $formParams = [];
 

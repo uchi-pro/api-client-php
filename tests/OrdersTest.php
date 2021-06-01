@@ -220,7 +220,7 @@ class OrdersTest extends TestCase
             $this->markTestSkipped('Заявка не найдена.');
         }
 
-        $copyTo = null;
+        $copyTo = [];
         $listeners = $ordersApi->getOrderListeners($order);
         $result = $ordersApi->sendCredential($order, $listeners, $copyTo);
         $this->assertNotEmpty($result['success']);
