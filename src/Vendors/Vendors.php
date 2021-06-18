@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro\Vendors;
 
 use Exception;
@@ -43,11 +45,8 @@ class Vendors
         }
 
         $limits = new Limits();
-        $limits->maxCustomCoursesFilesize = isset($responseData['limits']['max_custom_courses_filesize'])
-            ? (int)$responseData['limits']['max_custom_courses_filesize']
-            : null;
-        $limits->customCoursesFilesize = isset($responseData['limits']['custom_courses_filesize'])
-            ? (int)$responseData['limits']['custom_courses_filesize']
+        $limits->maxTotalFilesize = isset($responseData['limits']['max_total_filesize'])
+            ? (int)$responseData['limits']['max_total_filesize']
             : null;
         $limits->totalFilesize = isset($responseData['limits']['total_filesize'])
             ? (int)$responseData['limits']['total_filesize']
@@ -55,7 +54,7 @@ class Vendors
         $limits->meetingsAvailable = !empty($responseData['limits']['meetings_available']);
         $limits->leadsEventsAvailable = !empty($responseData['limits']['leads_events_available']);
         $limits->groupsWritsAvailable = !empty($responseData['limits']['groups_writs_available']);
-        $limits->billingDocsAvailable = !!empty($responseData['limits']['billing_docs_disabled']);
+        $limits->billingDocsAvailable = empty($responseData['limits']['billing_docs_disabled']);
         $limits->infobaseAvailable = !empty($responseData['limits']['infobase_available']);
 
         try {
@@ -63,7 +62,9 @@ class Vendors
             if (is_array($responseData)) {
                 $limits->shopAvailable = true;
             }
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+            // Ничего не делаем.
+        }
 
         return $limits;
     }

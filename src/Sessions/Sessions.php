@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro\Sessions;
 
 use UchiPro\ApiClient;
@@ -21,18 +23,12 @@ class Sessions
         $this->apiClient = $apiClient;
     }
 
-    /**
-     * @return Session
-     */
-    public function createSession()
+    public function createSession(): Session
     {
         return new Session();
     }
 
-    /**
-     * @return Criteria
-     */
-    public function createCriteria()
+    public function createCriteria(): Criteria
     {
         return new Criteria();
     }
@@ -45,7 +41,7 @@ class Sessions
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(Criteria $criteria = null)
+    public function findBy(Criteria $criteria = null): array
     {
         $sessions = [];
 
@@ -74,7 +70,7 @@ class Sessions
      *
      * @return array|Session[]
      */
-    public function findActiveByOrder(Order $order)
+    public function findActiveByOrder(Order $order): array
     {
         $criteria = $this->createCriteria();
         $criteria->order = $order;
@@ -88,7 +84,7 @@ class Sessions
      *
      * @return string
      */
-    private function buildUri(Criteria $criteria = null)
+    private function buildUri(Criteria $criteria = null): string
     {
         $uri = '/training/sessions';
 
@@ -103,9 +99,10 @@ class Sessions
             }
 
             if (!empty($criteria->status)) {
-                $uriQuery['status'] = is_array($criteria->status)
-                  ? array_values($criteria->status)
-                  : $criteria->status;
+                $uriQuery['status'] = array_map(
+                  function (Status $status) { return $status->code; },
+                  is_array($criteria->status) ? $criteria->status : [$criteria->status]
+                );
             }
         }
 
@@ -121,41 +118,47 @@ class Sessions
      *
      * @return array|Session[]
      */
-    private function parseSessions(array $list)
+    private function parseSessions(array $list): array
     {
         $sessions = [];
 
         foreach ($list as $item) {
-            $listener = new User();
-            $listener->id = $item['listener_uuid'] ?? null;
-            $listener->name = $item['listener_title'] ?? null;
-
-            $course = new Course();
-            $course->id = $item['course_uuid'] ?? null;
-            $course->title = $item['course_title'] ?? null;
-
-            $order = new Order();
-            $order->id = $item['order_uuid'] ?? null;
-            $order->course = $course;
-
-            $session = new Session();
-            $session->id = $item['uuid'] ?? null;
-            $session->createdAt = $this->apiClient->parseDate($item['created_at']);
-            $session->deletedAt = !empty($item['is_deleted']) ? $this->apiClient->parseDate($item['deleted_at']) : null;
-            $session->startedAt = !empty($item['is_started']) ? $this->apiClient->parseDate($item['started_at']) : null;
-            $session->skippedAt = !empty($item['is_skipped']) ? $this->apiClient->parseDate($item['skipped_at']) : null;
-            $session->acceptedAt = !empty($item['is_accepted']) ? $this->apiClient->parseDate($item['accepted_at']) : null;
-            $session->completedAt = !empty($item['is_completed']) ? $this->apiClient->parseDate($item['completed_at']) : null;
-            $session->status = $item['status']['code'] ?? null;
-            $session->listener = $listener;
-            $session->order = $order;
-            $sessions[] = $session;
+            $sessions[] = $this->parseSession($item);
         }
 
         return $sessions;
     }
 
-    public static function create(ApiClient $apiClient)
+    private function parseSession(array $data): Session
+    {
+        $listener = new User();
+        $listener->id = $data['listener_uuid'] ?? null;
+        $listener->name = $data['listener_title'] ?? null;
+
+        $course = new Course();
+        $course->id = $data['course_uuid'] ?? null;
+        $course->title = $data['course_title'] ?? null;
+
+        $order = new Order();
+        $order->id = $data['order_uuid'] ?? null;
+        $order->course = $course;
+
+        $session = new Session();
+        $session->id = $data['uuid'] ?? null;
+        $session->createdAt = $this->apiClient->parseDate($data['created_at']);
+        $session->deletedAt = !empty($data['is_deleted']) ? $this->apiClient->parseDate($data['deleted_at']) : null;
+        $session->startedAt = !empty($data['is_started']) ? $this->apiClient->parseDate($data['started_at']) : null;
+        $session->skippedAt = !empty($data['is_skipped']) ? $this->apiClient->parseDate($data['skipped_at']) : null;
+        $session->acceptedAt = !empty($data['is_accepted']) ? $this->apiClient->parseDate($data['accepted_at']) : null;
+        $session->completedAt = !empty($data['is_completed']) ? $this->apiClient->parseDate($data['completed_at']) : null;
+        $session->status = Status::create($data['status']['code'], $data['status']['title']);
+        $session->listener = $listener;
+        $session->order = $order;
+
+        return $session;
+    }
+
+    public static function create(ApiClient $apiClient): Sessions
     {
         return new static($apiClient);
     }

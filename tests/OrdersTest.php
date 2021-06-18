@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\TestCase;
 use UchiPro\ApiClient;
 use UchiPro\Identity;
-use UchiPro\Orders\Criteria as OrdersCriteria;
+use UchiPro\Orders\Order;
 use UchiPro\Orders\Status;
-use UchiPro\Sessions\Criteria as SessionsCriteria;
 use UchiPro\Sessions\Session;
 
 class OrdersTest extends TestCase
@@ -22,32 +23,45 @@ class OrdersTest extends TestCase
         $password = getenv('UCHIPRO_PASSWORD');
         $accessToken = getenv('UCHIPRO_ACCESS_TOKEN');
 
-        if (!empty($accessToken)) {
-            $this->identity = Identity::createByAccessToken($url, $accessToken);
-        } else {
-            $this->identity = Identity::createByLogin($url, $login, $password);
-        }
+        $this->identity = !empty($accessToken)
+          ? Identity::createByAccessToken($url, $accessToken)
+          : Identity::createByLogin($url, $login, $password);
     }
 
-    /**
-     * @return ApiClient
-     */
-    public function getApiClient()
+    public function getApiClient(): ApiClient
     {
         return ApiClient::create($this->identity);
     }
 
-    public function testGetOrders()
+    public function testCreateOrder(): void
+    {
+        $order = $this->getApiClient()->orders()->createOrder();
+        $this->assertInstanceOf(Order::class, $order);
+    }
+
+    public function testCreateSession(): void
+    {
+        $session = $this->getApiClient()->sessions()->createSession();
+        $this->assertInstanceOf(Session::class, $session);
+    }
+
+    public function testCreateOrderStatus()
+    {
+        $status = Status::createPending();
+        $this->assertTrue($status->isPending());
+    }
+
+    public function testGetOrders(): void
     {
         $ordersApi = $this->getApiClient()->orders();
         $criteria = $ordersApi->createCriteria();
-        $criteria->status = $criteria::STATUS_COMPLETED;
+        $criteria->status = Status::createCompleted();
         $orders = $this->getApiClient()->orders()->findBy($criteria);
 
         $this->assertTrue(is_array($orders));
     }
 
-    public function testGetOrder()
+    public function testGetOrder(): void
     {
         $ordersApi = $this->getApiClient()->orders();
         $orders = $ordersApi->findBy();
@@ -84,10 +98,11 @@ class OrdersTest extends TestCase
             $this->assertTrue(!empty($order->contractor->id));
             $this->assertTrue(is_array($listeners));
             $this->assertTrue(count($listeners) > 0);
+            $this->assertInstanceOf(Status::class, $order->status);
         }
     }
 
-    public function testFindOrderById()
+    public function testFindOrderById(): void
     {
         $ordersApi = $this->getApiClient()->orders();
 
@@ -102,53 +117,7 @@ class OrdersTest extends TestCase
         $this->assertSame($foundOrder->id, $existsOrder->id);
     }
 
-    public function testGetOrderSessions()
-    {
-        $ordersApi = $this->getApiClient()->orders();
-        $ordersCriteria = $ordersApi->createCriteria();
-        $ordersCriteria->withFullAcceptedOnly = true;
-        $orders = $ordersApi->findBy($ordersCriteria);
-
-        if (empty($orders)) {
-            $this->markTestSkipped('Не найдено курсов с сессиями.');
-        }
-
-        $order = $orders[0];
-
-        $sessionsApi = $this->getApiClient()->sessions();
-        $sessionsCriteria = $sessionsApi->createCriteria();
-        $sessionsCriteria->order = $order;
-        $sessions = $sessionsApi->findBy($sessionsCriteria);
-        $this->assertTrue(is_array($sessions));
-
-        $sessions = $sessionsApi->findActiveByOrder($order);
-        foreach ($sessions as $session) {
-            $this->assertTrue($session->isActive(), 'Найденная сессия не активна.');
-        }
-
-        foreach ($this->getSessionsAvailableStatuses() as $status => $checkFunction) {
-            $sessionsApi = $this->getApiClient()->sessions();
-            $sessionsCriteria = $sessionsApi->createCriteria();
-            $sessionsCriteria->status = $status;
-            $sessions = $sessionsApi->findBy($sessionsCriteria);
-            if (!empty($sessions[0])) {
-                $session = $sessions[0];
-                $this->assertTrue($checkFunction($session), "Статус найденной сессии {$session->status} (id: {$session->id}) не соответсвует искомому {$status}.");
-            }
-        }
-    }
-
-    private function getSessionsAvailableStatuses(): array
-    {
-        return [
-          SessionsCriteria::STATUS_STARTED => function (Session $session) { return $session->isStarted(); },
-          SessionsCriteria::STATUS_COMPLETED => function (Session $session) { return $session->isCompleted(); },
-          SessionsCriteria::STATUS_ACCEPTED => function (Session $session) { return $session->isAccepted(); },
-          SessionsCriteria::STATUS_REJECTED => function (Session $session) { return $session->isRejected(); },
-        ];
-    }
-
-    public function testChangeOrderStatus()
+    public function testChangeOrderStatus(): void
     {
         $ordersApi = $this->getApiClient()->orders();
         $orders = $ordersApi->findBy();
@@ -159,16 +128,16 @@ class OrdersTest extends TestCase
 
         $order = $orders[0];
 
-        $newStatus = $order->status !== OrdersCriteria::STATUS_PENDING
-          ? Status::create(0, OrdersCriteria::STATUS_PENDING, '')
-          : Status::create(0, OrdersCriteria::STATUS_TRAINING, '');
+        $newStatus = !$order->status->isPending()
+          ? Status::createPending()
+          : Status::createTraining();
 
         $changedStatus = $ordersApi->changeOrderStatus($order, $newStatus);
 
         $this->assertTrue($newStatus->code === $changedStatus->code);
     }
 
-    public function testSaveOrder()
+    public function testSaveOrder(): void
     {
         $ordersApi = $this->getApiClient()->orders();
 
@@ -199,7 +168,7 @@ class OrdersTest extends TestCase
         $this->assertSame($originalOrder->course->id, $newOrder->course->id);
     }
 
-    public function testSendCredential()
+    public function testSendCredential(): void
     {
         $ordersApi = $this->getApiClient()->orders();
 

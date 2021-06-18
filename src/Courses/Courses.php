@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro\Courses;
 
 use Exception;
@@ -12,7 +14,7 @@ use UchiPro\Exception\RequestException;
 use UchiPro\Users\User;
 use UchiPro\Vendors\Vendor;
 
-class Courses
+final class Courses
 {
     /**
      * @var ApiClient
@@ -24,33 +26,19 @@ class Courses
         $this->apiClient = $apiClient;
     }
 
-    /**
-     * @param null $id
-     * @param null $title
-     *
-     * @return Course
-     */
-    public function createCourse($id = null, $title = null)
+    public function createCourse(?string $id = null, ?string $title = null): Course
     {
         return Course::create($id, $title);
     }
 
-    /**
-     * @return Criteria
-     */
-    public function createCriteria()
+    public function createCriteria(): Criteria
     {
         return new Criteria();
     }
 
-    /**
-     * @param string $id
-     *
-     * @return Course|null
-     */
-    public function findById(string $id)
+    public function findById(string $id): ?Course
     {
-        $responseData = $this->apiClient->request("/courses/{$id}");
+        $responseData = $this->apiClient->request("/courses/$id");
 
         if (empty($responseData['course']['uuid'])) {
             return null;
@@ -67,7 +55,7 @@ class Courses
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(Criteria $query = null)
+    public function findBy(?Criteria $query = null): array
     {
         $courses = [];
 
@@ -85,12 +73,7 @@ class Courses
         return $courses;
     }
 
-    /**
-     * @param Criteria|null $criteria
-     *
-     * @return string
-     */
-    private function buildUri(Criteria $criteria = null)
+    private function buildUri(?Criteria $criteria): string
     {
         $uri = '/courses?_tree=1';
 
@@ -104,7 +87,7 @@ class Courses
             }
 
             if (!empty($criteria->gid)) {
-                $uri = "&guid={$criteria->gid}";
+                $uri = "&guid=$criteria->gid";
             }
         }
 
@@ -116,7 +99,7 @@ class Courses
      *
      * @return array|Course[]
      */
-    private function parseCourses(array $list)
+    private function parseCourses(array $list): array
     {
         $courses = [];
 
@@ -133,12 +116,7 @@ class Courses
         return $courses;
     }
 
-    /**
-     * @param array $data
-     *
-     * @return Course
-     */
-    private function parseCourse($data)
+    private function parseCourse(array $data): Course
     {
         $course = new Course();
         $course->id = $this->apiClient->parseId($data, 'uuid');
@@ -159,53 +137,43 @@ class Courses
         return $course;
     }
 
-    /**
-     * @param array $item
-     *
-     * @return CourseType
-     */
-    private function parseCourseType(array $item)
+    private function parseCourseType(array $data): CourseType
     {
         $courseType = new CourseType();
-        $courseType->id = $item['type']['uuid'] ?? null;
+        $courseType->id = $data['type']['uuid'] ?? null;
         if ($courseType->id === $this->apiClient::EMPTY_UUID_VALUE) {
             $courseType->id = null;
         }
-        $courseType->title = $item['type']['title'] ?? null;
+        $courseType->title = $data['type']['title'] ?? null;
 
         return $courseType;
     }
 
-    /**
-     * @param array $item
-     *
-     * @return User|null
-     */
-    private function parseCourseAuthor(array $item)
+    private function parseCourseAuthor(array $data): User
     {
         $user = null;
 
-        if (!empty($item['author_uuid'])) {
+        if (!empty($data['author_uuid'])) {
             $user = new User();
-            $user->id = $this->apiClient->parseId($item, 'author_uuid');
-            $user->name = $item['author_title'] ?? null;
+            $user->id = $this->apiClient->parseId($data, 'author_uuid');
+            $user->name = $data['author_title'] ?? null;
         }
 
         return $user;
     }
 
     /**
-     * @param array $item
+     * @param array $data
      *
      * @return Plan|null
      */
-    private function parseAcademicPlan(array $item)
+    private function parseAcademicPlan(array $data): ?Plan
     {
         $planItems = [];
 
-        if (!empty($item['settings']['academic_plan'])) {
+        if (!empty($data['settings']['academic_plan'])) {
             try {
-                $json = json_decode($item['settings']['academic_plan'], true);
+                $json = json_decode($data['settings']['academic_plan'], true);
                 if (is_array($json)) {
                     foreach ($json as $jsonItem) {
                         $itemType = new ItemType();
@@ -220,7 +188,9 @@ class Courses
                         $planItems[] = $planTtem;
                     }
                 }
-            } catch (Exception $e) {}
+            } catch (Exception $e) {
+                // Ничего не делать.
+            }
         }
 
         if (empty($planItems)) {
@@ -233,64 +203,67 @@ class Courses
         return $academicPlan;
     }
 
-    /**
-     * @param Course $course
-     *
-     * @return CourseFeatures
-     */
-    public function getCourseFeatures(Course $course)
+    public function getCourseFeatures(Course $course): CourseFeatures
     {
         $courseFeatures = new CourseFeatures();
 
-        $lessonsResponseData = $this->apiClient->request("/courses/{$course->id}/lessons");
-        if (!empty($lessonsResponseData['lessons'])) {
-            foreach ($lessonsResponseData['lessons'] as $lesson) {
-                if (!$courseFeatures->interactive && $this->checkForInteractiveContent($lesson['description'])) {
-                    $courseFeatures->interactive = true;
-                }
+        $lessonsResponseData = $this->apiClient->request("/courses/$course->id/lessons");
+        if (empty($lessonsResponseData['lessons']) || !is_array($lessonsResponseData['lessons'])) {
+            return $courseFeatures;
+        }
 
-                if (!empty($lesson['resources'])) {
-                    foreach ($lesson['resources'] as $resource) {
-                        if ($resource['slides_count']) {
-                            $courseFeatures->slides = true;
-                        }
-                        if ($resource['videos_count']) {
-                            $courseFeatures->video = true;
-                        }
-
-                        if (!$courseFeatures->interactive) {
-                            $resourcesResponseData = $this->apiClient->request("/resources/{$resource['id']}/contents");
-                            if (!empty($resourcesResponseData['contents'])) {
-                                foreach ($resourcesResponseData['contents'] as $content) {
-                                    $contentResponseData = $this->apiClient->request(
-                                      "/resources/{$resource['id']}/contents/{$content['id']}"
-                                    );
-                                    if ($this->checkForInteractiveContent($contentResponseData['content']['body'])) {
-                                        $courseFeatures->interactive = true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if ($lesson['type'] === 'quiz') {
-                    $courseFeatures->testing = true;
-                }
-                if ($lesson['type'] === 'essay') {
-                    $courseFeatures->practice = true;
-                }
-            }
+        foreach ($lessonsResponseData['lessons'] as $lesson) {
+            $this->extractLessonFeatures($lesson, $courseFeatures);
         }
 
         return $courseFeatures;
     }
 
-    /**
-     * @param $content
-     *
-     * @return bool
-     */
-    private function checkForInteractiveContent($content)
+    private function extractLessonFeatures(array $lesson, CourseFeatures $courseFeatures)
+    {
+        if (!$courseFeatures->interactive && $this->checkForInteractiveContent($lesson['description'])) {
+            $courseFeatures->interactive = true;
+        }
+
+        if ($lesson['type'] === 'quiz') {
+            $courseFeatures->testing = true;
+        }
+        if ($lesson['type'] === 'essay') {
+            $courseFeatures->practice = true;
+        }
+
+        if (!empty($lesson['resources']) && is_array($lesson['resources'])) {
+            foreach ($lesson['resources'] as $resource) {
+                $this->extractResourceFeatures($resource, $courseFeatures);
+            }
+        }
+    }
+
+    private function extractResourceFeatures(array $resource, CourseFeatures $courseFeatures)
+    {
+        if ($resource['slides_count']) {
+            $courseFeatures->slides = true;
+        }
+        if ($resource['videos_count']) {
+            $courseFeatures->video = true;
+        }
+
+        if (!$courseFeatures->interactive) {
+            $resourcesResponseData = $this->apiClient->request("/resources/{$resource['id']}/contents");
+            if (!empty($resourcesResponseData['contents'])) {
+                foreach ($resourcesResponseData['contents'] as $content) {
+                    $contentResponseData = $this->apiClient->request(
+                      "/resources/{$resource['id']}/contents/{$content['id']}"
+                    );
+                    if ($this->checkForInteractiveContent($contentResponseData['content']['body'])) {
+                        $courseFeatures->interactive = true;
+                    }
+                }
+            }
+        }
+    }
+
+    private function checkForInteractiveContent(string $content): bool
     {
         if (strpos($content, 'h5p/embed/') > 0) {
             return true;
@@ -298,8 +271,8 @@ class Courses
         return false;
     }
 
-    public static function create(ApiClient $apiClient)
+    public static function create(ApiClient $apiClient): Courses
     {
-        return new static($apiClient);
+        return new self($apiClient);
     }
 }

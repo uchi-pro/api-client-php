@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\TestCase;
 use UchiPro\ApiClient;
 use UchiPro\Courses\Course;
@@ -20,17 +22,12 @@ class LeadsTest extends TestCase
         $password = getenv('UCHIPRO_PASSWORD');
         $accessToken = getenv('UCHIPRO_ACCESS_TOKEN');
 
-        if (!empty($accessToken)) {
-            $this->identity = Identity::createByAccessToken($url, $accessToken);
-        } else {
-            $this->identity = Identity::createByLogin($url, $login, $password);
-        }
+        $this->identity = !empty($accessToken)
+          ? Identity::createByAccessToken($url, $accessToken)
+          : Identity::createByLogin($url, $login, $password);
     }
 
-    /**
-     * @return ApiClient
-     */
-    public function getApiClient()
+    public function getApiClient(): ApiClient
     {
         return ApiClient::create($this->identity);
     }
@@ -42,7 +39,7 @@ class LeadsTest extends TestCase
         $stamp = date('YmdHms');
 
         $lead = $leadsApi->createLead();
-        $lead->email = "u{$stamp}@uchi.pro";
+        $lead->email = "u$stamp@uchi.pro";
 
         $lead = $leadsApi->save($lead);
         $this->assertNotEmpty($lead->id);
@@ -57,10 +54,10 @@ class LeadsTest extends TestCase
         $stamp = date('YmdHms');
 
         $lead = $leadsApi->createLead();
-        $lead->number = "{$stamp}";
-        $lead->contactPerson = "Гражданин {$stamp}";
-        $lead->email = "u{$stamp}@uchi.pro";
-        $lead->phone = "+7{$stamp}";
+        $lead->number = "$stamp";
+        $lead->contactPerson = "Гражданин $stamp";
+        $lead->email = "u$stamp@uchi.pro";
+        $lead->phone = "+7$stamp";
         $lead->courses = $this->selectMyCoursesForLead($me);
 
         $mainComment = $leadsApi->createComment(null, 'Первый комментарий.');
@@ -77,7 +74,7 @@ class LeadsTest extends TestCase
      *
      * @return array|Course[]
      */
-    private function selectMyCoursesForLead(User $me)
+    private function selectMyCoursesForLead(User $me): array
     {
         $coursesApi = $this->getApiClient()->courses();
         $courses = [];

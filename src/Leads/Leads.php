@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro\Leads;
 
 use UchiPro\ApiClient;
 use UchiPro\Courses\Course;
 
-class Leads
+final class Leads
 {
     /**
      * @var ApiClient
@@ -17,32 +19,17 @@ class Leads
         $this->apiClient = $apiClient;
     }
 
-    /**
-     * @return Lead
-     */
-    public function createLead()
+    public function createLead(): Lead
     {
         return new Lead();
     }
 
-    /**
-     * @param string|null $id
-     * @param string|null $text
-     *
-     * @return Comment
-     */
-    public function createComment($id = null, $text = null)
+    public function createComment(string $id = null, string $text = null): Comment
     {
         return Comment::create($id, $text);
     }
 
-    /**
-     * @param Lead $lead
-     * @param Comment $comment
-     *
-     * @return Lead
-     */
-    public function save(Lead $lead, Comment $comment = null)
+    public function save(Lead $lead, Comment $comment = null): Lead
     {
         $params = [
           'number' => $lead->number,
@@ -69,9 +56,6 @@ class Leads
 
         if (isset($responseData['lead']['uuid'])) {
             $lead->id = $responseData['lead']['uuid'] ?? null;
-        } else if (isset($responseData['uuid'])) {
-            // @todo Устаревшее -- после обновления убрать.
-            $lead->id = $responseData['uuid'] ?? null;
         }
 
         return $lead;
@@ -83,12 +67,12 @@ class Leads
      *
      * @return Comment
      */
-    public function saveLeadComment(Lead $lead, Comment $comment)
+    public function saveLeadComment(Lead $lead, Comment $comment): Comment
     {
         $params = [
             'comments' => $comment->text,
         ];
-        $responseData = $this->apiClient->request("leads/{$lead->id}/comments/0", $params);
+        $responseData = $this->apiClient->request("leads/$lead->id/comments/0", $params);
 
         if (isset($responseData['comment']['uuid'])) {
             $comment->id = $responseData['comment']['uuid'] ?? null;
@@ -97,8 +81,8 @@ class Leads
         return $comment;
     }
 
-    public static function create(ApiClient $apiClient)
+    public static function create(ApiClient $apiClient): Leads
     {
-        return new static($apiClient);
+        return new self($apiClient);
     }
 }

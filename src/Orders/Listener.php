@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro\Orders;
 
 class Listener

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro;
 
 use DateTimeImmutable;
@@ -48,7 +50,7 @@ class ApiClient
      *
      * @throws UnreachableUrlException
      */
-    public static function prepareUrl(string $url)
+    public static function prepareUrl(string $url): string
     {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
             throw new InvalidUrlException();
@@ -59,7 +61,7 @@ class ApiClient
 
             $response = $httpClient->request('GET', $url, ['allow_redirects' => false]);
 
-            $isRedirect = substr($response->getStatusCode(), 0, 1) == '3';
+            $isRedirect = substr((string)$response->getStatusCode(), 0, 1) == '3';
             if ($isRedirect && $response->hasHeader('Location')) {
                 $location = $response->getHeaderLine('Location');
                 if (filter_var($location, FILTER_VALIDATE_URL)) {
@@ -80,7 +82,7 @@ class ApiClient
      *
      * @return string
      */
-    public static function httpBuildQuery(array $query)
+    public static function httpBuildQuery(array $query): string
     {
         return build_query($query, PHP_QUERY_RFC1738);
     }
@@ -90,7 +92,7 @@ class ApiClient
      *
      * @throws AccessDeniedException
      */
-    private function getHttpClient()
+    private function getHttpClient(): HttpClient
     {
         if (!empty($this->httpClient)) {
             return $this->httpClient;
@@ -126,7 +128,7 @@ class ApiClient
      *
      * @throws AccessDeniedException
      */
-    private function authClient(HttpClient $client, Identity $identity)
+    private function authClient(HttpClient $client, Identity $identity): void
     {
         $formParams = [
             'username' => $identity->login,
@@ -153,7 +155,7 @@ class ApiClient
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function request($url, $params = []): array
+    public function request(string $url, array $params = []): array
     {
         try {
             if (empty($params)) {
@@ -179,7 +181,7 @@ class ApiClient
                 }
             }
             $errorsOutput = implode(' ', $errors);
-            throw new RequestException("Ошибка запроса: {$errorsOutput}", 0, $e);
+            throw new RequestException("Ошибка запроса: $errorsOutput", 0, $e);
         }
 
         $responseData = json_decode($response->getBody()->getContents(), true);
@@ -191,12 +193,12 @@ class ApiClient
         return $responseData;
     }
 
-    public function parseDate($string)
+    public function parseDate($string): DateTimeImmutable
     {
         return DateTimeImmutable::createFromFormat('Y-m-d\TH:i:sP', $string, new DateTimeZone('UTC'));
     }
 
-    public function parseId($array, $key)
+    public function parseId($array, $key): ?string
     {
         $id = $array[$key] ?? null;
         if ($id === self::EMPTY_UUID_VALUE) {
@@ -205,60 +207,37 @@ class ApiClient
         return $id;
     }
 
-    /**
-     * @return Users
-     */
-    public function users()
+    public function users(): Users
     {
         return Users::create($this);
     }
 
-    /**
-     * @return Courses
-     */
-    public function courses()
+    public function courses(): Courses
     {
         return Courses::create($this);
     }
 
-    /**
-     * @return Sessions
-     */
-    public function sessions()
+    public function sessions(): Sessions
     {
         return Sessions::create($this);
     }
 
-    /**
-     * @return Orders
-     */
-    public function orders()
+    public function orders(): Orders
     {
         return Orders::create($this);
     }
 
-    /**
-     * @return Vendors
-     */
-    public function vendors()
+    public function vendors(): Vendors
     {
         return Vendors::create($this);
     }
 
-    /**
-     * @return Leads
-     */
-    public function leads()
+    public function leads(): Leads
     {
         return Leads::create($this);
     }
 
-    /**
-     * @param Identity $identity
-     *
-     * @return static
-     */
-    public static function create(Identity $identity)
+    public static function create(Identity $identity): ApiClient
     {
         return new static($identity);
     }

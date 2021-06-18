@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro\Leads;
 
 class Comment
@@ -15,12 +17,12 @@ class Comment
     public $text;
 
     /**
-     * @param string $id
-     * @param string $text
+     * @param string|null $id
+     * @param string|null $text
      *
      * @return Comment
      */
-    public static function create($id, $text)
+    public static function create(string $id = null, string $text = null): Comment
     {
         $comment = new self();
         $comment->id = $id;

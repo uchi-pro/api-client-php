@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro\Sessions;
 
 use DateTimeImmutable;
@@ -44,7 +46,7 @@ class Session
     public $completedAt;
 
     /**
-     * @var string
+     * @var Status
      */
     public $status;
 
@@ -58,51 +60,33 @@ class Session
      */
     public $order;
 
-    /**
-     * @return bool
-     */
     public function isDeleted(): bool
     {
         return !empty($this->deletedAt);
     }
 
-    /**
-     * @return bool
-     */
     public function isActive(): bool
     {
         return !$this->isDeleted() && !$this->isAccepted();
     }
 
-    /**
-     * @return bool
-     */
     public function isStarted(): bool
     {
-        return $this->status === Criteria::STATUS_STARTED;
+        return !is_null($this->status) && $this->status->isStarted();
     }
 
-    /**
-     * @return bool
-     */
     public function isCompleted(): bool
     {
-        return $this->status === Criteria::STATUS_COMPLETED;
+        return !is_null($this->status) && $this->status->isCompleted();
     }
 
-    /**
-     * @return bool
-     */
     public function isAccepted(): bool
     {
-        return $this->status === Criteria::STATUS_ACCEPTED;
+        return !is_null($this->status) && $this->status->isAccepted();
     }
 
-    /**
-     * @return bool
-     */
     public function isRejected(): bool
     {
-        return $this->status === Criteria::STATUS_REJECTED;
+        return !is_null($this->status) && $this->status->isRejected();
     }
 }

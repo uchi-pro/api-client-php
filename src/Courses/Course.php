@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro\Courses;
 
 use DateTimeImmutable;
@@ -82,13 +84,7 @@ class Course
      */
     public $academicPlan;
 
-    /**
-     * @param string $id
-     * @param string $title
-     *
-     * @return Course
-     */
-    public static function create($id, $title)
+    public static function create(string $id = null, string $title = null): Course
     {
         $course = new self();
         $course->id = $id;

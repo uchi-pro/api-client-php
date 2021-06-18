@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro\Users;
 
 class Role
@@ -14,13 +16,7 @@ class Role
      */
     public $title;
 
-    /**
-     * @param $id
-     * @param $title
-     *
-     * @return Role
-     */
-    public static function create($id, $title)
+    public static function create(string $id = null, string $title = null): Role
     {
         $role = new self();
         $role->id = $id;
@@ -28,66 +24,42 @@ class Role
         return $role;
     }
 
-    /**
-     * @return Role
-     */
-    public static function createAdministrator()
+    public static function createAdministrator(): Role
     {
         return self::create('administrator', 'Администратор');
     }
 
-    /**
-     * @return Role
-     */
-    public static function createManager()
+    public static function createManager(): Role
     {
         return self::create('manager', 'Менеджер');
     }
 
-    /**
-     * @return Role
-     */
-    public static function createEditor()
+    public static function createEditor(): Role
     {
         return self::create('editor', 'Редактор');
     }
 
-    /**
-     * @return Role
-     */
-    public static function createTeacher()
+    public static function createTeacher(): Role
     {
         return self::create('teacher', 'Преподаватель');
     }
 
-    /**
-     * @return Role
-     */
-    public static function createAgent()
+    public static function createAgent(): Role
     {
         return self::create('agent', 'Агент');
     }
 
-    /**
-     * @return Role
-     */
-    public static function createContractor()
+    public static function createContractor(): Role
     {
         return self::create('contractor', 'Контрагент');
     }
 
-    /**
-     * @return Role
-     */
-    public static function createListener()
+    public static function createListener(): Role
     {
         return self::create('listener', 'Слушатель');
     }
 
-    /**
-     * @return Role
-     */
-    public static function createGuest()
+    public static function createGuest(): Role
     {
         return self::create('guest', 'Гость');
     }

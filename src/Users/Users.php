@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro\Users;
 
 use UchiPro\ApiClient;
@@ -18,18 +20,12 @@ class Users
         $this->apiClient = $apiClient;
     }
 
-    /**
-     * @return User
-     */
-    public function createUser()
+    public function createUser(): User
     {
         return new User();
     }
 
-    /**
-     * @return Criteria
-     */
-    public function createCriteria()
+    public function createCriteria(): Criteria
     {
         return new Criteria();
     }
@@ -39,7 +35,7 @@ class Users
      *
      * @throws BadResponseException
      */
-    public function getMe()
+    public function getMe(): User
     {
         $responseData = $this->apiClient->request('/account/login');
 
@@ -55,7 +51,7 @@ class Users
      *
      * @return User|null
      */
-    public function findById(string $id)
+    public function findById(string $id): ?User
     {
         $responseData = $this->apiClient->request("/users/$id");
 
@@ -71,7 +67,7 @@ class Users
      *
      * @return User|null
      */
-    public function fetchContractorDefaultListener(User $contractor)
+    public function fetchContractorDefaultListener(User $contractor): ?User
     {
         $responseData = $this->apiClient->request("/users/$contractor->id/settings");
 
@@ -82,12 +78,7 @@ class Users
         return $this->findById((string)$responseData['settings']['default_listener']);
     }
 
-    /**
-     * @param $email
-     *
-     * @return User
-     */
-    public function findContractorByEmail($email)
+    public function findContractorByEmail(string $email): ?User
     {
         $criteria = $this->createCriteria();
         $criteria->q = $email;
@@ -103,12 +94,7 @@ class Users
         return null;
     }
 
-    /**
-     * @param $email
-     *
-     * @return User
-     */
-    public function findListenerByEmail($email)
+    public function findListenerByEmail($email): ?User
     {
         $criteria = $this->createCriteria();
         $criteria->q = $email;
@@ -130,7 +116,7 @@ class Users
      *
      * @return User
      */
-    public function saveUser(User $user, $password = null)
+    public function saveUser(User $user, string $password = null): User
     {
         $formParams = [
           'role' => $user->role->id,
@@ -155,7 +141,7 @@ class Users
      *
      * @return array|User[]
      */
-    public function findBy(Criteria $criteria = null)
+    public function findBy(Criteria $criteria = null): array
     {
         $users = [];
 
@@ -178,7 +164,7 @@ class Users
      *
      * @return string
      */
-    private function buildUri(Criteria $criteria = null)
+    private function buildUri(Criteria $criteria = null): string
     {
         $uri = '/users';
 
@@ -209,7 +195,7 @@ class Users
      *
      * @return array|User[]
      */
-    private function parseUsers(array $list)
+    private function parseUsers(array $list): array
     {
         $users = [];
 
@@ -220,47 +206,39 @@ class Users
         return $users;
     }
 
-    /**
-     * @param array $item
-     *
-     * @return User
-     */
-    private function parseUser(array $item)
+    private function parseUser(array $data): User
     {
         $role = new Role();
-        $role->id = $item['role']['code'] ?? null;
-        $role->title = $item['role']['title'] ?? null;
+        $role->id = $data['role']['code'] ?? null;
+        $role->title = $data['role']['title'] ?? null;
 
         $vendor = null;
-        $isVendorNotEmpty = isset($item['vendor_uuid']) && ($item['vendor_uuid'] !== $this->apiClient::EMPTY_UUID_VALUE);
+        $isVendorNotEmpty = isset($data['vendor_uuid']) && ($data['vendor_uuid'] !== $this->apiClient::EMPTY_UUID_VALUE);
         if ($isVendorNotEmpty) {
             $vendor = new Vendor();
-            $vendor->id = $item['vendor_uuid'] ?? null;
-            $vendor->title = $item['vendor_title'] ?? null;
+            $vendor->id = $data['vendor_uuid'] ?? null;
+            $vendor->title = $data['vendor_title'] ?? null;
         }
         if (empty($vendor->id)) {
-            $isDomainVendorNotEmpty = isset($item['vendor']['uuid']) && ($item['vendor']['uuid'] !== $this->apiClient::EMPTY_UUID_VALUE);
+            $isDomainVendorNotEmpty = isset($data['vendor']['uuid']) && ($data['vendor']['uuid'] !== $this->apiClient::EMPTY_UUID_VALUE);
             if ($isDomainVendorNotEmpty) {
-                $vendor->id = $item['vendor']['uuid'] ?? null;
-                $vendor->title = $item['vendor']['title'] ?? null;
+                $vendor->id = $data['vendor']['uuid'] ?? null;
+                $vendor->title = $data['vendor']['title'] ?? null;
             }
         }
 
         $user = new User();
-        $user->id = $item['uuid'] ?? null;
-        $user->name = $item['title'] ?? null;
-        $user->email = $item['email'] ?? null;
-        $user->phone = $item['phone'] ?? null;
+        $user->id = $data['uuid'] ?? null;
+        $user->name = $data['title'] ?? null;
+        $user->email = $data['email'] ?? null;
+        $user->phone = $data['phone'] ?? null;
         $user->role = $role;
         $user->vendor = $vendor;
 
         return $user;
     }
 
-    /**
-     * @return int
-     */
-    public function getListenersNumber()
+    public function getListenersNumber(): int
     {
         $responseData = $this->apiClient->request('/users?role=listener&_items_per_page=1');
 
@@ -271,12 +249,7 @@ class Users
         return (int)$responseData['pager']['total_items'];
     }
 
-    /**
-     * @param ApiClient $apiClient
-     *
-     * @return static
-     */
-    public static function create(ApiClient $apiClient)
+    public static function create(ApiClient $apiClient): Users
     {
         return new static($apiClient);
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro;
 
 class Identity
@@ -41,7 +43,7 @@ class Identity
      *
      * @return Identity
      */
-    public static function createByLogin($url, $login, $password)
+    public static function createByLogin(string $url, string $login, string $password): Identity
     {
         $identity = new self();
 
@@ -64,7 +66,7 @@ class Identity
      *
      * @return Identity
      */
-    public static function createByAccessToken($url, $accessToken)
+    public static function createByAccessToken(string $url, string $accessToken): Identity
     {
         $identity = new self();
 

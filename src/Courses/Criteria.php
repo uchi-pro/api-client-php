@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro\Courses;
 
 use UchiPro\Vendors\Vendor;

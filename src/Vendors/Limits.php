@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro\Vendors;
 
 class Limits
@@ -7,17 +9,12 @@ class Limits
     /**
      * @var int
      */
-    public $maxCustomCoursesFilesize;
+    public $maxTotalFilesize;
 
     /**
      * @var int
      */
     public $totalFilesize;
-
-    /**
-     * @var int
-     */
-    public $customCoursesFilesize;
 
     /**
      * @var bool

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\TestCase;
 use UchiPro\ApiClient;
 use UchiPro\Identity;
@@ -19,17 +21,12 @@ class UsersTest extends TestCase
         $password = getenv('UCHIPRO_PASSWORD');
         $accessToken = getenv('UCHIPRO_ACCESS_TOKEN');
 
-        if (!empty($accessToken)) {
-            $this->identity = Identity::createByAccessToken($url, $accessToken);
-        } else {
-            $this->identity = Identity::createByLogin($url, $login, $password);
-        }
+        $this->identity = !empty($accessToken)
+          ? Identity::createByAccessToken($url, $accessToken)
+          : Identity::createByLogin($url, $login, $password);
     }
 
-    /**
-     * @return ApiClient
-     */
-    public function getApiClient()
+    public function getApiClient(): ApiClient
     {
         return ApiClient::create($this->identity);
     }
@@ -78,7 +75,7 @@ class UsersTest extends TestCase
         $this->markTestSkipped('Контрагенты со слушателями по умолчанию не найдены.');
     }
 
-    public function testFindContratorByEmail()
+    public function testFindContractorByEmail()
     {
         $usersApi = $this->getApiClient()->users();
         $criteria = $usersApi->createCriteria();
@@ -93,52 +90,52 @@ class UsersTest extends TestCase
             }
         }
 
-        $this->assertTrue($contractorWithEmail->role->id === 'contractor');
+        $this->assertSame('contractor', $contractorWithEmail->role->id);
 
         if (!empty($contractorWithEmail)) {
             $foundContractor = $usersApi->findContractorByEmail($contractorWithEmail->email);
-            $this->assertTrue($foundContractor->id === $contractorWithEmail->id);
+            $this->assertSame($contractorWithEmail->id, $foundContractor->id);
         }
     }
 
     public function testRoleAdministrator()
     {
-        $this->assertTrue(Role::createAdministrator()->id === 'administrator');
+        $this->assertSame('administrator', Role::createAdministrator()->id);
     }
 
     public function testRoleManager()
     {
-        $this->assertTrue(Role::createManager()->id === 'manager');
+        $this->assertSame('manager', Role::createManager()->id);
     }
 
     public function testCreateEditor()
     {
-        $this->assertTrue(Role::createEditor()->id === 'editor');
+        $this->assertSame('editor', Role::createEditor()->id);
     }
 
     public function testCreateTeacher()
     {
-        $this->assertTrue(Role::createTeacher()->id === 'teacher');
+        $this->assertSame('teacher', Role::createTeacher()->id);
     }
 
     public function testCreateAgent()
     {
-        $this->assertTrue(Role::createAgent()->id === 'agent');
+        $this->assertSame('agent', Role::createAgent()->id);
     }
 
     public function testCreateContractor()
     {
-        $this->assertTrue(Role::createContractor()->id === 'contractor');
+        $this->assertSame('contractor', Role::createContractor()->id);
     }
 
     public function testCreateListener()
     {
-        $this->assertTrue(Role::createListener()->id === 'listener');
+        $this->assertSame('listener', Role::createListener()->id);
     }
 
     public function testCreateGuest()
     {
-        $this->assertTrue(Role::createGuest()->id === 'guest');
+        $this->assertSame('guest', Role::createGuest()->id);
     }
 
     public function testSaveUser()
@@ -176,5 +173,11 @@ class UsersTest extends TestCase
         $foundListeners = $usersApi->findBy($criteria);
 
         $this->assertSame($foundContractors[0]->name, $foundListeners[0]->name);
+    }
+
+    public function testGetListenersNumber()
+    {
+        $listenersNumber = $this->getApiClient()->users()->getListenersNumber();
+        $this->assertTrue(is_numeric($listenersNumber));
     }
 }

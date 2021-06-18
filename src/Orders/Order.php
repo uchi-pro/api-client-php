@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace UchiPro\Orders;
 
 use UchiPro\Courses\Course;
@@ -19,7 +21,7 @@ class Order
     public $number;
 
     /**
-     * @var string
+     * @var Status
      */
     public $status;
 

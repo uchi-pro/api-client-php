@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\TestCase;
 use UchiPro\ApiClient;
 use UchiPro\Identity;
@@ -19,11 +21,9 @@ class VendorsTest extends TestCase
         $password = getenv('UCHIPRO_PASSWORD');
         $accessToken = getenv('UCHIPRO_ACCESS_TOKEN');
 
-        if (!empty($accessToken)) {
-            $this->identity = Identity::createByAccessToken($url, $accessToken);
-        } else {
-            $this->identity = Identity::createByLogin($url, $login, $password);
-        }
+        $this->identity = !empty($accessToken)
+          ? Identity::createByAccessToken($url, $accessToken)
+          : Identity::createByLogin($url, $login, $password);
     }
 
     /**
@@ -78,8 +78,6 @@ class VendorsTest extends TestCase
 
         $this->assertInstanceOf(Limits::class, $limits);
         $this->assertNotNull($limits->totalFilesize);
-        $this->assertNotNull($limits->customCoursesFilesize);
-        $this->assertGreaterThanOrEqual($limits->totalFilesize, $limits->customCoursesFilesize);
     }
 
     public function testFindVendorByDomain()
