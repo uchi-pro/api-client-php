@@ -62,6 +62,14 @@ class CoursesTest extends TestCase
 
         $this->assertTrue(is_array($courses));
 
+        $courseTypeIdCorrect = true;
+        foreach ($courses as $course) {
+            if (!empty($course->type->title) && empty($course->type->id)) {
+                $courseTypeIdCorrect = false;
+            }
+        }
+        $this->assertTrue($courseTypeIdCorrect);
+
         $hours = 0;
         foreach ($courses as $course) {
             if ($course->academicPlan) {

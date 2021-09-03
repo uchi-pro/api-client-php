@@ -140,13 +140,23 @@ final class Courses
     private function parseCourseType(array $data): CourseType
     {
         $courseType = new CourseType();
-        $courseType->id = $data['type']['uuid'] ?? null;
-        if ($courseType->id === $this->apiClient::EMPTY_UUID_VALUE) {
-            $courseType->id = null;
+        if (!empty($data['type'])) {
+            $courseType->id = $this->parseCourseTypeId($data['type']);
+            $courseType->title = $data['type']['title'] ?? null;
         }
-        $courseType->title = $data['type']['title'] ?? null;
-
         return $courseType;
+    }
+
+    private function parseCourseTypeId(array $data): ?string
+    {
+        $id = $data['code'] ?? null;
+        if (!empty($data['uuid'])) { // @todo устаревший вариант - убрать со временем
+            $id = $data['uuid'] ?? null;
+        }
+        if ($id === $this->apiClient::EMPTY_UUID_VALUE) {
+            $id = null;
+        }
+        return $id;
     }
 
     private function parseCourseAuthor(array $data): User
