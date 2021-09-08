@@ -25,6 +25,11 @@ class Course
     public $createdAt;
 
     /**
+     * @var bool
+     */
+    public $isActive;
+
+    /**
      * @var User
      */
     public $author;
