@@ -32,14 +32,10 @@ class Vendors
         return Vendor::create($id, $title);
     }
 
-    /**
-     * @param Vendor $vendor
-     *
-     * @return Limits
-     */
-    public function getVendorLimits(Vendor $vendor)
+    public function getVendorLimits(Vendor $vendor): Limits
     {
         $responseData = $this->apiClient->request("/vendors/{$vendor->id}/limits");
+
         if (empty($responseData['limits']) && is_array($responseData['vendor'])) {
           $responseData['limits'] = $responseData['vendor']['limits'];
         }
@@ -67,6 +63,17 @@ class Vendors
         }
 
         return $limits;
+    }
+
+    public function getPlainVendorLimits(Vendor $vendor): string
+    {
+        $responseData = $this->apiClient->request("/vendors/{$vendor->id}/limits");
+
+        if (empty($responseData['limits']) && is_array($responseData['vendor'])) {
+            $responseData['limits'] = $responseData['vendor']['limits'];
+        }
+
+        return json_encode($responseData['limits']);
     }
 
     /**
