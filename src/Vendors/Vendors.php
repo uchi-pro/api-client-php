@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace UchiPro\Vendors;
 
-use Exception;
 use UchiPro\ApiClient;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Exception\RequestException;
@@ -37,29 +36,33 @@ class Vendors
         $responseData = $this->apiClient->request("/vendors/{$vendor->id}/limits");
 
         if (empty($responseData['limits']) && is_array($responseData['vendor'])) {
-          $responseData['limits'] = $responseData['vendor']['limits'];
+            $responseData['limits'] = $responseData['vendor']['limits'];
         }
 
         $limits = new Limits();
-        $limits->maxTotalFilesize = isset($responseData['limits']['max_total_filesize'])
-            ? (int)$responseData['limits']['max_total_filesize']
-            : null;
-        $limits->totalFilesize = isset($responseData['limits']['total_filesize'])
-            ? (int)$responseData['limits']['total_filesize']
-            : null;
-        $limits->meetingsAvailable = !empty($responseData['limits']['meetings_available']);
-        $limits->leadsEventsAvailable = !empty($responseData['limits']['leads_events_available']);
-        $limits->groupsWritsAvailable = !empty($responseData['limits']['groups_writs_available']);
-        $limits->billingDocsAvailable = empty($responseData['limits']['billing_docs_disabled']);
-        $limits->infobaseAvailable = !empty($responseData['limits']['infobase_available']);
-
-        try {
-            $responseData = $this->apiClient->request("/shop/{$vendor->id}/settings");
-            if (is_array($responseData)) {
-                $limits->shopAvailable = true;
-            }
-        } catch (Exception $e) {
-            // Ничего не делаем.
+        if (isset($responseData['limits']['max_total_filesize'])) {
+            $limits->maxTotalFilesize = (int)$responseData['limits']['max_total_filesize'];
+        }
+        if (isset($responseData['limits']['total_filesize'])) {
+            $limits->totalFilesize = (int)$responseData['limits']['total_filesize'];
+        }
+        if (isset($responseData['limits']['meetings_available'])) {
+            $limits->meetingsAvailable = filter_var($responseData['limits']['meetings_available'], FILTER_VALIDATE_BOOLEAN);
+        }
+        if (isset($responseData['limits']['leads_events_available'])) {
+            $limits->leadsEventsAvailable = filter_var($responseData['limits']['leads_events_available'], FILTER_VALIDATE_BOOLEAN);
+        }
+        if (isset($responseData['limits']['groups_writs_available'])) {
+            $limits->groupsWritsAvailable = filter_var($responseData['limits']['groups_writs_available'], FILTER_VALIDATE_BOOLEAN);
+        }
+        if (isset($responseData['limits']['billing_docs_available'])) {
+            $limits->billingDocsAvailable = filter_var($responseData['limits']['billing_docs_available'], FILTER_VALIDATE_BOOLEAN);
+        }
+        if (isset($responseData['limits']['infobase_available'])) {
+            $limits->infobaseAvailable = filter_var($responseData['limits']['infobase_available'], FILTER_VALIDATE_BOOLEAN);
+        }
+        if (isset($responseData['limits']['online_shop_available'])) {
+            $limits->shopAvailable = filter_var($responseData['limits']['online_shop_available'], FILTER_VALIDATE_BOOLEAN);
         }
 
         return $limits;
