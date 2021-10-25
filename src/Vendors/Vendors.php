@@ -183,6 +183,7 @@ class Vendors
         $vendor = $this->createVendor();
         $vendor->id = $item['uuid'] ?? null;
         $vendor->createdAt = $this->apiClient->parseDate($item['created_at']);
+        $vendor->isActive = filter_var($item['is_active'], FILTER_VALIDATE_BOOLEAN);
         $vendor->title = $item['title'] ?? null;
         $vendor->email = $item['email'] ?? null;
         $vendor->domains = $item['domains'] ?? [];

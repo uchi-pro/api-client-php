@@ -19,6 +19,11 @@ class Vendor
     public $createdAt;
 
     /**
+     * @var bool
+     */
+    public $isActive;
+
+    /**
      * @var string
      */
     public $title;
