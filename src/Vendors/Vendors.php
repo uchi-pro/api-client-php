@@ -39,30 +39,35 @@ class Vendors
             $responseData['limits'] = $responseData['vendor']['limits'];
         }
 
+        return $this->parseLimits($responseData['limits']);
+    }
+
+    private function parseLimits(array $limitsData): Limits
+    {
         $limits = new Limits();
-        if (isset($responseData['limits']['max_total_filesize'])) {
-            $limits->maxTotalFilesize = (int)$responseData['limits']['max_total_filesize'];
+        if (isset($limitsData['max_total_filesize'])) {
+            $limits->maxTotalFilesize = (int)$limitsData['max_total_filesize'];
         }
-        if (isset($responseData['limits']['total_filesize'])) {
-            $limits->totalFilesize = (int)$responseData['limits']['total_filesize'];
+        if (isset($limitsData['total_filesize'])) {
+            $limits->totalFilesize = (int)$limitsData['total_filesize'];
         }
-        if (isset($responseData['limits']['meetings_available'])) {
-            $limits->meetingsAvailable = filter_var($responseData['limits']['meetings_available'], FILTER_VALIDATE_BOOLEAN);
+        if (isset($limitsData['meetings_available'])) {
+            $limits->meetingsAvailable = filter_var($limitsData['meetings_available'], FILTER_VALIDATE_BOOLEAN);
         }
-        if (isset($responseData['limits']['leads_events_available'])) {
-            $limits->leadsEventsAvailable = filter_var($responseData['limits']['leads_events_available'], FILTER_VALIDATE_BOOLEAN);
+        if (isset($limitsData['leads_events_available'])) {
+            $limits->leadsEventsAvailable = filter_var($limitsData['leads_events_available'], FILTER_VALIDATE_BOOLEAN);
         }
-        if (isset($responseData['limits']['groups_writs_available'])) {
-            $limits->groupsWritsAvailable = filter_var($responseData['limits']['groups_writs_available'], FILTER_VALIDATE_BOOLEAN);
+        if (isset($limitsData['groups_writs_available'])) {
+            $limits->groupsWritsAvailable = filter_var($limitsData['groups_writs_available'], FILTER_VALIDATE_BOOLEAN);
         }
-        if (isset($responseData['limits']['billing_docs_available'])) {
-            $limits->billingDocsAvailable = filter_var($responseData['limits']['billing_docs_available'], FILTER_VALIDATE_BOOLEAN);
+        if (isset($limitsData['billing_docs_available'])) {
+            $limits->billingDocsAvailable = filter_var($limitsData['billing_docs_available'], FILTER_VALIDATE_BOOLEAN);
         }
-        if (isset($responseData['limits']['infobase_available'])) {
-            $limits->infobaseAvailable = filter_var($responseData['limits']['infobase_available'], FILTER_VALIDATE_BOOLEAN);
+        if (isset($limitsData['infobase_available'])) {
+            $limits->infobaseAvailable = filter_var($limitsData['infobase_available'], FILTER_VALIDATE_BOOLEAN);
         }
-        if (isset($responseData['limits']['online_shop_available'])) {
-            $limits->shopAvailable = filter_var($responseData['limits']['online_shop_available'], FILTER_VALIDATE_BOOLEAN);
+        if (isset($limitsData['online_shop_available'])) {
+            $limits->shopAvailable = filter_var($limitsData['online_shop_available'], FILTER_VALIDATE_BOOLEAN);
         }
 
         return $limits;
@@ -77,6 +82,36 @@ class Vendors
         }
 
         return json_encode($responseData['limits']);
+    }
+
+    public function updateVendorLimits(Vendor $vendor, Limits $limits): Limits
+    {
+        $params = [];
+        if (!is_null($limits->maxTotalFilesize)) {
+            $params['max_total_filesize'] = $limits->maxTotalFilesize;
+        }
+        if (!is_null($limits->meetingsAvailable)) {
+            $params['meetings_available'] = $limits->meetingsAvailable;
+        }
+        if (!is_null($limits->leadsEventsAvailable)) {
+            $params['leads_events_available'] = $limits->leadsEventsAvailable;
+        }
+        if (!is_null($limits->groupsWritsAvailable)) {
+            $params['groups_writs_available'] = $limits->groupsWritsAvailable;
+        }
+        if (!is_null($limits->billingDocsAvailable)) {
+            $params['billing_docs_available'] = $limits->billingDocsAvailable;
+        }
+        if (!is_null($limits->infobaseAvailable)) {
+            $params['infobase_available'] = $limits->infobaseAvailable;
+        }
+        if (!is_null($limits->shopAvailable)) {
+            $params['online_shop_available'] = $limits->shopAvailable;
+        }
+
+        $responseData = $this->apiClient->request("/vendors/{$vendor->id}/limits", $params);
+
+        return $this->parseLimits($responseData['limits']);
     }
 
     /**

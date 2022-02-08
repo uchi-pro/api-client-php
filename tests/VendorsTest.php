@@ -96,6 +96,25 @@ class VendorsTest extends TestCase
         $this->assertJson($plainLimits);
     }
 
+    public function testUpdateVendorLimits()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $vendors = $vendorsApi->findAll();
+
+        if (empty($vendors[0])) {
+            $this->markTestSkipped('Вендор для теста не найден.');
+        }
+
+        $vendor = $vendors[0];
+
+        $newLimits = new Limits();
+        $newLimits->maxTotalFilesize = rand(1000, 10000);
+
+        $updatedLimits = $vendorsApi->updateVendorLimits($vendor, $newLimits);
+        $this->assertEquals($newLimits->maxTotalFilesize, $updatedLimits->maxTotalFilesize);
+    }
+
     public function testFindVendorByDomain()
     {
         $vendorsApi = $this->getApiClient()->vendors();
