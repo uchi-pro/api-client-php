@@ -20,20 +20,19 @@ class Vendors
         $this->apiClient = $apiClient;
     }
 
-    /**
-     * @param string $id
-     * @param string $title
-     *
-     * @return Vendor
-     */
-    public function createVendor($id = '', $title = '')
+    public function createVendor(string $id = '', string $title = ''): Vendor
     {
         return Vendor::create($id, $title);
     }
 
+    public function createCriteria(): Criteria
+    {
+        return new Criteria();
+    }
+
     public function getVendorLimits(Vendor $vendor): Limits
     {
-        $responseData = $this->apiClient->request("/vendors/{$vendor->id}/limits");
+        $responseData = $this->apiClient->request("/vendors/$vendor->id/limits");
 
         if (empty($responseData['limits']) && is_array($responseData['vendor'])) {
             $responseData['limits'] = $responseData['vendor']['limits'];
@@ -75,7 +74,7 @@ class Vendors
 
     public function getPlainVendorLimits(Vendor $vendor): string
     {
-        $responseData = $this->apiClient->request("/vendors/{$vendor->id}/limits");
+        $responseData = $this->apiClient->request("/vendors/$vendor->id/limits");
 
         if (empty($responseData['limits']) && is_array($responseData['vendor'])) {
             $responseData['limits'] = $responseData['vendor']['limits'];
@@ -109,7 +108,7 @@ class Vendors
             $params['online_shop_available'] = $limits->shopAvailable;
         }
 
-        $responseData = $this->apiClient->request("/vendors/{$vendor->id}/limits", $params);
+        $responseData = $this->apiClient->request("/vendors/$vendor->id/limits", $params);
 
         return $this->parseLimits($responseData['limits']);
     }
@@ -122,7 +121,7 @@ class Vendors
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(Criteria $criteria = null)
+    public function findBy(Criteria $criteria = null): iterable
     {
         $vendors = [];
 
@@ -157,9 +156,9 @@ class Vendors
      *
      * @return Vendor|null
      */
-    public function findById(string $id)
+    public function findById(string $id): ?Vendor
     {
-        $responseData = $this->apiClient->request("/vendors/{$id}");
+        $responseData = $this->apiClient->request("/vendors/$id");
 
         if (empty($responseData['vendor']['uuid'])) {
             return null;
@@ -179,7 +178,7 @@ class Vendors
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findByDomain(string $domain)
+    public function findByDomain(string $domain): ?Vendor
     {
         $vendors = $this->findBy();
 
@@ -197,7 +196,7 @@ class Vendors
      *
      * @return Vendor[]
      */
-    private function parseVendors(array $list)
+    private function parseVendors(array $list): iterable
     {
         $vendors = [];
 
@@ -209,7 +208,7 @@ class Vendors
     }
 
     /**
-     * @param array $data
+     * @param array $item
      *
      * @return Vendor
      */
@@ -232,9 +231,24 @@ class Vendors
         return $vendor;
     }
 
-    private function buildUri(Criteria $searchQuery = null)
+    private function buildUri(Criteria $criteria = null): string
     {
         $uri = '/vendors';
+
+        $uriQuery = [];
+        if ($criteria) {
+            if (!is_null($criteria->q)) {
+                $uriQuery['q'] = $criteria->q;
+            }
+            if (!is_null($criteria->isActive)) {
+                $uriQuery['is_active'] = (int)$criteria->isActive;
+            }
+        }
+
+        if (!empty($uriQuery)) {
+            $uri .= '?'.$this->apiClient::httpBuildQuery($uriQuery);
+        }
+
         return $uri;
     }
 
@@ -243,9 +257,9 @@ class Vendors
      *
      * @return array|string[]
      */
-    private function fetchVendorDomains(Vendor $vendor)
+    private function fetchVendorDomains(Vendor $vendor): iterable
     {
-        $uri = "/vendors/{$vendor->id}/domains";
+        $uri = "/vendors/$vendor->id/domains";
         $responseData = $this->apiClient->request($uri);
 
         return $responseData['domains'] ?? [];
@@ -254,9 +268,9 @@ class Vendors
     /**
      * @param ApiClient $apiClient
      *
-     * @return static
+     * @return Vendors
      */
-    public static function create(ApiClient $apiClient)
+    public static function create(ApiClient $apiClient): Vendors
     {
         return new static($apiClient);
     }

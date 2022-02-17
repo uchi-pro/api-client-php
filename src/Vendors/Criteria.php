@@ -6,5 +6,13 @@ namespace UchiPro\Vendors;
 
 class Criteria
 {
+    /**
+     * @var string
+     */
+    public $q;
 
+    /**
+     * @var bool
+     */
+    public $isActive;
 }

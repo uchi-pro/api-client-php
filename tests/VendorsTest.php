@@ -26,10 +26,7 @@ class VendorsTest extends TestCase
           : Identity::createByLogin($url, $login, $password);
     }
 
-    /**
-     * @return ApiClient
-     */
-    public function getApiClient()
+    public function getApiClient(): ApiClient
     {
         return ApiClient::create($this->identity);
     }
@@ -140,5 +137,63 @@ class VendorsTest extends TestCase
         $foundVendor = $vendorsApi->findByDomain($domain);
 
         $this->assertEquals($vendorWithDomain->id, $foundVendor->id);
+    }
+
+    public function testFindVendorByTitle()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $vendors = $vendorsApi->findAll();
+
+        if (empty($vendors[0])) {
+            $this->markTestSkipped(
+                'Вендор для теста не найден.'
+            );
+        }
+        $vendor = $vendors[0];
+
+        $criteria = $vendorsApi->createCriteria();
+        $criteria->q = $vendor->title;
+        $foundVendors = $vendorsApi->findBy($criteria);
+
+        $this->assertEquals($vendor->id, $foundVendors[0]->id);
+    }
+
+    public function testFindActiveVendors()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $activeVendorsCount = 0;
+        $vendors = $vendorsApi->findAll();
+        foreach ($vendors as $vendor) {
+            if ($vendor->isActive) {
+                $activeVendorsCount++;
+            }
+        }
+
+        $criteria = $vendorsApi->createCriteria();
+        $criteria->isActive = true;
+        $activeVendors = $vendorsApi->findBy($criteria);
+
+        $this->assertCount($activeVendorsCount, $activeVendors);
+    }
+
+    public function testFindBlockedVendors()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $blockedVendorsCount = 0;
+        $vendors = $vendorsApi->findAll();
+        foreach ($vendors as $vendor) {
+            if (!$vendor->isActive) {
+                $blockedVendorsCount++;
+            }
+        }
+
+        $criteria = $vendorsApi->createCriteria();
+        $criteria->isActive = false;
+        $activeVendors = $vendorsApi->findBy($criteria);
+
+        $this->assertCount($blockedVendorsCount, $activeVendors);
     }
 }
