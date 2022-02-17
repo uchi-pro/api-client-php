@@ -22,8 +22,8 @@ class VendorsTest extends TestCase
         $accessToken = getenv('UCHIPRO_ACCESS_TOKEN');
 
         $this->identity = !empty($accessToken)
-          ? Identity::createByAccessToken($url, $accessToken)
-          : Identity::createByLogin($url, $login, $password);
+            ? Identity::createByAccessToken($url, $accessToken)
+            : Identity::createByLogin($url, $login, $password);
     }
 
     public function getApiClient(): ApiClient
@@ -195,5 +195,43 @@ class VendorsTest extends TestCase
         $activeVendors = $vendorsApi->findBy($criteria);
 
         $this->assertCount($blockedVendorsCount, $activeVendors);
+    }
+
+    public function testActivateVendor()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $vendors = $vendorsApi->findAll();
+
+        if (empty($vendors[0])) {
+            $this->markTestSkipped(
+                'Вендор для теста не найден.'
+            );
+        }
+        $vendor = $vendors[0];
+
+        $vendorsApi->activateVendor($vendor);
+
+        $activatedVendor = $vendorsApi->findById($vendor->id);
+        $this->assertTrue($activatedVendor->isActive);
+    }
+
+    public function testBlockVendor()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $vendors = $vendorsApi->findAll();
+
+        if (empty($vendors[0])) {
+            $this->markTestSkipped(
+                'Вендор для теста не найден.'
+            );
+        }
+        $vendor = $vendors[0];
+
+        $vendorsApi->blockVendor($vendor);
+
+        $blockedVendor = $vendorsApi->findById($vendor->id);
+        $this->assertFalse($blockedVendor->isActive);
     }
 }

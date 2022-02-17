@@ -191,6 +191,24 @@ class Vendors
         return null;
     }
 
+    public function activateVendor(Vendor $vendor): Vendor
+    {
+        $params = ['active' => 1];
+        $responseData = $this->apiClient->request("/vendors/$vendor->id", $params);
+
+        $vendor = $this->parseVendor($responseData['vendor']);
+        return $vendor;
+    }
+
+    public function blockVendor(Vendor $vendor): Vendor
+    {
+        $params = ['active' => 0];
+        $responseData = $this->apiClient->request("/vendors/$vendor->id", $params);
+
+        $vendor = $this->parseVendor($responseData['vendor']);
+        return $vendor;
+    }
+
     /**
      * @param array $list
      *
