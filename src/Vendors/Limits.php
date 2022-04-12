@@ -19,6 +19,13 @@ class Limits
     public $totalFilesize;
 
     /**
+     * Доступна фиксация обучения.
+     *
+     * @var bool
+     */
+    public $sessionCheatAvailable;
+
+    /**
      * Вебинары и подобные мероприятия.
      *
      * @var bool

@@ -50,6 +50,9 @@ class Vendors
         if (isset($limitsData['total_filesize'])) {
             $limits->totalFilesize = (int)$limitsData['total_filesize'];
         }
+        if (isset($limitsData['session_cheat_available'])) {
+            $limits->sessionCheatAvailable = filter_var($limitsData['session_cheat_available'], FILTER_VALIDATE_BOOLEAN);
+        }
         if (isset($limitsData['meetings_available'])) {
             $limits->meetingsAvailable = filter_var($limitsData['meetings_available'], FILTER_VALIDATE_BOOLEAN);
         }
@@ -89,23 +92,26 @@ class Vendors
         if (!is_null($limits->maxTotalFilesize)) {
             $params['max_total_filesize'] = $limits->maxTotalFilesize;
         }
+        if (!is_null($limits->sessionCheatAvailable)) {
+            $params['session_cheat_available'] = (int)$limits->sessionCheatAvailable;
+        }
         if (!is_null($limits->meetingsAvailable)) {
-            $params['meetings_available'] = $limits->meetingsAvailable;
+            $params['meetings_available'] = (int)$limits->meetingsAvailable;
         }
         if (!is_null($limits->leadsEventsAvailable)) {
-            $params['leads_events_available'] = $limits->leadsEventsAvailable;
+            $params['leads_events_available'] = (int)$limits->leadsEventsAvailable;
         }
         if (!is_null($limits->groupsWritsAvailable)) {
             $params['groups_writs_available'] = $limits->groupsWritsAvailable;
         }
         if (!is_null($limits->billingDocsAvailable)) {
-            $params['billing_docs_available'] = $limits->billingDocsAvailable;
+            $params['billing_docs_available'] = (int)$limits->billingDocsAvailable;
         }
         if (!is_null($limits->infobaseAvailable)) {
-            $params['infobase_available'] = $limits->infobaseAvailable;
+            $params['infobase_available'] = (int)$limits->infobaseAvailable;
         }
         if (!is_null($limits->shopAvailable)) {
-            $params['online_shop_available'] = $limits->shopAvailable;
+            $params['online_shop_available'] = (int)$limits->shopAvailable;
         }
 
         $responseData = $this->apiClient->request("/vendors/$vendor->id/limits", $params);
