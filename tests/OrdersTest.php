@@ -35,70 +35,50 @@ class OrdersTest extends TestCase
 
     public function testCreateOrder(): void
     {
-        $order = $this->getApiClient()->orders()->createOrder();
-        $this->assertInstanceOf(Order::class, $order);
+        $createdOrder = $this->getApiClient()->orders()->createOrder();
+        $this->assertInstanceOf(Order::class, $createdOrder);
     }
 
     public function testCreateSession(): void
     {
-        $session = $this->getApiClient()->sessions()->createSession();
-        $this->assertInstanceOf(Session::class, $session);
+        $createdSession = $this->getApiClient()->sessions()->createSession();
+        $this->assertInstanceOf(Session::class, $createdSession);
     }
 
     public function testCreateOrderStatus()
     {
-        $status = Status::createPending();
-        $this->assertTrue($status->isPending());
+        $createdPendingStatus = Status::createPending();
+        $this->assertTrue($createdPendingStatus->isPending());
     }
 
-    public function testGetOrders(): void
+    public function testFindCompletedOrders(): void
     {
         $ordersApi = $this->getApiClient()->orders();
         $criteria = $ordersApi->createCriteria();
         $criteria->status = Status::createCompleted();
-        $orders = $this->getApiClient()->orders()->findBy($criteria);
+        $foundOrders = $this->getApiClient()->orders()->findBy($criteria);
 
-        $this->assertTrue(is_array($orders));
+        $this->assertNotEmpty($foundOrders, 'Не удалось найти завершенные заявки.');
     }
 
-    public function testGetOrder(): void
+    public function testFindOrderByNumber(): void
     {
-        $ordersApi = $this->getApiClient()->orders();
-        $orders = $ordersApi->findBy();
-
-        $this->assertTrue(is_array($orders), 'Не удалось получить список заявок.');
-
-        if (empty($orders)) {
-            return;
-        }
-
-        $order = null;
-        foreach ($orders as $existsOrder) {
-            if ($existsOrder->listenersCount > 0) {
-                $order = $existsOrder;
-                break;
-            }
-        }
-
-        if (empty($order)) {
-            $this->markTestSkipped('Не найдена заявка со слушателями.');
-        }
+        $existsOrder = $this->findOrderWithListeners();
 
         $ordersApi = $this->getApiClient()->orders();
         $ordersCriteria = $ordersApi->createCriteria();
-        $ordersCriteria->number = $order->number;
-        $ordersCriteria->vendor = $order->vendor;
-        $orders = $ordersApi->findBy($ordersCriteria);
+        $ordersCriteria->number = $existsOrder->number;
+        $ordersCriteria->vendor = $existsOrder->vendor;
+        $foundOrders = $ordersApi->findBy($ordersCriteria);
 
-        $this->assertTrue(count($orders) === 1, 'Заявка по номеру не найдена.');
+        $this->assertTrue(count($foundOrders) === 1, 'Заявка по номеру не найдена.');
 
-        if (!empty($orders[0])) {
-            $order = $orders[0];
-            $listeners = $ordersApi->getOrderListeners($order);
-            $this->assertTrue(!empty($order->contractor->id));
-            $this->assertTrue(is_array($listeners));
-            $this->assertTrue(count($listeners) > 0);
-            $this->assertInstanceOf(Status::class, $order->status);
+        if (!empty($foundOrders[0])) {
+            $foundOrder = $foundOrders[0];
+            $listeners = $ordersApi->getOrderListeners($foundOrder);
+            $this->assertNotEmpty($foundOrder->contractor->id, 'Не удалось найти заявку по номеру.');
+            $this->assertNotEmpty($listeners);
+            $this->assertInstanceOf(Status::class, $foundOrder->status);
         }
     }
 
@@ -106,27 +86,17 @@ class OrdersTest extends TestCase
     {
         $ordersApi = $this->getApiClient()->orders();
 
-        $orders = $ordersApi->findBy();
-        if (empty($orders)) {
-            $this->markTestSkipped('В СДО нет заявок.');
-        }
-
-        $existsOrder = $orders[0];
+        $existsOrder = $this->findFirstOrder();
         $foundOrder = $ordersApi->findById($existsOrder->id);
 
-        $this->assertSame($foundOrder->id, $existsOrder->id);
+        $this->assertSame($foundOrder->id, $existsOrder->id, 'Не удалось найти заявку по идентификатору.');
     }
 
     public function testChangeOrderStatus(): void
     {
         $ordersApi = $this->getApiClient()->orders();
-        $orders = $ordersApi->findBy();
 
-        if (empty($orders)) {
-            $this->markTestSkipped('Не найдено курсов с сессиями.');
-        }
-
-        $order = $orders[0];
+        $order = $this->findFirstOrder();
 
         $newStatus = !$order->status->isPending()
           ? Status::createPending()
@@ -134,36 +104,20 @@ class OrdersTest extends TestCase
 
         $changedStatus = $ordersApi->changeOrderStatus($order, $newStatus);
 
-        $this->assertTrue($newStatus->code === $changedStatus->code);
+        $this->assertTrue($newStatus->code === $changedStatus->code, 'Не удалось изменить статус заявки.');
     }
 
     public function testSaveOrder(): void
     {
         $ordersApi = $this->getApiClient()->orders();
 
-        $orders = $ordersApi->findBy();
-
-        if (empty($orders)) {
-            $this->markTestSkipped('Заявки не найдены.');
-        }
-
-        $originalOrder = null;
-        foreach ($orders as $existsOrder) {
-            if ($existsOrder->listenersCount > 5) {
-                $originalOrder = $existsOrder;
-            }
-        }
-
-        if (empty($originalOrder)) {
-            $this->markTestSkipped('Заявка не найдена.');
-        }
-
+        $originalOrder = $this->findOrderWithListeners(5);
         $originalOrder->listeners = $ordersApi->getOrderListeners($originalOrder);
 
         $originalOrder->id = 0;
         $newOrder = $ordersApi->saveOrder($originalOrder);
 
-        $this->assertNotSame($originalOrder->id, $newOrder->id);
+        $this->assertNotSame($originalOrder->id, $newOrder->id, 'Не удалось сохранить заявку.');
         $this->assertSame($originalOrder->listenersCount, $newOrder->listenersCount);
         $this->assertSame($originalOrder->course->id, $newOrder->course->id);
     }
@@ -172,26 +126,37 @@ class OrdersTest extends TestCase
     {
         $ordersApi = $this->getApiClient()->orders();
 
+        $existsOrder = $this->findOrderWithListeners(5);
+
+        $copyTo = [];
+        $listeners = $ordersApi->getOrderListeners($existsOrder);
+        $result = $ordersApi->sendCredential($existsOrder, $listeners, $copyTo);
+        $this->assertArrayHasKey('success', $result, "Не удалось отправить доступы слушателям заявки $existsOrder->number");
+    }
+
+    private function findAllOrders(): array
+    {
+        $ordersApi = $this->getApiClient()->orders();
         $orders = $ordersApi->findBy();
-
         if (empty($orders)) {
-            $this->markTestSkipped('Заявки не найдены.');
+            $this->markTestSkipped('В СДО нет заявок.');
         }
+        return $orders;
+    }
 
-        $order = null;
-        foreach ($orders as $existsOrder) {
-            if ($existsOrder->listenersCount > 5) {
-                $order = $existsOrder;
+    private function findFirstOrder(): Order
+    {
+        return $this->findAllOrders()[0];
+    }
+
+    private function findOrderWithListeners(int $minListeners = 0): Order
+    {
+        foreach ($this->findAllOrders() as $order) {
+            if ($order->listenersCount > $minListeners) {
+                return $order;
             }
         }
 
-        if (empty($order)) {
-            $this->markTestSkipped('Заявка не найдена.');
-        }
-
-        $copyTo = [];
-        $listeners = $ordersApi->getOrderListeners($order);
-        $result = $ordersApi->sendCredential($order, $listeners, $copyTo);
-        $this->assertNotEmpty($result['success']);
+        $this->markTestSkipped('Заявка со слушателями не найдена.');
     }
 }
