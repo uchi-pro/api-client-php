@@ -25,6 +25,16 @@ class Course
     public $createdAt;
 
     /**
+     * @var DateTimeImmutable
+     */
+    public $updatedAt;
+
+    /**
+     * @var DateTimeImmutable
+     */
+    public $deletedAt;
+
+    /**
      * @var bool
      */
     public $isActive;

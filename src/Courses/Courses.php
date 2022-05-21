@@ -122,6 +122,8 @@ final class Courses
         $course->id = $this->apiClient->parseId($data, 'uuid');
         $course->gid = $this->apiClient->parseId($data, 'guid');
         $course->createdAt = $this->apiClient->parseDate($data['created_at']);
+        $course->updatedAt = $this->apiClient->parseDate($data['updated_at']);
+        $course->deletedAt = $this->apiClient->parseDate($data['deleted_at']);
         $course->isActive = isset($data['is_active']) ? (bool)$data['is_active'] : null;
         $course->author = $this->parseCourseAuthor($data);
         $course->title = $data['title'] ?? null;
