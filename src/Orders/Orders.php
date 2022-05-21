@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace UchiPro\Orders;
 
+use DateTime;
+use DateTimeInterface;
 use UchiPro\ApiClient;
 use UchiPro\Courses\Course;
 use UchiPro\Exception\BadResponseException;
@@ -140,6 +142,9 @@ final class Orders
 
         $order = new Order();
         $order->id = $data['uuid'] ?? null;
+        $order->createAt = $this->apiClient->parseDate($data['created_at']);
+        $order->updatedAt = $this->apiClient->parseDate($data['updated_at']);
+        $order->deletedAt = $this->apiClient->parseDate($data['deleted_at']);
         $order->number = $data['number'] ?? null;
         $order->status = Status::create((int)$data['status']['id'], $data['status']['code'], $data['status']['title']);
         $order->course = $course;

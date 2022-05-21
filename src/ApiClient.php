@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace UchiPro;
 
 use DateTimeImmutable;
-use DateTimeZone;
+use DateTimeInterface;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -27,6 +27,7 @@ use function GuzzleHttp\Psr7\build_query;
 class ApiClient
 {
     const EMPTY_UUID_VALUE = '00000000-0000-0000-0000-000000000000';
+    const EMPTY_DATE_VALUE = '0001-01-01T00:00:00Z';
 
     /**
      * @var Identity
@@ -193,9 +194,12 @@ class ApiClient
         return $responseData;
     }
 
-    public function parseDate($string): DateTimeImmutable
+    public function parseDate($string): ?DateTimeImmutable
     {
-        return DateTimeImmutable::createFromFormat('Y-m-d\TH:i:sP', $string, new DateTimeZone('UTC'));
+        if ($string === self::EMPTY_DATE_VALUE) {
+            return null;
+        }
+        return DateTimeImmutable::createFromFormat(DateTimeInterface::ATOM, $string);
     }
 
     public function parseId($array, $key): ?string

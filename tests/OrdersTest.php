@@ -120,6 +120,9 @@ class OrdersTest extends TestCase
         $this->assertNotSame($originalOrder->id, $newOrder->id, 'Не удалось сохранить заявку.');
         $this->assertSame($originalOrder->listenersCount, $newOrder->listenersCount);
         $this->assertSame($originalOrder->course->id, $newOrder->course->id);
+
+        $today = new DateTimeImmutable('now');
+        $this->assertSame($today->format('Y-m-d'), $newOrder->createAt->format('Y-m-d'));
     }
 
     public function testSendCredential(): void

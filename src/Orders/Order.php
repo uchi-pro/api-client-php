@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UchiPro\Orders;
 
+use DateTime;
 use UchiPro\Courses\Course;
 use UchiPro\Users\User;
 use UchiPro\Vendors\Vendor;
@@ -14,6 +15,21 @@ class Order
      * @var string
      */
     public $id;
+
+    /**
+     * @var DateTime
+     */
+    public $createAt;
+
+    /**
+     * @var DateTime
+     */
+    public $updatedAt;
+
+    /**
+     * @var DateTime
+     */
+    public $deletedAt;
 
     /**
      * @var string
