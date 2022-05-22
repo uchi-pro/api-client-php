@@ -137,6 +137,7 @@ final class Courses
         $course->childrenCount = isset($data['children_count']) ? (int)$data['children_count'] : 0;
         $course->lessonsCount = isset($data['lessons_count']) ? (int)$data['lessons_count'] : 0;
         $course->academicPlan = $this->parseAcademicPlan($data);
+        $course->vendor = $this->parseVendor($data);
         return $course;
     }
 
@@ -214,6 +215,18 @@ final class Courses
         $academicPlan->items = $planItems;
 
         return $academicPlan;
+    }
+
+    public function parseVendor(array $data): ?Vendor
+    {
+        if (empty($data['vendor_uuid'])) {
+            return null;
+        }
+
+        $vendor = new Vendor();
+        $vendor->id = $data['vendor_uuid'];
+        $vendor->title = $data['vendor_title'];
+        return $vendor;
     }
 
     public function getCourseFeatures(Course $course): CourseFeatures

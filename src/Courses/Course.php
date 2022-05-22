@@ -6,6 +6,7 @@ namespace UchiPro\Courses;
 
 use DateTimeImmutable;
 use UchiPro\Users\User;
+use UchiPro\Vendors\Vendor;
 
 class Course
 {
@@ -98,6 +99,11 @@ class Course
      * @var AcademicPlan\Plan
      */
     public $academicPlan;
+
+    /**
+     * @var Vendor
+     */
+    public $vendor;
 
     public static function create(string $id = null, string $title = null): Course
     {
