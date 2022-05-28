@@ -35,15 +35,15 @@ foreach ($listeners as $listener) {
  *
  * @param Listener $listener
  */
-function sendNotification(Order $order, Listener $listener)
+function sendNotification(Order $order, Listener $listener): void
 {
     // Можно отправить сообщение с доступами по электронной почте или в sms.
 
     $message = <<<TAG
-    Здравствуйте, {$listener->name}!
+    Здравствуйте, $listener->name!
     Вам доступен курс {$order->course->title}
-    Логин: {$listener->username}
-    Пароль: {$listener->password}
+    Логин: $listener->username
+    Пароль: $listener->password
 TAG;
 
     print $message . PHP_EOL;
@@ -52,7 +52,7 @@ TAG;
 /**
  * @return ApiClient
  */
-function getApiClient()
+function getApiClient(): ApiClient
 {
     $url = getenv('UCHIPRO_URL');
     $login = getenv('UCHIPRO_LOGIN');
@@ -67,15 +67,15 @@ function getApiClient()
  *
  * @return Order|null
  */
-function findOrder($orderNumber)
+function findOrder($orderNumber): ?Order
 {
     $ordersApi = getApiClient()->orders();
 
-    $quary = $ordersApi->createCriteria();
-    $quary->number = $orderNumber;
-    $orders = $ordersApi->findBy($quary);
+    $criteria = $ordersApi->createCriteria();
+    $criteria->number = $orderNumber;
+    $orders = $ordersApi->findBy($criteria);
 
-    return isset($orders[0]) ? $orders[0] : null;
+    return $orders[0] ?? null;
 }
 
 /**
@@ -83,7 +83,7 @@ function findOrder($orderNumber)
  *
  * @return array|Listener[]
  */
-function getOrderListeners(Order $order)
+function getOrderListeners(Order $order): iterable
 {
     $apiClient = getApiClient();
     return $apiClient->orders()->getOrderListeners($order);

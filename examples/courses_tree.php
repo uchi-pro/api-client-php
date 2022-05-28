@@ -15,13 +15,13 @@ print buildCoursesTree($courses);
 /**
  * @param Course[] $courses
  *
- * @param int $parentId
+ * @param ?string $parentId
  * @param int $level
  * @param int $i
  *
  * @return string
  */
-function buildCoursesTree($courses, $parentId = null, $level = 0, $i = 0)
+function buildCoursesTree(iterable $courses, ?string $parentId = null, int $level = 0, int $i = 0): string
 {
     $output = '';
 
@@ -32,7 +32,7 @@ function buildCoursesTree($courses, $parentId = null, $level = 0, $i = 0)
         }
         $j++;
 
-        $prefix = str_repeat(' ', $level * 2).($i?"{$i}.":'')."{$j}. ";
+        $prefix = str_repeat(' ', $level * 2).($i?"$i.":'')."$j. ";
         $suffix = '';
         if ($course->lessonsCount === 0 && !$course->parentId) {
             $suffix = ' [направление]';
@@ -49,7 +49,7 @@ function buildCoursesTree($courses, $parentId = null, $level = 0, $i = 0)
 /**
  * @return ApiClient
  */
-function getApiClient()
+function getApiClient(): ApiClient
 {
     $url = getenv('UCHIPRO_URL');
     $login = getenv('UCHIPRO_LOGIN');
@@ -62,7 +62,7 @@ function getApiClient()
 /**
  * @return array|Course[]
  */
-function fetchCourses()
+function fetchCourses(): iterable
 {
     $apiClient = getApiClient();
 

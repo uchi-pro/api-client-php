@@ -13,9 +13,9 @@ $statistics = collectStatistics($orders);
 showPopularCourses($statistics);
 
 /**
- * @param array|\StatisticsItem[] $statistics
+ * @param array|StatisticsItem[] $statistics
  */
-function showPopularCourses(array $statistics)
+function showPopularCourses(array $statistics): void
 {
     $limit = 10;
 
@@ -27,7 +27,7 @@ function showPopularCourses(array $statistics)
     $i = 0;
     foreach ($statistics as $statisticsItem) {
         $i++;
-        print "{$i}. {$statisticsItem->course->title}: {$statisticsItem->orders}".PHP_EOL;
+        print "$i. {$statisticsItem->course->title}: $statisticsItem->orders".PHP_EOL;
         if ($i === $limit) {
             break;
         }
@@ -43,7 +43,7 @@ function showPopularCourses(array $statistics)
     $i = 0;
     foreach ($statistics as $statisticsItem) {
         $i++;
-        print "{$i}. {$statisticsItem->course->title}: {$statisticsItem->listeners}".PHP_EOL;
+        print "$i. {$statisticsItem->course->title}: $statisticsItem->listeners".PHP_EOL;
         if ($i === $limit) {
             break;
         }
@@ -55,7 +55,7 @@ function showPopularCourses(array $statistics)
  *
  * @return array|StatisticsItem[]
  */
-function collectStatistics(array $orders)
+function collectStatistics(iterable $orders): iterable
 {
     $statistics = [];
 
@@ -93,7 +93,7 @@ class StatisticsItem
 /**
  * @return ApiClient
  */
-function getApiClient()
+function getApiClient(): ApiClient
 {
     $url = getenv('UCHIPRO_URL');
     $login = getenv('UCHIPRO_LOGIN');
@@ -106,7 +106,7 @@ function getApiClient()
 /**
  * @return array|Order[]
  */
-function fetchCompletedOrders()
+function fetchCompletedOrders(): iterable
 {
     $orders = [];
 
