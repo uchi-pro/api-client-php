@@ -1,5 +1,7 @@
 # Клиент для работы с API СДО Uchi.pro
 
+Полное описание API можно посмотреть [здесь](https://demo.uchi.pro/docs/api.html "Описание HTTP-API СДО UCHI.PRO v4")
+
 ## Установка
 
 ```bash
