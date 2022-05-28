@@ -83,11 +83,15 @@ final class Courses
             }
 
             if ($criteria->parent instanceof Course) {
-                $uri = "&parent={$criteria->parent->id}";
+                $uri .= "&parent={$criteria->parent->id}";
             }
 
             if (!empty($criteria->gid)) {
-                $uri = "&guid=$criteria->gid";
+                $uri .= "&guid=$criteria->gid";
+            }
+
+            if ($criteria->withInactive) {
+                $uri .= "&show_inactive=1";
             }
         }
 

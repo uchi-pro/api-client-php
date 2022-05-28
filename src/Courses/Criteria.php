@@ -22,4 +22,9 @@ class Criteria
      * @var string
      */
     public $gid;
+
+    /**
+     * @var bool
+     */
+    public $withInactive;
 }

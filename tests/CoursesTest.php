@@ -60,8 +60,6 @@ class CoursesTest extends TestCase
         $coursesCriteria = $coursesApi->createCriteria();
         $courses = $coursesApi->findBy($coursesCriteria);
 
-        $this->assertTrue(is_array($courses));
-
         $courseTypeIdCorrect = true;
         foreach ($courses as $course) {
             if (!empty($course->type->title) && empty($course->type->id)) {
@@ -79,6 +77,23 @@ class CoursesTest extends TestCase
             }
         }
         $this->assertTrue($hours > 0);
+    }
+
+    public function testFindInactiveCourses(): void
+    {
+        $coursesApi = $this->getApiClient()->courses();
+        $coursesCriteria = $coursesApi->createCriteria();
+        $coursesCriteria->withInactive = true;
+        $courses = $coursesApi->findBy($coursesCriteria);
+
+        $inactiveCoursesCount = 0;
+        foreach ($courses as $course) {
+            if ($course->isActive === false) {
+                $inactiveCoursesCount++;
+            }
+        }
+
+        $this->assertGreaterThan(0, $inactiveCoursesCount);
     }
 
     public function testFindCourseById(): void
