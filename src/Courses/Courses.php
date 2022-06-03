@@ -79,7 +79,11 @@ final class Courses
 
         if (!empty($criteria)) {
             if ($criteria->vendor instanceof Vendor) {
-                $uri = "/vendors/{$criteria->vendor->id}/courses?_tree=1";
+                if ($criteria->vendor->id === $this->apiClient::EMPTY_UUID_VALUE) {
+                    $uri .= "&vendor={$criteria->vendor->id}";
+                } else {
+                    $uri = "/vendors/{$criteria->vendor->id}/courses?_tree=1";
+                }
             }
 
             if ($criteria->parent instanceof Course) {
@@ -159,7 +163,7 @@ final class Courses
     {
         $id = $data['code'] ?? null;
         if (!empty($data['uuid'])) { // @todo устаревший вариант - убрать со временем
-            $id = $data['uuid'] ?? null;
+            $id = $data['uuid'];
         }
         if ($id === $this->apiClient::EMPTY_UUID_VALUE) {
             $id = null;

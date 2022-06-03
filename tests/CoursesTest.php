@@ -130,4 +130,14 @@ class CoursesTest extends TestCase
         $courseFeatures = $coursesApi->getCourseFeatures($course);
         $this->assertInstanceOf(CourseFeatures::class, $courseFeatures);
     }
+
+    public function testFindRootCourses()
+    {
+        $coursesApi = $this->getApiClient()->courses();
+        $coursesCriteria = $coursesApi->createCriteria();
+        $coursesCriteria->vendor = $this->getApiClient()->vendors()->createVendor($this->getApiClient()::EMPTY_UUID_VALUE);
+        $courses = $coursesApi->findBy($coursesCriteria);
+
+        $this->assertNotEmpty($courses);
+    }
 }
