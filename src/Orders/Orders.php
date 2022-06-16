@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace UchiPro\Orders;
 
-use DateTime;
-use DateTimeInterface;
 use UchiPro\ApiClient;
 use UchiPro\Courses\Course;
 use UchiPro\Exception\BadResponseException;
@@ -146,7 +144,7 @@ final class Orders
         $order->updatedAt = $this->apiClient->parseDate($data['updated_at']);
         $order->deletedAt = $this->apiClient->parseDate($data['deleted_at']);
         $order->number = $data['number'] ?? null;
-        $order->status = Status::create((int)$data['status']['id'], $data['status']['code'], $data['status']['title']);
+        $order->status = Status::createByCode($data['status']['code']);
         $order->course = $course;
         $order->vendor = $vendor;
         $order->contractor = $contractor;
@@ -217,11 +215,7 @@ final class Orders
             throw new BadResponseException('Не удалось изменить статус заявки.');
         }
 
-        return Status::create(
-          $responseData['status']['id'],
-          $responseData['status']['code'],
-          $responseData['status']['title']
-        );
+        return Status::createByCode($responseData['status']['code']);
     }
 
     public function saveOrder(Order $order): Order

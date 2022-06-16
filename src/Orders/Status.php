@@ -23,6 +23,9 @@ class Status
     const STATUS_CANCELED = 'canceled';
 
     /**
+     * @deprecated СДО по API перестает предоставлять числовой идентификатор статуса
+     * @todo Сделать поле приватным.
+     *
      * @var int
      */
     public $id;
@@ -58,6 +61,16 @@ class Status
         return $this->code === self::STATUS_TRAINING;
     }
 
+    public function isTrainingComplete(): bool
+    {
+        return $this->code === self::STATUS_TRAINING_COMPLETE;
+    }
+
+    public function isDocumentsReady(): bool
+    {
+        return $this->code === self::STATUS_DOCUMENTS_READY;
+    }
+
     public function isCompleted(): bool
     {
         return $this->code === self::STATUS_COMPLETED;
@@ -68,6 +81,15 @@ class Status
         return $this->code === self::STATUS_CANCELED;
     }
 
+    public function greaterThan(Status $status): bool
+    {
+        return $this->id > $status->id;
+    }
+
+    /**
+     * @deprecated
+     * @todo Сделать метод приватным.
+     */
     public static function create(int $id, string $code, string $title): Status
     {
         $status = new self();
@@ -102,19 +124,9 @@ class Status
         return self::create(30, self::STATUS_TRAINING_COMPLETE, 'Обучение завершено');
     }
 
-    public function isTrainingComplete(): bool
-    {
-        return $this->code === self::STATUS_TRAINING_COMPLETE;
-    }
-
     public static function createDocumentsReady(): Status
     {
         return self::create(40, self::STATUS_DOCUMENTS_READY, 'Документы готовы');
-    }
-
-    public function isDocumentsReady(): bool
-    {
-        return $this->code === self::STATUS_DOCUMENTS_READY;
     }
 
     public static function createCompleted(): Status
@@ -125,5 +137,21 @@ class Status
     public static function createCanceled(): Status
     {
         return self::create(127, self::STATUS_CANCELED, 'Отменена');
+    }
+
+    public static function createByCode(string $code): Status
+    {
+        $statuses = [
+            self::STATUS_PENDING => self::createPending(),
+            self::STATUS_ACCEPTED => self::createAccepted(),
+            self::STATUS_AWAITING_PAYMENT => self::createAwaitingPayment(),
+            self::STATUS_TRAINING => self::createTraining(),
+            self::STATUS_TRAINING_COMPLETE => self::createTrainingComplete(),
+            self::STATUS_DOCUMENTS_READY => self::createDocumentsReady(),
+            self::STATUS_COMPLETED => self::createCompleted(),
+            self::STATUS_CANCELED => self::createCanceled(),
+        ];
+
+        return $statuses[$code];
     }
 }

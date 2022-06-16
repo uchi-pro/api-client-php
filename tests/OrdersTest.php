@@ -137,6 +137,27 @@ class OrdersTest extends TestCase
         $this->assertArrayHasKey('success', $result, "Не удалось отправить доступы слушателям заявки $existsOrder->number");
     }
 
+    public function testSortStatuses()
+    {
+        $statuses = [
+            Status::createTraining(),
+            Status::createDocumentsReady(),
+            Status::createAccepted(),
+            Status::createPending(),
+            Status::createCanceled(),
+            Status::createCompleted(),
+            Status::createTrainingComplete(),
+            Status::createAwaitingPayment(),
+        ];
+
+        usort($statuses, function (Status $a, Status $b) {
+            return $a->greaterThan($b);
+        });
+
+        $this->assertEquals(Status::STATUS_PENDING, $statuses[0]->code);
+        $this->assertEquals(Status::STATUS_CANCELED, $statuses[count($statuses) - 1]->code);
+    }
+
     private function findAllOrders(): array
     {
         $ordersApi = $this->getApiClient()->orders();
