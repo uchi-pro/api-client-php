@@ -199,8 +199,12 @@ final class Courses
                 if (is_array($json)) {
                     foreach ($json as $jsonItem) {
                         $itemType = new ItemType();
-                        $itemType->id = $jsonItem['type'] ?? '';
-                        $itemType->title = $jsonItem['type_title'] ?? '';
+                        if (isset($jsonItem['type_title'])) {
+                            $itemType->id = $jsonItem['type'] ?? '';
+                            $itemType->title = $jsonItem['type_title'] ?? '';
+                        } else {
+                            $itemType->title = $jsonItem['type'] ?? '';
+                        }
 
                         $planTtem = new Item();
                         $planTtem->title = $jsonItem['title'] ?? '';
