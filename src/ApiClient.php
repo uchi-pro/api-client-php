@@ -30,6 +30,11 @@ class ApiClient
     const EMPTY_DATE_VALUE = '0001-01-01T00:00:00Z';
 
     /**
+     * @var bool
+     */
+    private $isDebug = false;
+
+    /**
      * @var Identity
      */
     private $identity;
@@ -187,6 +192,10 @@ class ApiClient
 
         $responseData = json_decode($response->getBody()->getContents(), true);
 
+        if ($this->isDebug()) {
+            $this->dump(['url' => $url, 'params' => $params, 'response' => $responseData]);
+        }
+
         if (!is_array($responseData)) {
             throw new BadResponseException('Код ответа не 200.');
         }
@@ -244,5 +253,25 @@ class ApiClient
     public static function create(Identity $identity): ApiClient
     {
         return new static($identity);
+    }
+
+    public function isDebug(): bool
+    {
+        return $this->isDebug;
+    }
+
+    public function enableDebugging(): void
+    {
+        $this->isDebug = true;
+    }
+
+    public function dump(): void
+    {
+        if (function_exists('dump')) {
+            dump(func_get_args());
+        } else {
+            print_r(func_get_args());
+            print PHP_EOL;
+        }
     }
 }

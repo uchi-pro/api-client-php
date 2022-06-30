@@ -12,7 +12,8 @@
   },
   "autoload": {
     "psr-4": {
-      "UchiPro\\": "src"
+      "UchiPro\\": "src",
+      "UchiPro\\Tests\\": "tests"
     }
   },
   "scripts": {

@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
+namespace UchiPro\Tests;
+
 use UchiPro\ApiClient;
 use UchiPro\Identity;
 use UchiPro\Vendors\Limits;
@@ -28,7 +29,11 @@ class VendorsTest extends TestCase
 
     public function getApiClient(): ApiClient
     {
-        return ApiClient::create($this->identity);
+        $apiClient = ApiClient::create($this->identity);
+        if ($this->isDebug()) {
+            $apiClient->enableDebugging();
+        }
+        return $apiClient;
     }
 
     public function testGetVendors()

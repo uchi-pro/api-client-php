@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
+namespace UchiPro\Tests;
+
 use UchiPro\ApiClient;
 use UchiPro\Courses\Course;
 use UchiPro\Identity;
