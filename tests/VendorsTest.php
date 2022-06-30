@@ -74,7 +74,6 @@ class VendorsTest extends TestCase
         $limits = $vendorsApi->getVendorLimits($vendor);
 
         $this->assertInstanceOf(Limits::class, $limits);
-        $this->assertNotNull($limits->totalFilesize);
     }
 
     public function testGetPlainVendorLimits()

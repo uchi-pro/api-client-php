@@ -47,9 +47,6 @@ class Vendors
         if (isset($limitsData['max_total_filesize'])) {
             $limits->maxTotalFilesize = (int)$limitsData['max_total_filesize'];
         }
-        if (isset($limitsData['total_filesize'])) {
-            $limits->totalFilesize = (int)$limitsData['total_filesize'];
-        }
         if (isset($limitsData['session_cheat_available'])) {
             $limits->sessionCheatAvailable = filter_var($limitsData['session_cheat_available'], FILTER_VALIDATE_BOOLEAN);
         }

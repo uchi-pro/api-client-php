@@ -14,11 +14,6 @@ class Limits
     public $maxTotalFilesize;
 
     /**
-     * @var int
-     */
-    public $totalFilesize;
-
-    /**
      * Доступна фиксация обучения.
      *
      * @var bool
