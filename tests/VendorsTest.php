@@ -116,6 +116,22 @@ class VendorsTest extends TestCase
         $this->assertEquals($newLimits->maxTotalFilesize, $updatedLimits->maxTotalFilesize);
     }
 
+    public function testGetVendorTotalFilesize()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $vendors = $vendorsApi->findAll();
+
+        if (empty($vendors[0])) {
+            $this->markTestSkipped('Вендор для теста не найден.');
+        }
+
+        $vendor = $vendors[0];
+        $totalFilesize = $vendorsApi->getVendorTotalFilesize($vendor);
+
+        $this->assertGreaterThan(0, $totalFilesize);
+    }
+
     public function testFindVendorByDomain()
     {
         $vendorsApi = $this->getApiClient()->vendors();

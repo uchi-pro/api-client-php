@@ -116,6 +116,17 @@ class Vendors
         return $this->parseLimits($responseData['limits']);
     }
 
+    public function getVendorTotalFilesize(Vendor $vendor): ?int
+    {
+        $responseData = $this->apiClient->request("/vendors/$vendor->id/limits");
+
+        if (empty($responseData['limits']) && is_array($responseData['vendor'])) {
+            $responseData['limits'] = $responseData['vendor']['limits'];
+        }
+
+        return (int)$responseData['limits']['total_filesize'];
+    }
+
     /**
      * @param Criteria|null $criteria
      *
