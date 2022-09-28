@@ -136,6 +136,18 @@ class Users
         return $this->parseUser($responseData['user']);
     }
 
+    public function deleteUser(User $user): User
+    {
+        $formParams = [
+            'uuid' => $user->id,
+        ];
+
+        $uri = "/users/$user->id/delete";
+        $responseData = $this->apiClient->request($uri, $formParams);
+
+        return $this->parseUser($responseData['user']);
+    }
+
     /**
      * @param Criteria|null $criteria
      *
@@ -232,6 +244,7 @@ class Users
         $user->name = $data['title'] ?? null;
         $user->email = $data['email'] ?? null;
         $user->phone = $data['phone'] ?? null;
+        $user->isDeleted = !empty($data['is_deleted']);
         $user->role = $role;
         $user->vendor = $vendor;
 

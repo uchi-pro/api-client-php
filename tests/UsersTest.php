@@ -176,6 +176,36 @@ class UsersTest extends TestCase
         $this->assertSame($foundContractors[0]->name, $foundListeners[0]->name);
     }
 
+    public function testDeleteUser()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+        $vendors = $vendorsApi->findAll();
+
+        if (empty($vendors[0])) {
+            $this->markTestSkipped('Нет ни одного вендора.');
+        }
+        $vendor = $vendors[0];
+
+        $usersApi = $this->getApiClient()->users();
+        $rand = time();
+
+        $newContractor = $usersApi->createUser();
+        $newContractor->id = 0;
+        $newContractor->name = "test$rand-{$vendor->domains[0]}";
+        $newContractor->email = "test$rand@test.ru";
+        $newContractor->phone = "+7$rand";
+        $newContractor->role = Role::createContractor();
+        $newContractor->vendor = $vendor;
+
+        $password = $newContractor->email;
+        $usersApi->saveUser($newContractor, $password);
+
+        $foundContractor = $usersApi->findContractorByEmail($newContractor->email);
+
+        $deletedContractor = $usersApi->deleteUser($foundContractor);
+        $this->assertTrue($deletedContractor->isDeleted);
+    }
+
     public function testGetListenersNumber()
     {
         $listenersNumber = $this->getApiClient()->users()->getListenersNumber();

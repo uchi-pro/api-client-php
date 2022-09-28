@@ -37,4 +37,9 @@ class User
      * @var Vendor
      */
     public $vendor;
+
+    /**
+     * @var bool
+     */
+    public $isDeleted;
 }
