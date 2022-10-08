@@ -117,6 +117,15 @@ class CoursesTest extends TestCase
         $this->assertEmpty($notExistsCourse);
     }
 
+    public function testFindCourseWithTags(): void
+    {
+        $coursesApi = $this->getApiClient()->courses();
+
+        $foundCourse = $coursesApi->findById('56598831-f4f1-4129-9438-272d046abefb');
+        $this->assertNotEmpty($foundCourse->tags[0]->id);
+        $this->assertNotEmpty($foundCourse->tags[0]->title);
+    }
+
     public function testGetCourseFeatures(): void
     {
         $coursesApi = $this->getApiClient()->courses();
@@ -132,13 +141,10 @@ class CoursesTest extends TestCase
         $this->assertInstanceOf(CourseFeatures::class, $courseFeatures);
     }
 
-    public function testFindRootCourses()
+    public function testFetchTagsTree()
     {
-        $coursesApi = $this->getApiClient()->courses();
-        $coursesCriteria = $coursesApi->createCriteria();
-        $coursesCriteria->vendor = $this->getApiClient()->vendors()->createVendor($this->getApiClient()::EMPTY_UUID_VALUE);
-        $courses = $coursesApi->findBy($coursesCriteria);
-
-        $this->assertNotEmpty($courses);
+        $tagsTree = $this->getApiClient()->courses()->fetchTagsTree();
+        $this->assertNotEmpty($tagsTree);
+        $this->assertNotEmpty($tagsTree[0]->children);
     }
 }

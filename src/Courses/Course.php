@@ -105,6 +105,11 @@ class Course
      */
     public $vendor;
 
+    /**
+     * @var Tag[]
+     */
+    public $tags;
+
     public static function create(string $id = null, string $title = null): Course
     {
         $course = new self();

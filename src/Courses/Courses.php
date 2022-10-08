@@ -146,6 +146,8 @@ final class Courses
         $course->lessonsCount = isset($data['lessons_count']) ? (int)$data['lessons_count'] : 0;
         $course->academicPlan = $this->parseAcademicPlan($data);
         $course->vendor = $this->parseVendor($data);
+        $course->tags = $this->parseTags($data);
+
         return $course;
     }
 
@@ -241,6 +243,27 @@ final class Courses
         return $vendor;
     }
 
+    /**
+     * @param array $courseData
+     *
+     * @return iterable|Tag[]
+     */
+    public function parseTags(array $courseData): iterable
+    {
+        if (empty($courseData['tags'])) {
+            return null;
+        }
+
+        $tags = [];
+        foreach ($courseData['tags'] as $tagData) {
+            $tag = $this->parseTag($tagData);
+            if (!empty($tag)) {
+                $tags[] = $tag;
+            }
+        }
+        return $tags;
+    }
+
     public function getCourseFeatures(Course $course): CourseFeatures
     {
         $courseFeatures = new CourseFeatures();
@@ -255,6 +278,40 @@ final class Courses
         }
 
         return $courseFeatures;
+    }
+
+    public function fetchTagsTree(): iterable
+    {
+        $responseData = $this->apiClient->request("/tags?_tree=1");
+
+        $tags = [];
+        foreach ($responseData['tags'] as $tagData) {
+            $tag = $this->parseTag($tagData);
+            if (!empty($tag)) {
+                $tags[] = $tag;
+            }
+        }
+        return $tags;
+    }
+
+    public function parseTag(array $data): ?Tag
+    {
+        if (empty($data['uuid'])) {
+            return null;
+        }
+
+        $tag = new Tag();
+        $tag->id = $data['uuid'];
+        $tag->title = $data['title'];
+        if (isset($data['children']) && is_array($data['children'])) {
+            foreach ($data['children'] as $childTagData) {
+                $childTag = $this->parseTag($childTagData);
+                if (!empty($childTag)) {
+                    $tag->children[] = $childTag;
+                }
+            }
+        }
+        return $tag;
     }
 
     private function extractLessonFeatures(array $lesson, CourseFeatures $courseFeatures)
