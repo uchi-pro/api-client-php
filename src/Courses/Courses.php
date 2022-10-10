@@ -246,11 +246,11 @@ final class Courses
     /**
      * @param array $courseData
      *
-     * @return iterable|Tag[]
+     * @return iterable|Tag[]|null
      */
-    public function parseTags(array $courseData): iterable
+    public function parseTags(array $courseData): ?iterable
     {
-        if (empty($courseData['tags'])) {
+        if (!isset($courseData['tags'])) {
             return null;
         }
 

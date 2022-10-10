@@ -122,6 +122,11 @@ class CoursesTest extends TestCase
         $coursesApi = $this->getApiClient()->courses();
 
         $foundCourse = $coursesApi->findById('56598831-f4f1-4129-9438-272d046abefb');
+
+        if (is_null($foundCourse)) {
+            $this->markTestSkipped('Нужно указать идентификатор существующего курса с тегами.');
+        }
+
         $this->assertNotEmpty($foundCourse->tags[0]->id);
         $this->assertNotEmpty($foundCourse->tags[0]->title);
     }
