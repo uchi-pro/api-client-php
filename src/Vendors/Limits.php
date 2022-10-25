@@ -61,4 +61,11 @@ class Limits
      * @var bool
      */
     public $shopAvailable;
+
+    /**
+     * Доступен конструктор курсов по тегам
+     *
+     * @var
+     */
+    public $courseCompilerAvailable;
 }

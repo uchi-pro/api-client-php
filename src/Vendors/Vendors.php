@@ -68,6 +68,9 @@ class Vendors
         if (isset($limitsData['online_shop_available'])) {
             $limits->shopAvailable = filter_var($limitsData['online_shop_available'], FILTER_VALIDATE_BOOLEAN);
         }
+        if (isset($limitsData['course_compiler_available'])) {
+            $limits->courseCompilerAvailable = filter_var($limitsData['course_compiler_available'], FILTER_VALIDATE_BOOLEAN);
+        }
 
         return $limits;
     }
@@ -109,6 +112,9 @@ class Vendors
         }
         if (!is_null($limits->shopAvailable)) {
             $params['online_shop_available'] = (int)$limits->shopAvailable;
+        }
+        if (!is_null($limits->courseCompilerAvailable)) {
+            $params['course_compiler_available'] = (int)$limits->courseCompilerAvailable;
         }
 
         $responseData = $this->apiClient->request("/vendors/$vendor->id/limits", $params);
