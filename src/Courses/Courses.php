@@ -316,15 +316,28 @@ final class Courses
 
     private function extractLessonFeatures(array $lesson, CourseFeatures $courseFeatures)
     {
-        if (!$courseFeatures->interactive && $this->checkForInteractiveContent($lesson['description'])) {
-            $courseFeatures->interactive = true;
+        if (isset($lesson['type'])) {
+            // Старый вариант.
+            if ($lesson['type'] === 'quiz') {
+                $courseFeatures->testing = true;
+            }
+            if ($lesson['type'] === 'essay') {
+                $courseFeatures->practice = true;
+            }
+        } elseif ($lesson['type_info']) {
+            if ($lesson['type_info']['code'] === 'quiz') {
+                $courseFeatures->testing = true;
+            }
+            if ($lesson['type_info']['code'] === 'essay') {
+                $courseFeatures->practice = true;
+            }
+            if ($lesson['type_info']['code'] === 'scorm') {
+                $courseFeatures->interactive = true;
+            }
         }
 
-        if ($lesson['type'] === 'quiz') {
-            $courseFeatures->testing = true;
-        }
-        if ($lesson['type'] === 'essay') {
-            $courseFeatures->practice = true;
+        if (!$courseFeatures->interactive && $this->checkForInteractiveContent($lesson['description'])) {
+            $courseFeatures->interactive = true;
         }
 
         if (!empty($lesson['resources']) && is_array($lesson['resources'])) {
