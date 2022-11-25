@@ -53,6 +53,15 @@ class OrdersTest extends TestCase
         $this->assertTrue($createdPendingStatus->isPending());
     }
 
+    public function testFindAllOrders(): void
+    {
+        $ordersApi = $this->getApiClient()->orders();
+        $criteria = $ordersApi->createCriteria();
+        $foundAllOrders = $this->getApiClient()->orders()->findBy($criteria);
+
+        $this->assertNotEmpty($foundAllOrders, 'Не удалось найти все заявки.');
+    }
+
     public function testFindCompletedOrders(): void
     {
         $ordersApi = $this->getApiClient()->orders();

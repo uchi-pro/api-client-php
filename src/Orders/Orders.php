@@ -79,7 +79,7 @@ final class Orders
     {
         $uri = '/orders';
 
-        $uriQuery = ['vendor' => 0];
+        $uriQuery = [];
         if ($criteria) {
             if (!empty($criteria->number)) {
                 $uriQuery['q'] = $criteria->number;
