@@ -65,7 +65,14 @@ class Limits
     /**
      * Доступен конструктор курсов по тегам
      *
-     * @var
+     * @var bool
      */
     public $courseCompilerAvailable;
+
+    /**
+     * Доступны расписания по заявкам, группам по курсу
+     *
+     * @var bool
+     */
+    public $schedulesAvailable;
 }

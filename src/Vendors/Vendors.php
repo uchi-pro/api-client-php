@@ -71,6 +71,9 @@ class Vendors
         if (isset($limitsData['course_compiler_available'])) {
             $limits->courseCompilerAvailable = filter_var($limitsData['course_compiler_available'], FILTER_VALIDATE_BOOLEAN);
         }
+        if (isset($limitsData['schedules_available'])) {
+            $limits->schedulesAvailable = filter_var($limitsData['schedules_available'], FILTER_VALIDATE_BOOLEAN);
+        }
 
         return $limits;
     }
@@ -115,6 +118,9 @@ class Vendors
         }
         if (!is_null($limits->courseCompilerAvailable)) {
             $params['course_compiler_available'] = (int)$limits->courseCompilerAvailable;
+        }
+        if (!is_null($limits->schedulesAvailable)) {
+            $params['schedules_available'] = (int)$limits->schedulesAvailable;
         }
 
         $responseData = $this->apiClient->request("/vendors/$vendor->id/limits", $params);
