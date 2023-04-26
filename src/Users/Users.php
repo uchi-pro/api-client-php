@@ -121,7 +121,7 @@ class Users
         $formParams = [
           'role' => $user->role->id,
           'password' => $password,
-          'username' => $user->email,
+          'username' => $user->username ?? $user->email,
           'active' => 1,
           'vendor' => $user->vendor->id,
           'email' => $user->email,
@@ -241,6 +241,7 @@ class Users
 
         $user = new User();
         $user->id = $data['uuid'] ?? null;
+        $user->username = $data['username'] ?? null;
         $user->name = $data['title'] ?? null;
         $user->email = $data['email'] ?? null;
         $user->phone = $data['phone'] ?? null;

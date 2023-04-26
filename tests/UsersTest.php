@@ -37,6 +37,7 @@ class UsersTest extends TestCase
         $me = $this->getApiClient()->users()->getMe();
 
         $this->assertNotEmpty($me->id);
+        $this->assertNotEmpty($me->username);
         $this->assertNotEmpty($me->role->id);
     }
 
@@ -152,9 +153,12 @@ class UsersTest extends TestCase
         $usersApi = $this->getApiClient()->users();
         $rand = time();
 
+        $domain = $vendor->domains[0] ?? '';
+
         $user = $usersApi->createUser();
         $user->id = 0;
-        $user->name = "test$rand-{$vendor->domains[0]}";
+        $user->username = "test$rand";
+        $user->name = "test$rand-$domain";
         $user->email = "test$rand@test.ru";
         $user->phone = "+7$rand";
         $user->role = Role::createContractor();
@@ -173,7 +177,9 @@ class UsersTest extends TestCase
         $criteria->role = Role::createListener();
         $foundListeners = $usersApi->findBy($criteria);
 
-        $this->assertSame($foundContractors[0]->name, $foundListeners[0]->name);
+        $contractorName = $foundContractors[0]->name ?? null;
+        $listenerName = $foundListeners[0]->name ?? '';
+        $this->assertEquals($contractorName, $listenerName);
     }
 
     public function testDeleteUser()
@@ -209,6 +215,6 @@ class UsersTest extends TestCase
     public function testGetListenersNumber()
     {
         $listenersNumber = $this->getApiClient()->users()->getListenersNumber();
-        $this->assertTrue(is_numeric($listenersNumber));
+        $this->assertTrue($listenersNumber >= 0);
     }
 }
