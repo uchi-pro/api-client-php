@@ -97,6 +97,10 @@ final class Courses
             if ($criteria->withInactive) {
                 $uri .= "&show_inactive=1";
             }
+
+            if ($criteria->withDeleted) {
+                $uri .= "&show_deleted=1";
+            }
         }
 
         return $uri;

@@ -27,4 +27,9 @@ class Criteria
      * @var bool
      */
     public $withInactive;
+
+    /**
+     * @var bool
+     */
+    public $withDeleted;
 }
