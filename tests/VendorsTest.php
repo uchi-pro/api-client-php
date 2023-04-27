@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UchiPro\Tests;
 
+use Traversable;
 use UchiPro\ApiClient;
 use UchiPro\Identity;
 use UchiPro\Vendors\Limits;
@@ -42,7 +43,7 @@ class VendorsTest extends TestCase
 
         $vendors = $vendorsApi->findAll();
 
-        $this->assertTrue(is_array($vendors));
+        $this->assertInstanceOf(Traversable::class, $vendors);
     }
 
     public function testFindVendorById()
@@ -129,7 +130,7 @@ class VendorsTest extends TestCase
         $vendor = $vendors[0];
         $totalFilesize = $vendorsApi->getVendorTotalFilesize($vendor);
 
-        $this->assertGreaterThan(0, $totalFilesize);
+        $this->assertGreaterThan(0, $totalFilesize, "У вендора $vendor->title ($vendor->id) не загружены файлы.");
     }
 
     public function testFindVendorByDomain()

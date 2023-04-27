@@ -10,17 +10,17 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ServerException;
-use UchiPro\Courses\Courses;
+use UchiPro\Courses\CoursesApi;
 use UchiPro\Exception\AccessDeniedException;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Exception\InvalidUrlException;
 use UchiPro\Exception\RequestException;
 use UchiPro\Exception\UnreachableUrlException;
-use UchiPro\Leads\Leads;
-use UchiPro\Orders\Orders;
-use UchiPro\Sessions\Sessions;
-use UchiPro\Users\Users;
-use UchiPro\Vendors\Vendors;
+use UchiPro\Leads\LeadsApi;
+use UchiPro\Orders\OrdersApi;
+use UchiPro\Sessions\SessionsApi;
+use UchiPro\Users\UsersApi;
+use UchiPro\Vendors\VendorsApi;
 
 use function GuzzleHttp\Psr7\build_query;
 
@@ -220,34 +220,34 @@ class ApiClient
         return $id;
     }
 
-    public function users(): Users
+    public function users(): UsersApi
     {
-        return Users::create($this);
+        return UsersApi::create($this);
     }
 
-    public function courses(): Courses
+    public function courses(): CoursesApi
     {
-        return Courses::create($this);
+        return CoursesApi::create($this);
     }
 
-    public function sessions(): Sessions
+    public function sessions(): SessionsApi
     {
-        return Sessions::create($this);
+        return SessionsApi::create($this);
     }
 
-    public function orders(): Orders
+    public function orders(): OrdersApi
     {
-        return Orders::create($this);
+        return OrdersApi::create($this);
     }
 
-    public function vendors(): Vendors
+    public function vendors(): VendorsApi
     {
-        return Vendors::create($this);
+        return VendorsApi::create($this);
     }
 
-    public function leads(): Leads
+    public function leads(): LeadsApi
     {
-        return Leads::create($this);
+        return LeadsApi::create($this);
     }
 
     public static function create(Identity $identity): ApiClient

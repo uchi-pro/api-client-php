@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace UchiPro\Tests;
 
+use Iterator;
+use Traversable;
 use UchiPro\ApiClient;
 use UchiPro\Identity;
 use UchiPro\Sessions\Session;
@@ -71,7 +73,7 @@ class SessionsTest extends TestCase
         $sessionsCriteria = $sessionsApi->createCriteria();
         $sessionsCriteria->order = $order;
         $sessions = $sessionsApi->findBy($sessionsCriteria);
-        $this->assertTrue(is_array($sessions));
+        $this->assertInstanceOf(Traversable::class, $sessions);
 
         $sessions = $sessionsApi->findActiveByOrder($order);
         foreach ($sessions as $session) {

@@ -77,7 +77,7 @@ class CoursesTest extends TestCase
                 }
             }
         }
-        $this->assertTrue($hours > 0);
+        $this->assertTrue($hours > 0, 'Курсы с часами не найдены.');
     }
 
     public function testFindInactiveCourses(): void

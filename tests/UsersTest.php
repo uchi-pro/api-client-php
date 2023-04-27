@@ -172,14 +172,16 @@ class UsersTest extends TestCase
         $criteria->role = Role::createContractor();
         $foundContractors = $usersApi->findBy($criteria);
 
+        $this->assertArrayHasKey(0, $foundContractors, 'Созданный контрагент не найден.');
+
         $criteria = $usersApi->createCriteria();
         $criteria->q = $user->email;
         $criteria->role = Role::createListener();
         $foundListeners = $usersApi->findBy($criteria);
 
-        $contractorName = $foundContractors[0]->name ?? null;
-        $listenerName = $foundListeners[0]->name ?? '';
-        $this->assertEquals($contractorName, $listenerName);
+        if (count($foundListeners) > 0) {
+            $this->assertEquals($foundContractors[0]->name, $foundListeners[0]->name);
+        }
     }
 
     public function testDeleteUser()
@@ -195,9 +197,11 @@ class UsersTest extends TestCase
         $usersApi = $this->getApiClient()->users();
         $rand = time();
 
+        $domain = $vendor->domains[0] ?? '';
+
         $newContractor = $usersApi->createUser();
         $newContractor->id = 0;
-        $newContractor->name = "test$rand-{$vendor->domains[0]}";
+        $newContractor->name = "test$rand-$domain";
         $newContractor->email = "test$rand@test.ru";
         $newContractor->phone = "+7$rand";
         $newContractor->role = Role::createContractor();

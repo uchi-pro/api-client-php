@@ -27,4 +27,14 @@ class Criteria
      * @var bool
      */
     public $withFullAcceptedOnly;
+
+    /**
+     * @var ?int
+     */
+    public $page;
+
+    /**
+     * @var ?int
+     */
+    public $perPage;
 }

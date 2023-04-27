@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace UchiPro\Sessions;
 
 use UchiPro\ApiClient;
+use UchiPro\Collection;
 use UchiPro\Courses\Course;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Exception\RequestException;
 use UchiPro\Orders\Order;
 use UchiPro\Users\User;
 
-class Sessions
+final class SessionsApi
 {
     /**
      * @var ApiClient
@@ -36,14 +37,14 @@ class Sessions
     /**
      * @param Criteria|null $criteria
      *
-     * @return array|Session[]
+     * @return Session[]|Collection
      *
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(Criteria $criteria = null): array
+    public function findBy(Criteria $criteria = null): iterable
     {
-        $sessions = [];
+        $sessions = new Collection();
 
         $uri = $this->buildUri($criteria);
         $responseData = $this->apiClient->request($uri);
@@ -62,21 +63,30 @@ class Sessions
             }
         }
 
+        if (isset($responseData['pager'])) {
+            $sessions->setPager($responseData['pager']);
+        }
+
         return $sessions;
     }
 
     /**
      * @param Order $order
      *
-     * @return array|Session[]
+     * @return Session[]|Collection
      */
-    public function findActiveByOrder(Order $order): array
+    public function findActiveByOrder(Order $order): iterable
     {
         $criteria = $this->createCriteria();
         $criteria->order = $order;
-        return array_filter($this->findBy($criteria), function (Session $session) {
+
+        $allSessions = $this->findBy($criteria);
+
+        $activeSessions = array_filter(iterator_to_array($allSessions), function (Session $session) {
             return $session->isActive();
         });
+
+        return new Collection($activeSessions);
     }
 
     /**
@@ -116,11 +126,11 @@ class Sessions
     /**
      * @param array $list
      *
-     * @return array|Session[]
+     * @return Session[]|Collection
      */
-    private function parseSessions(array $list): array
+    private function parseSessions(array $list): Collection
     {
-        $sessions = [];
+        $sessions = new Collection();
 
         foreach ($list as $item) {
             $sessions[] = $this->parseSession($item);
@@ -158,7 +168,7 @@ class Sessions
         return $session;
     }
 
-    public static function create(ApiClient $apiClient): Sessions
+    public static function create(ApiClient $apiClient): SessionsApi
     {
         return new static($apiClient);
     }

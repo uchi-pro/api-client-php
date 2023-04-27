@@ -7,7 +7,7 @@ namespace UchiPro\Leads;
 use UchiPro\ApiClient;
 use UchiPro\Courses\Course;
 
-final class Leads
+final class LeadsApi
 {
     /**
      * @var ApiClient
@@ -81,7 +81,7 @@ final class Leads
         return $comment;
     }
 
-    public static function create(ApiClient $apiClient): Leads
+    public static function create(ApiClient $apiClient): LeadsApi
     {
         return new self($apiClient);
     }

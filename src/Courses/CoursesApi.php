@@ -6,6 +6,7 @@ namespace UchiPro\Courses;
 
 use Exception;
 use UchiPro\ApiClient;
+use UchiPro\Collection;
 use UchiPro\Courses\AcademicPlan\Item;
 use UchiPro\Courses\AcademicPlan\ItemType;
 use UchiPro\Courses\AcademicPlan\Plan;
@@ -14,7 +15,7 @@ use UchiPro\Exception\RequestException;
 use UchiPro\Users\User;
 use UchiPro\Vendors\Vendor;
 
-final class Courses
+final class CoursesApi
 {
     /**
      * @var ApiClient
@@ -50,14 +51,14 @@ final class Courses
     /**
      * @param Criteria|null $query
      *
-     * @return array|Course[]
+     * @return Course[]|Collection
      *
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(?Criteria $query = null): array
+    public function findBy(?Criteria $query = null): iterable
     {
-        $courses = [];
+        $courses = new Collection();
 
         $uri = $this->buildUri($query);
         $responseData = $this->apiClient->request($uri);
@@ -68,6 +69,10 @@ final class Courses
 
         if (is_array($responseData['courses'])) {
             $courses = $this->parseCourses($responseData['courses']);
+        }
+
+        if (isset($responseData['pager'])) {
+            $courses->setPager($responseData['pager']);
         }
 
         return $courses;
@@ -109,11 +114,11 @@ final class Courses
     /**
      * @param array $list
      *
-     * @return array|Course[]
+     * @return Course[]|Collection
      */
-    private function parseCourses(array $list): array
+    private function parseCourses(array $list): Collection
     {
-        $courses = [];
+        $courses = new Collection();
 
         foreach ($list as $item) {
             $courses[] = $this->parseCourse($item);
@@ -212,12 +217,12 @@ final class Courses
                             $itemType->title = $jsonItem['type'] ?? '';
                         }
 
-                        $planTtem = new Item();
-                        $planTtem->title = $jsonItem['title'] ?? '';
-                        $planTtem->type = $itemType;
-                        $planTtem->hours = $jsonItem['hours'] ?? null;
+                        $planItem = new Item();
+                        $planItem->title = $jsonItem['title'] ?? '';
+                        $planItem->type = $itemType;
+                        $planItem->hours = $jsonItem['hours'] ?? null;
 
-                        $planItems[] = $planTtem;
+                        $planItems[] = $planItem;
                     }
                 }
             } catch (Exception $e) {
@@ -383,7 +388,7 @@ final class Courses
         return false;
     }
 
-    public static function create(ApiClient $apiClient): Courses
+    public static function create(ApiClient $apiClient): CoursesApi
     {
         return new self($apiClient);
     }

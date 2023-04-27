@@ -59,7 +59,29 @@ class OrdersTest extends TestCase
         $criteria = $ordersApi->createCriteria();
         $foundAllOrders = $this->getApiClient()->orders()->findBy($criteria);
 
-        $this->assertNotEmpty($foundAllOrders, 'Не удалось найти все заявки.');
+        $this->assertNotCount(0, $foundAllOrders, 'Не удалось найти все заявки.');
+    }
+
+    public function testFindAllOrdersByPage(): void
+    {
+        $ordersApi = $this->getApiClient()->orders();
+        $criteria = $ordersApi->createCriteria();
+        $criteria->page = 2;
+        $criteria->perPage = 10;
+        $foundOrders = $this->getApiClient()->orders()->findBy($criteria);
+
+        $this->assertEquals($criteria->page, $foundOrders->getPage(), 'Вернулась не та страница.');
+        $this->assertEquals($criteria->perPage, $foundOrders->getPerPage(), 'Вернулось не то число заявок на страницу.');
+        $this->assertCount($criteria->perPage, $foundOrders, 'Вернулось не то число результатов');
+
+        $this->assertGreaterThanOrEqual($foundOrders->getTotalItems(), $foundOrders->getTotalPages() * $foundOrders->getPerPage());
+        $this->assertLessThanOrEqual($foundOrders->getTotalItems(), ($foundOrders->getTotalPages() - 1) * $foundOrders->getPerPage());
+
+        $i = 0;
+        foreach ($foundOrders as $order) {
+            $i++;
+        }
+        $this->assertEquals($criteria->perPage, $i, 'Вернулось не то число результатов');
     }
 
     public function testFindCompletedOrders(): void
@@ -169,7 +191,7 @@ class OrdersTest extends TestCase
         $this->assertEquals(Status::STATUS_CANCELED, $statuses[count($statuses) - 1]->code);
     }
 
-    private function findAllOrders(): array
+    private function findAllOrders(): iterable
     {
         $ordersApi = $this->getApiClient()->orders();
         $orders = $ordersApi->findBy();

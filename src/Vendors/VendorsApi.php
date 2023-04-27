@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace UchiPro\Vendors;
 
 use UchiPro\ApiClient;
+use UchiPro\Collection;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Exception\RequestException;
 
-class Vendors
+final class VendorsApi
 {
     /**
      * @var ApiClient
@@ -142,14 +143,14 @@ class Vendors
     /**
      * @param Criteria|null $criteria
      *
-     * @return array|Vendor[]
+     * @return Vendor[]|Collection
      *
      * @throws RequestException
      * @throws BadResponseException
      */
     public function findBy(Criteria $criteria = null): iterable
     {
-        $vendors = [];
+        $vendors = new Collection();
 
         $uri = $this->buildUri($criteria);
         $responseData = $this->apiClient->request($uri);
@@ -160,6 +161,10 @@ class Vendors
 
         if (is_array($responseData['vendors'])) {
             $vendors = $this->parseVendors($responseData['vendors']);
+        }
+
+        if (isset($responseData['pager'])) {
+            $vendors->setPager($responseData['pager']);
         }
 
         foreach ($vendors as $vendor) {
@@ -238,11 +243,11 @@ class Vendors
     /**
      * @param array $list
      *
-     * @return Vendor[]
+     * @return Vendor[]|Collection
      */
     private function parseVendors(array $list): iterable
     {
-        $vendors = [];
+        $vendors = new Collection();
 
         foreach ($list as $item) {
             $vendors[] = $this->parseVendor($item);
@@ -279,7 +284,7 @@ class Vendors
     {
         $uri = '/vendors';
 
-        $uriQuery = [];
+        $uriQuery = ['is_active' => null];
         if ($criteria) {
             if (!is_null($criteria->q)) {
                 $uriQuery['q'] = $criteria->q;
@@ -312,9 +317,9 @@ class Vendors
     /**
      * @param ApiClient $apiClient
      *
-     * @return Vendors
+     * @return VendorsApi
      */
-    public static function create(ApiClient $apiClient): Vendors
+    public static function create(ApiClient $apiClient): VendorsApi
     {
         return new static($apiClient);
     }

@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace UchiPro\Orders;
 
 use UchiPro\ApiClient;
+use UchiPro\Collection;
 use UchiPro\Courses\Course;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Exception\RequestException;
 use UchiPro\Users\User;
 use UchiPro\Vendors\Vendor;
 
-final class Orders
+final class OrdersApi
 {
     /**
      * @var ApiClient
@@ -47,14 +48,14 @@ final class Orders
     /**
      * @param Criteria|null $criteria
      *
-     * @return array|Order[]
+     * @return Order[]|Collection
      *
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(Criteria $criteria = null): array
+    public function findBy(Criteria $criteria = null): iterable
     {
-        $orders = [];
+        $orders = new Collection();
 
         $uri = $this->buildUri($criteria);
         $responseData = $this->apiClient->request($uri);
@@ -65,6 +66,10 @@ final class Orders
 
         if (is_array($responseData['orders'])) {
             $orders = $this->parseOrders($responseData['orders']);
+        }
+
+        if (isset($responseData['pager'])) {
+            $orders->setPager($responseData['pager']);
         }
 
         return $orders;
@@ -99,6 +104,14 @@ final class Orders
             if (!empty($criteria->withFullAcceptedOnly)) {
                 $uriQuery['with_full_accepted_only'] = 1;
             }
+
+            if (!is_null($criteria->page)) {
+                $uriQuery['_page'] = $criteria->page;
+            }
+
+            if (!is_null($criteria->perPage)) {
+                $uriQuery['_items_per_page'] = $criteria->perPage;
+            }
         }
 
         if (!empty($uriQuery)) {
@@ -111,11 +124,11 @@ final class Orders
     /**
      * @param array $list
      *
-     * @return array|Order[]
+     * @return Order[]|Collection
      */
-    private function parseOrders(array $list): array
+    private function parseOrders(array $list): Collection
     {
-        $orders = [];
+        $orders = new Collection();
 
         foreach ($list as $item) {
             $orders[] = $this->parseOrder($item);
@@ -159,7 +172,7 @@ final class Orders
      *
      * @return array|Listener[]
      */
-    public function getOrderListeners(Order $order): array
+    public function getOrderListeners(Order $order): iterable
     {
         $listeners = [];
 
@@ -182,7 +195,7 @@ final class Orders
      *
      * @return array|Listener[]
      */
-    private function parseListeners(array $list): array
+    private function parseListeners(array $list): iterable
     {
         $listeners = [];
 
@@ -257,7 +270,7 @@ final class Orders
         return $this->apiClient->request("/orders/$order->id/listeners/send-credentials", $formParams);
     }
 
-    public static function create(ApiClient $apiClient): Orders
+    public static function create(ApiClient $apiClient): OrdersApi
     {
         return new self($apiClient);
     }

@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace UchiPro\Users;
 
 use UchiPro\ApiClient;
+use UchiPro\Collection;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Vendors\Vendor;
 
-class Users
+final class UsersApi
 {
     /**
      * @var ApiClient
@@ -151,11 +152,11 @@ class Users
     /**
      * @param Criteria|null $criteria
      *
-     * @return array|User[]
+     * @return User[]|Collection
      */
-    public function findBy(Criteria $criteria = null): array
+    public function findBy(Criteria $criteria = null): iterable
     {
-        $users = [];
+        $users = new Collection();
 
         $uri = $this->buildUri($criteria);
         $responseData = $this->apiClient->request($uri);
@@ -166,6 +167,10 @@ class Users
 
         if (is_array($responseData['users'])) {
             $users = $this->parseUsers($responseData['users']);
+        }
+
+        if (isset($responseData['pager'])) {
+            $users->setPager($responseData['pager']);
         }
 
         return $users;
@@ -205,11 +210,11 @@ class Users
     /**
      * @param array $list
      *
-     * @return array|User[]
+     * @return User[]|Collection
      */
-    private function parseUsers(array $list): array
+    private function parseUsers(array $list): Collection
     {
-        $users = [];
+        $users = new Collection();
 
         foreach ($list as $item) {
             $users[] = $this->parseUser($item);
@@ -263,7 +268,7 @@ class Users
         return (int)$responseData['pager']['total_items'];
     }
 
-    public static function create(ApiClient $apiClient): Users
+    public static function create(ApiClient $apiClient): UsersApi
     {
         return new static($apiClient);
     }
