@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UchiPro\Orders;
 
+use DateTimeInterface;
 use UchiPro\Vendors\Vendor;
 
 class Criteria
@@ -37,4 +38,9 @@ class Criteria
      * @var ?int
      */
     public $perPage;
+
+    /**
+     * @var DateTimeInterface
+     */
+    public $updatedSince;
 }

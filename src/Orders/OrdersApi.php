@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UchiPro\Orders;
 
+use DateTimeInterface;
 use UchiPro\ApiClient;
 use UchiPro\Collection;
 use UchiPro\Courses\Course;
@@ -111,6 +112,10 @@ final class OrdersApi
 
             if (!is_null($criteria->perPage)) {
                 $uriQuery['_items_per_page'] = $criteria->perPage;
+            }
+
+            if ($criteria->updatedSince instanceof DateTimeInterface) {
+                $uriQuery['updated_since'] = $criteria->updatedSince->format('Y-m-d');
             }
         }
 
