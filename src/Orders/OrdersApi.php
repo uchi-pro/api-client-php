@@ -158,7 +158,8 @@ final class OrdersApi
 
         $order = new Order();
         $order->id = $data['uuid'] ?? null;
-        $order->createAt = $this->apiClient->parseDate($data['created_at']);
+        $order->createdAt = $this->apiClient->parseDate($data['created_at']);
+        $order->createAt = clone $order->createdAt;
         $order->updatedAt = $this->apiClient->parseDate($data['updated_at']);
         $order->deletedAt = $this->apiClient->parseDate($data['deleted_at']);
         $order->number = $data['number'] ?? null;

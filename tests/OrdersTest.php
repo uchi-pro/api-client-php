@@ -155,7 +155,7 @@ class OrdersTest extends TestCase
         $this->assertSame($originalOrder->course->id, $newOrder->course->id);
 
         $today = new DateTimeImmutable('now');
-        $this->assertSame($today->format('Y-m-d'), $newOrder->createAt->format('Y-m-d'));
+        $this->assertSame($today->format('Y-m-d'), $newOrder->createdAt->format('Y-m-d'));
     }
 
     public function testSendCredential(): void

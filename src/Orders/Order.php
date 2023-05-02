@@ -17,9 +17,16 @@ class Order
     public $id;
 
     /**
+     * @deprecated
+     * @see $createdAt
      * @var DateTimeImmutable
      */
     public $createAt;
+
+    /**
+     * @var DateTimeImmutable
+     */
+    public $createdAt;
 
     /**
      * @var DateTimeImmutable
