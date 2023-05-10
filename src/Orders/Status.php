@@ -23,9 +23,6 @@ class Status
     const STATUS_CANCELED = 'canceled';
 
     /**
-     * @deprecated СДО по API перестает предоставлять числовой идентификатор статуса
-     * @todo Сделать поле приватным.
-     *
      * @var int
      */
     public $id;
@@ -86,11 +83,7 @@ class Status
         return $this->id > $status->id;
     }
 
-    /**
-     * @deprecated
-     * @todo Сделать метод приватным.
-     */
-    public static function create(int $id, string $code, string $title): Status
+    private static function create(int $id, string $code, string $title): Status
     {
         $status = new self();
         $status->id = $id;

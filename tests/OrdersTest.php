@@ -191,6 +191,18 @@ class OrdersTest extends TestCase
         $this->assertEquals(Status::STATUS_CANCELED, $statuses[count($statuses) - 1]->code);
     }
 
+    public function testCreateTrainingStatus()
+    {
+        $trainingStatus = Status::createTraining();
+        $this->assertTrue($trainingStatus->isTraining());
+    }
+
+    public function testCreateCompletedStatus()
+    {
+        $completedStatus = Status::createCompleted();
+        $this->assertTrue($completedStatus->isCompleted());
+    }
+
     private function findAllOrders(): iterable
     {
         $ordersApi = $this->getApiClient()->orders();
