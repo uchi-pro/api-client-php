@@ -289,6 +289,9 @@ final class CoursesApi
         return $courseFeatures;
     }
 
+    /**
+     * @return Tag[]
+     */
     public function fetchTagsTree(): iterable
     {
         $responseData = $this->apiClient->request("/tags?_tree=1");
@@ -311,6 +314,8 @@ final class CoursesApi
 
         $tag = new Tag();
         $tag->id = $data['uuid'];
+        $tag->isActive = filter_var($data['is_active'], FILTER_VALIDATE_BOOLEAN);
+        $tag->parentId = $data['parent_uuid'];
         $tag->title = $data['title'];
         if (isset($data['children']) && is_array($data['children'])) {
             foreach ($data['children'] as $childTagData) {

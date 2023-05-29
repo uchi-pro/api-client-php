@@ -7,6 +7,7 @@ namespace UchiPro\Tests;
 use UchiPro\ApiClient;
 use UchiPro\Courses\Course;
 use UchiPro\Courses\CourseFeatures;
+use UchiPro\Courses\Tag;
 use UchiPro\Identity;
 
 class CoursesTest extends TestCase
@@ -151,5 +152,7 @@ class CoursesTest extends TestCase
         $tagsTree = $this->getApiClient()->courses()->fetchTagsTree();
         $this->assertNotEmpty($tagsTree);
         $this->assertNotEmpty($tagsTree[0]->children);
+        $this->assertInstanceOf(Tag::class, $tagsTree[0]->children[0]);
+        $this->assertEquals($tagsTree[0]->id, $tagsTree[0]->children[0]->parentId);
     }
 }

@@ -12,12 +12,22 @@ class Tag
     public $id;
 
     /**
+     * @var bool
+     */
+    public $isActive;
+
+    /**
+     * @var string
+     */
+    public $parentId;
+
+    /**
      * @var string
      */
     public $title;
 
     /**
-     * @var array
+     * @var Tag[]
      */
-    public $children;
+    public $children = [];
 }
