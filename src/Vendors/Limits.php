@@ -75,4 +75,11 @@ class Limits
      * @var bool
      */
     public $schedulesAvailable;
+
+    /**
+     * Доступны опросы по заявкам
+     *
+     * @var bool
+     */
+    public $surveysAvailable;
 }

@@ -75,6 +75,9 @@ final class VendorsApi
         if (isset($limitsData['schedules_available'])) {
             $limits->schedulesAvailable = filter_var($limitsData['schedules_available'], FILTER_VALIDATE_BOOLEAN);
         }
+        if (isset($limitsData['surveys_available'])) {
+            $limits->surveysAvailable = filter_var($limitsData['surveys_available'], FILTER_VALIDATE_BOOLEAN);
+        }
 
         return $limits;
     }
@@ -122,6 +125,9 @@ final class VendorsApi
         }
         if (!is_null($limits->schedulesAvailable)) {
             $params['schedules_available'] = (int)$limits->schedulesAvailable;
+        }
+        if (!is_null($limits->surveysAvailable)) {
+            $params['surveys_available'] = (int)$limits->surveysAvailable;
         }
 
         $responseData = $this->apiClient->request("/vendors/$vendor->id/limits", $params);
