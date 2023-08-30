@@ -203,6 +203,12 @@ class ApiClient
         return $responseData;
     }
 
+    public function getFile(string $url): string
+    {
+        $response = $this->getHttpClient()->request('get', $url);
+        return $response->getBody()->getContents();
+    }
+
     public function parseDate($string): ?DateTimeImmutable
     {
         if ($string === self::EMPTY_DATE_VALUE) {
