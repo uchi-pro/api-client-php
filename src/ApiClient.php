@@ -110,7 +110,6 @@ class ApiClient
 
         $httpClientConfig = [
             'base_uri' => $this->identity->url,
-            'headers' => ['Accept' => 'application/json'],
         ];
 
         if ($this->identity->accessToken) {
@@ -143,6 +142,9 @@ class ApiClient
 
         $response = $client->post('/account/login', [
             'form_params' => $formParams,
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
         ]);
 
         $responseData = json_decode($response->getBody()->getContents(), true);
@@ -165,13 +167,18 @@ class ApiClient
     {
         try {
             if (empty($params)) {
-                $response = $this->getHttpClient()->request('get', $url);
+                $response = $this->getHttpClient()->request('get', $url, [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                    ],
+                ]);
             } else {
                 $response = $this->getHttpClient()->request('post', $url, [
-                  'headers' => [
-                    'Content-Type' => 'application/x-www-form-urlencoded',
-                  ],
-                  'body' => $this::httpBuildQuery($params),
+                    'headers' => [
+                        'Content-Type' => 'application/x-www-form-urlencoded',
+                        'Accept' => 'application/json',
+                    ],
+                    'body' => $this::httpBuildQuery($params),
                 ]);
             }
         } catch (GuzzleException $e) {
