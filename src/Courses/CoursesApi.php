@@ -195,18 +195,13 @@ final class CoursesApi
         return $user;
     }
 
-    /**
-     * @param array $data
-     *
-     * @return Plan|null
-     */
-    private function parseAcademicPlan(array $data): ?Plan
+    private function parseAcademicPlan(array $courseData): ?Plan
     {
         $planItems = [];
 
-        if (!empty($data['settings']['academic_plan'])) {
+        if (!empty($courseData['settings']['academic_plan'])) {
             try {
-                $json = json_decode($data['settings']['academic_plan'], true);
+                $json = json_decode($courseData['settings']['academic_plan'], true);
                 if (is_array($json)) {
                     foreach ($json as $jsonItem) {
                         $itemType = new ItemType();
@@ -227,6 +222,25 @@ final class CoursesApi
                 }
             } catch (Exception $e) {
                 // Ничего не делать.
+            }
+        }
+
+        if (!empty($courseData['academic_plan']) && is_array($courseData['academic_plan'])) {
+            foreach ($courseData['academic_plan'] as $item) {
+                $itemType = new ItemType();
+                if (isset($item['type_title'])) {
+                    $itemType->id = $item['type'] ?? '';
+                    $itemType->title = $item['type_title'] ?? '';
+                } else {
+                    $itemType->title = $item['type'] ?? '';
+                }
+
+                $planItem = new Item();
+                $planItem->title = $item['title'] ?? '';
+                $planItem->type = $itemType;
+                $planItem->hours = $item['hours'] ?? null;
+
+                $planItems[] = $planItem;
             }
         }
 
