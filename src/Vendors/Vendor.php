@@ -24,7 +24,7 @@ class Vendor
     public $isActive;
 
     /**
-     * @var string
+     * @var ?string
      */
     public $title;
 

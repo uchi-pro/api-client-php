@@ -19,7 +19,7 @@ class User
     public $username;
 
     /**
-     * @var string
+     * @var ?string
      */
     public $name;
 

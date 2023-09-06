@@ -262,7 +262,7 @@ final class CoursesApi
 
         $vendor = new Vendor();
         $vendor->id = $data['vendor_uuid'];
-        $vendor->title = $data['vendor_title'];
+        $vendor->title = $data['vendor_title'] ?? '';
         return $vendor;
     }
 

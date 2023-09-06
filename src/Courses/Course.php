@@ -46,7 +46,7 @@ class Course
     public $author;
 
     /**
-     * @var string
+     * @var ?string
      */
     public $title;
 
