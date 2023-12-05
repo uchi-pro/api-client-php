@@ -8,7 +8,7 @@ use UchiPro\{ApiClient, Identity};
 
 require __DIR__.'/../vendor/autoload.php';
 
-$tagsTree = fetchTagsTree();
+$tagsTree = getTagsTree();
 
 print buildTagsTreeOutput($tagsTree);
 
@@ -45,9 +45,9 @@ function getApiClient(): ApiClient
 /**
  * @return array
  */
-function fetchTagsTree(): iterable
+function getTagsTree(): iterable
 {
     $apiClient = getApiClient();
 
-    return $apiClient->courses()->fetchTagsTree();
+    return $apiClient->courses()->getTagsTree();
 }

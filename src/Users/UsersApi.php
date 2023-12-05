@@ -68,7 +68,7 @@ final class UsersApi
      *
      * @return User|null
      */
-    public function fetchContractorDefaultListener(User $contractor): ?User
+    public function getContractorDefaultListener(User $contractor): ?User
     {
         $responseData = $this->apiClient->request("/users/$contractor->id/settings");
 
@@ -77,6 +77,15 @@ final class UsersApi
         }
 
         return $this->findById((string)$responseData['settings']['default_listener']);
+    }
+
+    /**
+     * @deprecated
+     * @see getContractorDefaultListener
+     */
+    public function fetchContractorDefaultListener(User $contractor): ?User
+    {
+        return $this->getContractorDefaultListener($contractor);
     }
 
     public function findContractorByEmail(string $email): ?User

@@ -147,9 +147,9 @@ class CoursesTest extends TestCase
         $this->assertInstanceOf(CourseFeatures::class, $courseFeatures);
     }
 
-    public function testFetchTagsTree()
+    public function testGetTagsTree()
     {
-        $tagsTree = $this->getApiClient()->courses()->fetchTagsTree();
+        $tagsTree = $this->getApiClient()->courses()->getTagsTree();
         $this->assertNotEmpty($tagsTree);
         $this->assertNotEmpty($tagsTree[0]->children);
         $this->assertInstanceOf(Tag::class, $tagsTree[0]->children[0]);

@@ -67,7 +67,7 @@ class UsersTest extends TestCase
         $contractors = $usersApi->findBy($criteria);
 
         foreach ($contractors as $contractor) {
-            $listener = $usersApi->fetchContractorDefaultListener($contractor);
+            $listener = $usersApi->getContractorDefaultListener($contractor);
             if (!is_null($listener)) {
                 $this->assertNotEmpty($listener);
                 return;

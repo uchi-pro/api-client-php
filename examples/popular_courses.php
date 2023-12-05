@@ -8,7 +8,7 @@ use UchiPro\{ApiClient, Courses\Course, Identity, Orders\Order, Orders\Status};
 
 require __DIR__.'/../vendor/autoload.php';
 
-$orders = fetchCompletedOrders();
+$orders = getCompletedOrders();
 $statistics = collectStatistics($orders);
 showPopularCourses($statistics);
 
@@ -106,7 +106,7 @@ function getApiClient(): ApiClient
 /**
  * @return array|Order[]
  */
-function fetchCompletedOrders(): iterable
+function getCompletedOrders(): iterable
 {
     $orders = [];
 

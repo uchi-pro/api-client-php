@@ -174,7 +174,7 @@ final class VendorsApi
         }
 
         foreach ($vendors as $vendor) {
-            $vendor->domains = $this->fetchVendorDomains($vendor);
+            $vendor->domains = $this->getVendorDomains($vendor);
         }
 
         return $vendors;
@@ -202,16 +202,12 @@ final class VendorsApi
         }
 
         $vendor = $this->parseVendor($responseData['vendor']);
-        $vendor->domains = $this->fetchVendorDomains($vendor);
+        $vendor->domains = $this->getVendorDomains($vendor);
 
         return $vendor;
     }
 
     /**
-     * @param string $domain
-     *
-     * @return Vendor|null
-     *
      * @throws RequestException
      * @throws BadResponseException
      */
@@ -233,8 +229,7 @@ final class VendorsApi
         $params = ['active' => 1];
         $responseData = $this->apiClient->request("/vendors/$vendor->id", $params);
 
-        $vendor = $this->parseVendor($responseData['vendor']);
-        return $vendor;
+        return $this->parseVendor($responseData['vendor']);
     }
 
     public function blockVendor(Vendor $vendor): Vendor
@@ -242,8 +237,7 @@ final class VendorsApi
         $params = ['active' => 0];
         $responseData = $this->apiClient->request("/vendors/$vendor->id", $params);
 
-        $vendor = $this->parseVendor($responseData['vendor']);
-        return $vendor;
+        return $this->parseVendor($responseData['vendor']);
     }
 
     /**
@@ -264,8 +258,6 @@ final class VendorsApi
 
     /**
      * @param array $item
-     *
-     * @return Vendor
      */
     private function parseVendor(array $item): Vendor
     {
@@ -308,11 +300,9 @@ final class VendorsApi
     }
 
     /**
-     * @param Vendor $vendor
-     *
      * @return array|string[]
      */
-    private function fetchVendorDomains(Vendor $vendor): iterable
+    private function getVendorDomains(Vendor $vendor): iterable
     {
         $uri = "/vendors/$vendor->id/domains";
         $responseData = $this->apiClient->request($uri);
@@ -321,12 +311,16 @@ final class VendorsApi
     }
 
     /**
-     * @param ApiClient $apiClient
-     *
-     * @return VendorsApi
+     * @deprecated
+     * @see getVendorDomains
      */
+    private function fetchVendorDomains(Vendor $vendor): iterable
+    {
+        return $this->getVendorDomains($vendor);
+    }
+
     public static function create(ApiClient $apiClient): VendorsApi
     {
-        return new static($apiClient);
+        return new VendorsApi($apiClient);
     }
 }

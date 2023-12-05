@@ -8,7 +8,7 @@ use UchiPro\{ApiClient, Courses\Course, Identity};
 
 require __DIR__.'/../vendor/autoload.php';
 
-$courses = fetchCourses();
+$courses = getCourses();
 
 print buildCoursesTree($courses);
 
@@ -62,7 +62,7 @@ function getApiClient(): ApiClient
 /**
  * @return array|Course[]
  */
-function fetchCourses(): iterable
+function getCourses(): iterable
 {
     $apiClient = getApiClient();
 

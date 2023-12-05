@@ -306,7 +306,7 @@ final class CoursesApi
     /**
      * @return Tag[]
      */
-    public function fetchTagsTree(): iterable
+    public function getTagsTree(): iterable
     {
         $responseData = $this->apiClient->request("/tags?_tree=1");
 
@@ -318,6 +318,15 @@ final class CoursesApi
             }
         }
         return $tags;
+    }
+
+    /**
+     * @deprecated
+     * @see getTagsTree
+     */
+    public function fetchTagsTree(): iterable
+    {
+        return $this->getTagsTree();
     }
 
     public function parseTag(array $data): ?Tag
