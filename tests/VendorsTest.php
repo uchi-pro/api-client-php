@@ -113,7 +113,8 @@ class VendorsTest extends TestCase
         $newLimits = new Limits();
         $newLimits->maxTotalFilesize = rand(1000, 10000);
 
-        $updatedLimits = $vendorsApi->updateVendorLimits($vendor, $newLimits);
+        $reason = 'Тестирование API';
+        $updatedLimits = $vendorsApi->updateVendorLimits($vendor, $newLimits, $reason);
         $this->assertEquals($newLimits->maxTotalFilesize, $updatedLimits->maxTotalFilesize);
     }
 

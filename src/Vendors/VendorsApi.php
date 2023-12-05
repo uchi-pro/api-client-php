@@ -93,9 +93,12 @@ final class VendorsApi
         return json_encode($responseData['limits']);
     }
 
-    public function updateVendorLimits(Vendor $vendor, Limits $limits): Limits
+    public function updateVendorLimits(Vendor $vendor, Limits $limits, string $reason): Limits
     {
         $params = [];
+
+        $params['reason'] = $reason;
+
         if (!is_null($limits->maxTotalFilesize)) {
             $params['max_total_filesize'] = $limits->maxTotalFilesize;
         }
