@@ -39,6 +39,16 @@ class Vendor
     public $domains = [];
 
     /**
+     * @var Company|Person
+     */
+    public $profile;
+
+    /**
+     * @var Bank
+     */
+    public $bank;
+
+    /**
      * @var Settings
      */
     public $settings;

@@ -7,7 +7,10 @@ namespace UchiPro\Tests;
 use Traversable;
 use UchiPro\ApiClient;
 use UchiPro\Identity;
+use UchiPro\Vendors\Bank;
+use UchiPro\Vendors\Company;
 use UchiPro\Vendors\Limits;
+use UchiPro\Vendors\Person;
 
 class VendorsTest extends TestCase
 {
@@ -255,5 +258,61 @@ class VendorsTest extends TestCase
 
         $blockedVendor = $vendorsApi->findById($vendor->id);
         $this->assertFalse($blockedVendor->isActive);
+    }
+
+    public function testSaveVendorCompanyProfile()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $vendors = $vendorsApi->findAll();
+
+        if (empty($vendors[0])) {
+            $this->markTestSkipped(
+                'Вендор для теста не найден.'
+            );
+        }
+        $vendor = $vendors[0];
+
+        $company = new Company();
+        $company->title = 'Тестовая '.rand(1000, 9999);
+        $company->director = 'Иванов Иван Петрович';
+        $company->email = 'test@test.ru';
+        $company->inn = 1840083124;
+        $company->kpp = rand(11111111, 99999999);
+        $company->ogrn = 1181832021854;
+        $company->locality = 'с. Шаркан';
+        $vendor->profile = $company;
+
+        $bank = new Bank();
+        $bank->bik = rand(10000, 99999);
+        $vendor->bank = $bank;
+
+        $vendor = $vendorsApi->saveVendor($vendor);
+
+        $this->assertEquals($company->kpp, $vendor->profile->kpp);
+        $this->assertEquals($company->title, $vendor->profile->title);
+        $this->assertEquals($bank->bik, $vendor->bank->bik);
+    }
+
+    public function testSaveVendorPersonProfile()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $vendors = $vendorsApi->findAll();
+
+        if (empty($vendors[0])) {
+            $this->markTestSkipped(
+                'Вендор для теста не найден.'
+            );
+        }
+        $vendor = $vendors[0];
+
+        $person = new Person();
+        $person->locality = 'п. Кез';
+        $vendor->profile = $person;
+
+        $vendor = $vendorsApi->saveVendor($vendor);
+
+        $this->assertEquals($person->locality, $vendor->profile->locality);
     }
 }
