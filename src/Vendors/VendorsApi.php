@@ -78,6 +78,9 @@ final class VendorsApi
         if (isset($limitsData['surveys_available'])) {
             $limits->surveysAvailable = filter_var($limitsData['surveys_available'], FILTER_VALIDATE_BOOLEAN);
         }
+        if (isset($limitsData['mobile_app_enabled'])) {
+            $limits->mobileAppEnabled = filter_var($limitsData['mobile_app_enabled'], FILTER_VALIDATE_BOOLEAN);
+        }
 
         return $limits;
     }
@@ -131,6 +134,9 @@ final class VendorsApi
         }
         if (!is_null($limits->surveysAvailable)) {
             $params['surveys_available'] = (int)$limits->surveysAvailable;
+        }
+        if (!is_null($limits->mobileAppEnabled)) {
+            $params['mobile_app_enabled'] = (int)$limits->mobileAppEnabled;
         }
 
         $responseData = $this->apiClient->request("/vendors/$vendor->id/limits", $params);

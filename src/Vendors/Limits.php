@@ -82,4 +82,11 @@ class Limits
      * @var bool
      */
     public $surveysAvailable;
+
+    /**
+     * Разрешено использовать мобильное приложение?
+     *
+     * @var bool
+     */
+    public $mobileAppEnabled;
 }
