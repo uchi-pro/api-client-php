@@ -77,4 +77,14 @@ class Order
      * @var int
      */
     public $listenersFinished;
+
+    /**
+     * @var DateTimeImmutable
+     */
+    public $sessionStartsAt;
+
+    /**
+     * @var DateTimeImmutable
+     */
+    public $sessionEndsAt;
 }

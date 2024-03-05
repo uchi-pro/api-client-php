@@ -169,6 +169,12 @@ final class OrdersApi
         $order->contractor = $contractor;
         $order->listenersCount = (int)$data['listeners_count'];
         $order->listenersFinished = (int)$data['listeners_finished'];
+        if (!empty($data['settings']['session_starts_at'])) {
+            $order->sessionStartsAt = $this->apiClient->parseDate($data['settings']['session_starts_at']);
+        }
+        if (!empty($data['settings']['session_ends_at'])) {
+            $order->sessionEndsAt = $this->apiClient->parseDate($data['settings']['session_ends_at']);
+        }
 
         return $order;
     }
