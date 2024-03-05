@@ -19,7 +19,7 @@ class VendorsTest extends TestCase
      */
     private $identity;
 
-    public function setUp()
+    public function setUp(): void
     {
         $url = getenv('UCHIPRO_URL');
         $login = getenv('UCHIPRO_LOGIN');
