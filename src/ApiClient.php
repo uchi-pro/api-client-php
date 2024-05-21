@@ -10,6 +10,7 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Psr7\Query;
 use UchiPro\Courses\CoursesApi;
 use UchiPro\Exception\AccessDeniedException;
 use UchiPro\Exception\BadResponseException;
@@ -90,7 +91,7 @@ class ApiClient
      */
     public static function httpBuildQuery(array $query): string
     {
-        return build_query($query, PHP_QUERY_RFC1738);
+        return Query::build($query, PHP_QUERY_RFC1738);
     }
 
     /**

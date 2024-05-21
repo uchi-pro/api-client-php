@@ -37,4 +37,15 @@ class ConnectionTest extends TestCase
         $this->assertTrue(strpos($preparedUrl, 'https://') === 0);
         $this->assertTrue(substr_count($preparedUrl, '/') === 2);
     }
+
+    public function testPreparePostBody()
+    {
+        $params = [
+            'course' => [1, 2],
+            'listener' => ['001', '002', '003'],
+        ];
+        $query = ApiClient::httpBuildQuery($params);
+
+        $this->assertEquals('course=1&course=2&listener=001&listener=002&listener=003', $query);
+    }
 }
