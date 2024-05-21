@@ -416,6 +416,47 @@ final class CoursesApi
         return false;
     }
 
+    public function saveCourse(Course $course): Course
+    {
+        $formParams = [
+            'course' => $course->id,
+        ];
+
+        if (!empty($course->title)) {
+            $formParams['title'] = $course->title;
+            $formParams['display_title'] = $course->title;
+        }
+
+        $courseId = !empty($course->id) ? $course->id : 0;
+        $uri = "/courses/$courseId";
+        $responseData = $this->apiClient->request($uri, $formParams);
+
+        return $this->parseCourse($responseData['course']);
+    }
+
+    public function saveLesson(Course $course, Lesson $lesson): Lesson
+    {
+        $formParams = [
+            'lesson' => $lesson->id ?? 0,
+            'course' => $course->id,
+            'type' => $lesson->type->id,
+            'title' => $lesson->title,
+        ];
+
+        $uri = "/courses/$course->id/lessons/0";
+        $responseData = $this->apiClient->request($uri, $formParams);
+        return $this->parseLesson($responseData['lesson']);
+    }
+
+    private function parseLesson(array $data): Lesson
+    {
+        $lesson = new Lesson();
+        $lesson->id = $this->apiClient->parseId($data, 'uuid');
+        $lesson->title = $data['title'] ?? null;
+        $lesson->type = LessonType::create($data['type_info']['code'], $data['type_info']['title']);
+        return $lesson;
+    }
+
     public static function create(ApiClient $apiClient): CoursesApi
     {
         return new self($apiClient);

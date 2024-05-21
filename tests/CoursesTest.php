@@ -7,6 +7,8 @@ namespace UchiPro\Tests;
 use UchiPro\ApiClient;
 use UchiPro\Courses\Course;
 use UchiPro\Courses\CourseFeatures;
+use UchiPro\Courses\Lesson;
+use UchiPro\Courses\LessonType;
 use UchiPro\Courses\Tag;
 use UchiPro\Identity;
 
@@ -154,5 +156,30 @@ class CoursesTest extends TestCase
         $this->assertNotEmpty($tagsTree[0]->children);
         $this->assertInstanceOf(Tag::class, $tagsTree[0]->children[0]);
         $this->assertEquals($tagsTree[0]->id, $tagsTree[0]->children[0]->parentId);
+    }
+
+    public function testSaveCourse()
+    {
+        $coursesApi = $this->getApiClient()->courses();
+
+        $course = $coursesApi->createCourse();
+        $course->title = sprintf('Тестовый курс %s', date('YmdHis'));
+
+        $savedCourse = $coursesApi->saveCourse($course);
+
+        $lesson = new Lesson();
+        $lesson->title = 'Первая лекция';
+        $lesson->type = LessonType::createLecture();
+        $coursesApi->saveLesson($savedCourse, $lesson);
+
+        $lesson = new Lesson();
+        $lesson->title = 'Вторая лекция';
+        $lesson->type = LessonType::createLecture();
+        $coursesApi->saveLesson($savedCourse, $lesson);
+
+        $foundCourse = $coursesApi->findById($savedCourse->id);
+
+        $this->assertEquals($course->title, $foundCourse->title);
+        $this->assertEquals(2, $foundCourse->lessonsCount);
     }
 }
