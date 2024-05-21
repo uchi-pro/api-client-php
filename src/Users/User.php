@@ -47,4 +47,9 @@ class User
      * @var bool
      */
     public $isDeleted;
+
+    /**
+     * @var ?User
+     */
+    public $parent;
 }

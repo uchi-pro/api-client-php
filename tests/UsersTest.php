@@ -140,7 +140,7 @@ class UsersTest extends TestCase
         $this->assertSame('guest', Role::createGuest()->id);
     }
 
-    public function testSaveUser()
+    public function testSaveContractor()
     {
         $vendorsApi = $this->getApiClient()->vendors();
         $vendors = $vendorsApi->findAll();
@@ -181,6 +181,59 @@ class UsersTest extends TestCase
 
         if (count($foundListeners) > 0) {
             $this->assertEquals($foundContractors[0]->name, $foundListeners[0]->name);
+        }
+    }
+
+    public function testSaveListener()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+        $vendors = $vendorsApi->findAll();
+        if (empty($vendors[0])) {
+            $this->markTestSkipped('Нет ни одного вендора.');
+        }
+        $vendor = $vendors[0];
+
+        $usersApi = $this->getApiClient()->users();
+
+        $criteria = $usersApi->createCriteria();
+        $criteria->role = Role::createContractor();
+        $contractors = $usersApi->findBy($criteria);
+        if (empty($contractors[0])) {
+            $this->markTestSkipped('Нет ни одного контрагента.');
+        }
+        $contractor = $contractors[0];
+
+        $rand = time();
+
+        $domain = $vendor->domains[0] ?? '';
+
+        $listener = $usersApi->createUser();
+        $listener->id = 0;
+        $listener->username = "test$rand";
+        $listener->name = "test$rand-$domain";
+        $listener->email = "test$rand@test.ru";
+        $listener->phone = "+7$rand";
+        $listener->role = Role::createListener();
+        $listener->vendor = $vendor;
+        $listener->parent = $contractor;
+
+        $password = $listener->email;
+        $usersApi->saveUser($listener, $password);
+
+        $criteria = $usersApi->createCriteria();
+        $criteria->q = $listener->email;
+        $criteria->role = Role::createListener();
+        $foundListeners = $usersApi->findBy($criteria);
+
+        $this->assertArrayHasKey(0, $foundListeners, 'Созданный слушатель не найден.');
+
+        $criteria = $usersApi->createCriteria();
+        $criteria->q = $listener->email;
+        $criteria->role = Role::createListener();
+        $foundListeners = $usersApi->findBy($criteria);
+
+        if (count($foundListeners) > 0) {
+            $this->assertEquals($foundListeners[0]->name, $foundListeners[0]->name);
         }
     }
 

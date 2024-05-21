@@ -139,6 +139,10 @@ final class UsersApi
           'phone' => $user->phone,
         ];
 
+        if (!empty($user->parent)) {
+            $formParams['parent'] = $user->parent->id;
+        }
+
         $userId = !empty($user->id) ? $user->id : 0;
         $uri = "/users/$userId/edit?role={$user->role->id}";
         $responseData = $this->apiClient->request($uri, $formParams);
