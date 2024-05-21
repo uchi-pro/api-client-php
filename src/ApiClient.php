@@ -187,7 +187,7 @@ class ApiClient
             }
 
             $errors = [];
-            if ($e instanceof ServerException) {
+            if (method_exists($e, 'getResponse')) {
                 $responseData = json_decode($e->getResponse()->getBody()->getContents(), true);
                 if (!empty($responseData['errors'])) {
                     $errors = $responseData['errors'];
