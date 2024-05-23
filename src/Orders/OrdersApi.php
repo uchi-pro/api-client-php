@@ -25,14 +25,25 @@ final class OrdersApi
         $this->apiClient = $apiClient;
     }
 
-    public function createOrder(): Order
+    public function newOrder(): Order
     {
         return new Order();
     }
 
-    public function createCriteria(): Criteria
+    public function createOrder(): Order
+    {
+        return self::newOrder();
+    }
+
+    public function newCriteria(): Criteria
     {
         return new Criteria();
+    }
+
+    /** @deprecated */
+    public function createCriteria(): Criteria
+    {
+        return self::newCriteria();
     }
 
     public function findById(string $id): ?Order

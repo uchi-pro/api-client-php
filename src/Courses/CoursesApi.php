@@ -27,14 +27,31 @@ final class CoursesApi
         $this->apiClient = $apiClient;
     }
 
-    public function createCourse(?string $id = null, ?string $title = null): Course
+    public function newCourse(?string $id = null, ?string $title = null): Course
     {
         return Course::create($id, $title);
     }
 
-    public function createCriteria(): Criteria
+    /** @deprecated */
+    public function createCourse(?string $id = null, ?string $title = null): Course
+    {
+        return self::newCourse($id, $title);
+    }
+
+    public function newLesson(): Lesson
+    {
+        return new Lesson();
+    }
+
+    public function newCriteria(): Criteria
     {
         return new Criteria();
+    }
+
+    /** @deprecated */
+    public function createCriteria(): Criteria
+    {
+        return self::newCriteria();
     }
 
     public function findById(string $id): ?Course
@@ -49,18 +66,22 @@ final class CoursesApi
     }
 
     /**
-     * @param Criteria|null $query
+     * @param ?Criteria $criteria
      *
      * @return Course[]|Collection
      *
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(?Criteria $query = null): iterable
+    public function findBy(?Criteria $criteria = null): iterable
     {
         $courses = new Collection();
 
-        $uri = $this->buildUri($query);
+        if (is_null($criteria)) {
+            $criteria = $this->newCriteria();
+        }
+
+        $uri = $this->buildUri($criteria);
         $responseData = $this->apiClient->request($uri);
 
         if (!array_key_exists('courses', $responseData)) {

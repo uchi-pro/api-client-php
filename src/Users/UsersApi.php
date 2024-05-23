@@ -21,14 +21,36 @@ final class UsersApi
         $this->apiClient = $apiClient;
     }
 
-    public function createUser(): User
+    public function newUser(?string $id = null, ?string $name = null): User
     {
-        return new User();
+        return User::create($id, $name);
     }
 
-    public function createCriteria(): Criteria
+    public function newContractor(?string $id = null, ?string $name = null): User
+    {
+        return User::createContractor($id, $name);
+    }
+
+    public function newListener(?string $id = null, ?string $name = null): User
+    {
+        return User::createListener($id, $name);
+    }
+
+    /** @deprecated */
+    public function createUser(): User
+    {
+        return self::newUser();
+    }
+
+    public function newCriteria(): Criteria
     {
         return new Criteria();
+    }
+
+    /** @deprecated */
+    public function createCriteria(): Criteria
+    {
+        return self::newCriteria();
     }
 
     /**
@@ -90,7 +112,7 @@ final class UsersApi
 
     public function findContractorByEmail(string $email): ?User
     {
-        $criteria = $this->createCriteria();
+        $criteria = $this->newCriteria();
         $criteria->q = $email;
         $criteria->role = Role::createContractor();
 
@@ -106,7 +128,7 @@ final class UsersApi
 
     public function findListenerByEmail($email): ?User
     {
-        $criteria = $this->createCriteria();
+        $criteria = $this->newCriteria();
         $criteria->q = $email;
         $criteria->role = Role::createListener();
 

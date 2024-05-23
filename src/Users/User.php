@@ -9,12 +9,12 @@ use UchiPro\Vendors\Vendor;
 class User
 {
     /**
-     * @var string
+     * @var ?string
      */
     public $id;
 
     /**
-     * @var string
+     * @var ?string
      */
     public $username;
 
@@ -24,27 +24,27 @@ class User
     public $name;
 
     /**
-     * @var string
+     * @var ?string
      */
     public $email;
 
     /**
-     * @var string
+     * @var ?string
      */
     public $phone;
 
     /**
-     * @var Role
+     * @var ?Role
      */
     public $role;
 
     /**
-     * @var Vendor
+     * @var ?Vendor
      */
     public $vendor;
 
     /**
-     * @var bool
+     * @var ?bool
      */
     public $isDeleted;
 
@@ -52,4 +52,33 @@ class User
      * @var ?User
      */
     public $parent;
+
+    public static function create(?string $id = null, ?string $name = null): self
+    {
+        $user = new self();
+        $user->id = $id;
+        $user->name = $name;
+        return $user;
+    }
+
+    public static function createAdministrator(?string $id = null, ?string $name = null): self
+    {
+        $user = self::create($id, $name);
+        $user->role = Role::createAdministrator();
+        return $user;
+    }
+
+    public static function createContractor(?string $id = null, ?string $name = null): self
+    {
+        $user = self::create($id, $name);
+        $user->role = Role::createContractor();
+        return $user;
+    }
+
+    public static function createListener(?string $id = null, ?string $name = null): self
+    {
+        $user = self::create($id, $name);
+        $user->role = Role::createListener();
+        return $user;
+    }
 }

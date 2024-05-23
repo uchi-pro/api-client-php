@@ -24,14 +24,26 @@ final class SessionsApi
         $this->apiClient = $apiClient;
     }
 
-    public function createSession(): Session
+    public function newSession(): Session
     {
         return new Session();
     }
 
-    public function createCriteria(): Criteria
+    /** @deprecated */
+    public function createSession(): Session
+    {
+        return self::newSession();
+    }
+
+    public function newCriteria(): Criteria
     {
         return new Criteria();
+    }
+
+    /** @deprecated  */
+    public function createCriteria(): Criteria
+    {
+        return self::newCriteria();
     }
 
     /**
@@ -77,7 +89,7 @@ final class SessionsApi
      */
     public function findActiveByOrder(Order $order): iterable
     {
-        $criteria = $this->createCriteria();
+        $criteria = $this->newCriteria();
         $criteria->order = $order;
 
         $allSessions = $this->findBy($criteria);

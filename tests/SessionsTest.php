@@ -35,9 +35,9 @@ class SessionsTest extends TestCase
         return ApiClient::create($this->identity);
     }
 
-    public function testCreateSession(): void
+    public function testnewSession(): void
     {
-        $session = $this->getApiClient()->sessions()->createSession();
+        $session = $this->getApiClient()->sessions()->newSession();
         $this->assertInstanceOf(Session::class, $session);
     }
 
@@ -59,7 +59,7 @@ class SessionsTest extends TestCase
     public function testGetOrderSessions(): void
     {
         $ordersApi = $this->getApiClient()->orders();
-        $ordersCriteria = $ordersApi->createCriteria();
+        $ordersCriteria = $ordersApi->newCriteria();
         $ordersCriteria->withFullAcceptedOnly = true;
         $orders = $ordersApi->findBy($ordersCriteria);
 
@@ -70,7 +70,7 @@ class SessionsTest extends TestCase
         $order = $orders[0];
 
         $sessionsApi = $this->getApiClient()->sessions();
-        $sessionsCriteria = $sessionsApi->createCriteria();
+        $sessionsCriteria = $sessionsApi->newCriteria();
         $sessionsCriteria->order = $order;
         $sessions = $sessionsApi->findBy($sessionsCriteria);
         $this->assertInstanceOf(Traversable::class, $sessions);
@@ -82,7 +82,7 @@ class SessionsTest extends TestCase
 
         foreach ($this->getSessionsAvailableStatuses() as [$status, $checkFunction]) {
             $sessionsApi = $this->getApiClient()->sessions();
-            $sessionsCriteria = $sessionsApi->createCriteria();
+            $sessionsCriteria = $sessionsApi->newCriteria();
             $sessionsCriteria->status = $status;
             $sessions = $sessionsApi->findBy($sessionsCriteria);
             if (!empty($sessions[0])) {

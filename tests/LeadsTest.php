@@ -39,7 +39,7 @@ class LeadsTest extends TestCase
 
         $stamp = date('YmdHms');
 
-        $lead = $leadsApi->createLead();
+        $lead = $leadsApi->newLead();
         $lead->email = "u$stamp@uchi.pro";
 
         $lead = $leadsApi->save($lead);
@@ -54,17 +54,17 @@ class LeadsTest extends TestCase
 
         $stamp = date('YmdHms');
 
-        $lead = $leadsApi->createLead();
+        $lead = $leadsApi->newLead();
         $lead->number = "$stamp";
         $lead->contactPerson = "Гражданин $stamp";
         $lead->email = "u$stamp@uchi.pro";
         $lead->phone = "+7$stamp";
         $lead->courses = $this->selectMyCoursesForLead($me);
 
-        $mainComment = $leadsApi->createComment(null, 'Первый комментарий.');
+        $mainComment = $leadsApi->newComment(null, 'Первый комментарий.');
         $lead = $leadsApi->save($lead, $mainComment);
 
-        $additionalComment = $leadsApi->createComment(null, "Дополнительный комментарий.\nДля тестирования переносов.");
+        $additionalComment = $leadsApi->newComment(null, "Дополнительный комментарий.\nДля тестирования переносов.");
         $additionalComment = $leadsApi->saveLeadComment($lead, $additionalComment);
 
         $this->assertNotEmpty($additionalComment->id);
@@ -80,7 +80,7 @@ class LeadsTest extends TestCase
         $coursesApi = $this->getApiClient()->courses();
         $courses = [];
         $i = 0;
-        $coursesCriteria = $coursesApi->createCriteria();
+        $coursesCriteria = $coursesApi->newCriteria();
         $coursesCriteria->vendor = $me->vendor;
         foreach ($coursesApi->findBy($coursesCriteria) as $course) {
             $courses[] = $course;

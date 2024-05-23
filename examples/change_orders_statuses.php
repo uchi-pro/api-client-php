@@ -10,7 +10,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 $apiClient = getApiClient();
 
-$criteria = $apiClient->orders()->createCriteria();
+$criteria = $apiClient->orders()->newCriteria();
 $criteria->status = Status::createTraining();
 $trainingOrders = $apiClient->orders()->findBy($criteria);
 

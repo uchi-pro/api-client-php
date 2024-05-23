@@ -44,8 +44,7 @@ class UsersTest extends TestCase
     public function testFindById()
     {
         $usersApi = $this->getApiClient()->users();
-        $criteria = $usersApi->createCriteria();
-        $criteria->role = Role::createContractor();
+        $criteria = $usersApi->newCriteria()->withRole(Role::createContractor());
         $contractors = $usersApi->findBy($criteria);
 
         if (empty($contractors)) {
@@ -62,8 +61,7 @@ class UsersTest extends TestCase
     public function testFetchUserSettings()
     {
         $usersApi = $this->getApiClient()->users();
-        $criteria = $usersApi->createCriteria();
-        $criteria->role = Role::createContractor();
+        $criteria = $usersApi->newCriteria()->withRole(Role::createContractor());
         $contractors = $usersApi->findBy($criteria);
 
         foreach ($contractors as $contractor) {
@@ -80,8 +78,7 @@ class UsersTest extends TestCase
     public function testFindContractorByEmail()
     {
         $usersApi = $this->getApiClient()->users();
-        $criteria = $usersApi->createCriteria();
-        $criteria->role = Role::createContractor();
+        $criteria = $usersApi->newCriteria()->withRole(Role::createContractor());
         $contractors = $usersApi->findBy($criteria);
 
         $contractorWithEmail = null;
@@ -155,28 +152,26 @@ class UsersTest extends TestCase
 
         $domain = $vendor->domains[0] ?? '';
 
-        $user = $usersApi->createUser();
-        $user->id = 0;
+        $user = $usersApi->newContractor();
         $user->username = "test$rand";
         $user->name = "test$rand-$domain";
         $user->email = "test$rand@test.ru";
         $user->phone = "+7$rand";
-        $user->role = Role::createContractor();
         $user->vendor = $vendor;
 
         $password = $user->email;
         $usersApi->saveUser($user, $password);
 
-        $criteria = $usersApi->createCriteria();
-        $criteria->q = $user->email;
-        $criteria->role = Role::createContractor();
+        $criteria = $usersApi->newCriteria()
+            ->withQ($user->email)
+            ->withRole(Role::createContractor());
         $foundContractors = $usersApi->findBy($criteria);
 
         $this->assertArrayHasKey(0, $foundContractors, 'Созданный контрагент не найден.');
 
-        $criteria = $usersApi->createCriteria();
-        $criteria->q = $user->email;
-        $criteria->role = Role::createListener();
+        $criteria = $usersApi->newCriteria()
+            ->withQ($user->email)
+            ->withRole(Role::createListener());
         $foundListeners = $usersApi->findBy($criteria);
 
         if (count($foundListeners) > 0) {
@@ -195,8 +190,7 @@ class UsersTest extends TestCase
 
         $usersApi = $this->getApiClient()->users();
 
-        $criteria = $usersApi->createCriteria();
-        $criteria->role = Role::createContractor();
+        $criteria = $usersApi->newCriteria()->withRole(Role::createContractor());
         $contractors = $usersApi->findBy($criteria);
         if (empty($contractors[0])) {
             $this->markTestSkipped('Нет ни одного контрагента.');
@@ -207,29 +201,27 @@ class UsersTest extends TestCase
 
         $domain = $vendor->domains[0] ?? '';
 
-        $listener = $usersApi->createUser();
-        $listener->id = 0;
+        $listener = $usersApi->newListener();
         $listener->username = "test$rand";
         $listener->name = "test$rand-$domain";
         $listener->email = "test$rand@test.ru";
         $listener->phone = "+7$rand";
-        $listener->role = Role::createListener();
         $listener->vendor = $vendor;
         $listener->parent = $contractor;
 
         $password = $listener->email;
         $usersApi->saveUser($listener, $password);
 
-        $criteria = $usersApi->createCriteria();
-        $criteria->q = $listener->email;
-        $criteria->role = Role::createListener();
+        $criteria = $usersApi->newCriteria()
+            ->withQ($listener->email)
+            ->withRole(Role::createListener());
         $foundListeners = $usersApi->findBy($criteria);
 
         $this->assertArrayHasKey(0, $foundListeners, 'Созданный слушатель не найден.');
 
-        $criteria = $usersApi->createCriteria();
-        $criteria->q = $listener->email;
-        $criteria->role = Role::createListener();
+        $criteria = $usersApi->newCriteria()
+            ->withQ($listener->email)
+            ->withRole(Role::createListener());
         $foundListeners = $usersApi->findBy($criteria);
 
         if (count($foundListeners) > 0) {
@@ -252,12 +244,10 @@ class UsersTest extends TestCase
 
         $domain = $vendor->domains[0] ?? '';
 
-        $newContractor = $usersApi->createUser();
-        $newContractor->id = 0;
+        $newContractor = $usersApi->newContractor();
         $newContractor->name = "test$rand-$domain";
         $newContractor->email = "test$rand@test.ru";
         $newContractor->phone = "+7$rand";
-        $newContractor->role = Role::createContractor();
         $newContractor->vendor = $vendor;
 
         $password = $newContractor->email;

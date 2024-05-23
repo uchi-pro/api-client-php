@@ -32,4 +32,10 @@ class Criteria
      * @var bool
      */
     public $withDeleted;
+
+    public function withVendor(Vendor $vendor): self
+    {
+        $this->vendor = $vendor;
+        return $this;
+    }
 }

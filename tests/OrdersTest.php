@@ -35,15 +35,15 @@ class OrdersTest extends TestCase
         return ApiClient::create($this->identity);
     }
 
-    public function testCreateOrder(): void
+    public function testnewOrder(): void
     {
-        $createdOrder = $this->getApiClient()->orders()->createOrder();
+        $createdOrder = $this->getApiClient()->orders()->newOrder();
         $this->assertInstanceOf(Order::class, $createdOrder);
     }
 
-    public function testCreateSession(): void
+    public function testnewSession(): void
     {
-        $createdSession = $this->getApiClient()->sessions()->createSession();
+        $createdSession = $this->getApiClient()->sessions()->newSession();
         $this->assertInstanceOf(Session::class, $createdSession);
     }
 
@@ -56,7 +56,7 @@ class OrdersTest extends TestCase
     public function testFindAllOrders(): void
     {
         $ordersApi = $this->getApiClient()->orders();
-        $criteria = $ordersApi->createCriteria();
+        $criteria = $ordersApi->newCriteria();
         $foundAllOrders = $this->getApiClient()->orders()->findBy($criteria);
 
         $this->assertNotCount(0, $foundAllOrders, 'Не удалось найти все заявки.');
@@ -65,7 +65,7 @@ class OrdersTest extends TestCase
     public function testFindAllOrdersByPage(): void
     {
         $ordersApi = $this->getApiClient()->orders();
-        $criteria = $ordersApi->createCriteria();
+        $criteria = $ordersApi->newCriteria();
         $criteria->page = 2;
         $criteria->perPage = 10;
         $foundOrders = $this->getApiClient()->orders()->findBy($criteria);
@@ -87,7 +87,7 @@ class OrdersTest extends TestCase
     public function testFindCompletedOrders(): void
     {
         $ordersApi = $this->getApiClient()->orders();
-        $criteria = $ordersApi->createCriteria();
+        $criteria = $ordersApi->newCriteria();
         $criteria->status = Status::createCompleted();
         $foundOrders = $this->getApiClient()->orders()->findBy($criteria);
 
@@ -99,7 +99,7 @@ class OrdersTest extends TestCase
         $existsOrder = $this->findOrderWithListeners();
 
         $ordersApi = $this->getApiClient()->orders();
-        $ordersCriteria = $ordersApi->createCriteria();
+        $ordersCriteria = $ordersApi->newCriteria();
         $ordersCriteria->number = $existsOrder->number;
         $ordersCriteria->vendor = $existsOrder->vendor;
         $foundOrders = $ordersApi->findBy($ordersCriteria);

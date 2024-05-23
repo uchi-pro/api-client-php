@@ -21,14 +21,26 @@ final class VendorsApi
         $this->apiClient = $apiClient;
     }
 
-    public function createVendor(string $id = '', string $title = ''): Vendor
+    public function newVendor(string $id = '', string $title = ''): Vendor
     {
         return Vendor::create($id, $title);
     }
 
-    public function createCriteria(): Criteria
+    /** @deprecated */
+    public function createVendor(string $id = '', string $title = ''): Vendor
+    {
+        return self::newVendor($id, $title);
+    }
+
+    public function newCriteria(): Criteria
     {
         return new Criteria();
+    }
+
+    /** @deprecated */
+    public function createCriteria(): Criteria
+    {
+        return self::newCriteria();
     }
 
     public function getVendorLimits(Vendor $vendor): Limits
@@ -270,7 +282,7 @@ final class VendorsApi
      */
     private function parseVendor(array $item): Vendor
     {
-        $vendor = $this->createVendor();
+        $vendor = $this->newVendor();
         $vendor->id = $item['uuid'] ?? null;
         $vendor->createdAt = $this->apiClient->parseDate($item['created_at']);
         $vendor->isActive = filter_var($item['is_active'], FILTER_VALIDATE_BOOLEAN);

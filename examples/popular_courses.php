@@ -112,7 +112,7 @@ function getCompletedOrders(): iterable
 
     $ordersApi = getApiClient()->orders();
 
-    $criteria = $ordersApi->createCriteria();
+    $criteria = $ordersApi->newCriteria();
     $criteria->status = [
       Status::createPending(),
       Status::createTrainingComplete(),

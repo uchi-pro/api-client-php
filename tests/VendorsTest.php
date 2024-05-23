@@ -177,7 +177,7 @@ class VendorsTest extends TestCase
         }
         $vendor = $vendors[0];
 
-        $criteria = $vendorsApi->createCriteria();
+        $criteria = $vendorsApi->newCriteria();
         $criteria->q = $vendor->title;
         $foundVendors = $vendorsApi->findBy($criteria);
 
@@ -196,7 +196,7 @@ class VendorsTest extends TestCase
             }
         }
 
-        $criteria = $vendorsApi->createCriteria();
+        $criteria = $vendorsApi->newCriteria();
         $criteria->isActive = true;
         $activeVendors = $vendorsApi->findBy($criteria);
 
@@ -215,7 +215,7 @@ class VendorsTest extends TestCase
             }
         }
 
-        $criteria = $vendorsApi->createCriteria();
+        $criteria = $vendorsApi->newCriteria();
         $criteria->isActive = false;
         $activeVendors = $vendorsApi->findBy($criteria);
 

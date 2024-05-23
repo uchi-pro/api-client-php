@@ -71,7 +71,7 @@ function findOrder($orderNumber): ?Order
 {
     $ordersApi = getApiClient()->orders();
 
-    $criteria = $ordersApi->createCriteria();
+    $criteria = $ordersApi->newCriteria();
     $criteria->number = $orderNumber;
     $orders = $ordersApi->findBy($criteria);
 

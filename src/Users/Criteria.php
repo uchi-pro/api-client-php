@@ -22,4 +22,22 @@ class Criteria
      * @var Vendor
      */
     public $vendor;
+
+    public function withQ(string $q): self
+    {
+        $this->q = $q;
+        return $this;
+    }
+
+    public function withRole(Role $role): self
+    {
+        $this->role = $role;
+        return $this;
+    }
+
+    public function withVendor(Vendor $vendor): self
+    {
+        $this->vendor = $vendor;
+        return $this;
+    }
 }

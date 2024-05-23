@@ -19,14 +19,26 @@ final class LeadsApi
         $this->apiClient = $apiClient;
     }
 
-    public function createLead(): Lead
+    public function newLead(): Lead
     {
         return new Lead();
     }
 
-    public function createComment(string $id = null, string $text = null): Comment
+    /** @deprecated */
+    public function createLead(): Lead
+    {
+        return self::newLead();
+    }
+
+    public function newComment(string $id = null, string $text = null): Comment
     {
         return Comment::create($id, $text);
+    }
+
+    /** @deprecated */
+    public function createComment(string $id = null, string $text = null): Comment
+    {
+        return self::newComment($id, $text);
     }
 
     public function save(Lead $lead, Comment $comment = null): Lead

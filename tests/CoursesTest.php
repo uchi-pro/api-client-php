@@ -7,7 +7,6 @@ namespace UchiPro\Tests;
 use UchiPro\ApiClient;
 use UchiPro\Courses\Course;
 use UchiPro\Courses\CourseFeatures;
-use UchiPro\Courses\Lesson;
 use UchiPro\Courses\LessonType;
 use UchiPro\Courses\Tag;
 use UchiPro\Identity;
@@ -36,23 +35,23 @@ class CoursesTest extends TestCase
         return ApiClient::create($this->identity);
     }
 
-    public function testCreateCourse(): void
+    public function testnewCourse(): void
     {
         $courseId = 'b48a26bf-6096-4245-9591-2900d8b0cd02';
         $courseTitle = 'Тестовый курс';
 
-        $course1 = $this->getApiClient()->courses()->createCourse();
+        $course1 = $this->getApiClient()->courses()->newCourse();
         $this->assertInstanceOf(Course::class, $course1);
 
-        $course2 = $this->getApiClient()->courses()->createCourse($courseId);
+        $course2 = $this->getApiClient()->courses()->newCourse($courseId);
         $this->assertInstanceOf(Course::class, $course2);
         $this->assertSame($courseId, $course2->id);
 
-        $course3 = $this->getApiClient()->courses()->createCourse(null, $courseTitle);
+        $course3 = $this->getApiClient()->courses()->newCourse(null, $courseTitle);
         $this->assertInstanceOf(Course::class, $course3);
         $this->assertSame($courseTitle, $course3->title);
 
-        $course4 = $this->getApiClient()->courses()->createCourse($courseId, $courseTitle);
+        $course4 = $this->getApiClient()->courses()->newCourse($courseId, $courseTitle);
         $this->assertInstanceOf(Course::class, $course4);
         $this->assertSame($courseId, $course4->id);
         $this->assertSame($courseTitle, $course4->title);
@@ -61,8 +60,7 @@ class CoursesTest extends TestCase
     public function testFindCourses(): void
     {
         $coursesApi = $this->getApiClient()->courses();
-        $coursesCriteria = $coursesApi->createCriteria();
-        $courses = $coursesApi->findBy($coursesCriteria);
+        $courses = $coursesApi->findBy();
 
         $courseTypeIdCorrect = true;
         foreach ($courses as $course) {
@@ -86,7 +84,7 @@ class CoursesTest extends TestCase
     public function testFindInactiveCourses(): void
     {
         $coursesApi = $this->getApiClient()->courses();
-        $coursesCriteria = $coursesApi->createCriteria();
+        $coursesCriteria = $coursesApi->newCriteria();
         $coursesCriteria->withInactive = true;
         $courses = $coursesApi->findBy($coursesCriteria);
 
@@ -137,8 +135,7 @@ class CoursesTest extends TestCase
     public function testGetCourseFeatures(): void
     {
         $coursesApi = $this->getApiClient()->courses();
-        $coursesCriteria = $coursesApi->createCriteria();
-        $courses = $coursesApi->findBy($coursesCriteria);
+        $courses = $coursesApi->findBy();
 
         if (empty($courses[0])) {
             $this->markTestSkipped('Курс для теста не найден.');
@@ -162,17 +159,17 @@ class CoursesTest extends TestCase
     {
         $coursesApi = $this->getApiClient()->courses();
 
-        $course = $coursesApi->createCourse();
+        $course = $coursesApi->newCourse();
         $course->title = sprintf('Тестовый курс %s', date('YmdHis'));
 
         $savedCourse = $coursesApi->saveCourse($course);
 
-        $lesson = new Lesson();
+        $lesson = $coursesApi->newLesson();
         $lesson->title = 'Первая лекция';
         $lesson->type = LessonType::createLecture();
         $coursesApi->saveLesson($savedCourse, $lesson);
 
-        $lesson = new Lesson();
+        $lesson = $coursesApi->newLesson();
         $lesson->title = 'Вторая лекция';
         $lesson->type = LessonType::createLecture();
         $coursesApi->saveLesson($savedCourse, $lesson);
