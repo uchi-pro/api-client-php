@@ -43,6 +43,11 @@ final class VendorsApi
         return self::newCriteria();
     }
 
+    public function newLimits(): Limits
+    {
+        return Limits::create();
+    }
+
     public function getVendorLimits(Vendor $vendor): Limits
     {
         $responseData = $this->apiClient->request("/vendors/$vendor->id/limits");

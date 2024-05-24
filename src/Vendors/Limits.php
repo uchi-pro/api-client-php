@@ -89,4 +89,9 @@ class Limits
      * @var bool
      */
     public $mobileAppEnabled;
+
+    public static function create(): self
+    {
+        return new self();
+    }
 }

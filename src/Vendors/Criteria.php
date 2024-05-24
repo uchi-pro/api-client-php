@@ -15,4 +15,16 @@ class Criteria
      * @var bool
      */
     public $isActive;
+
+    public function withQ(string $q): self
+    {
+        $this->q = $q;
+        return $this;
+    }
+
+    public function withIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+        return $this;
+    }
 }

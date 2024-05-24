@@ -113,7 +113,7 @@ class VendorsTest extends TestCase
 
         $vendor = $vendors[0];
 
-        $newLimits = new Limits();
+        $newLimits = $vendorsApi->newLimits();
         $newLimits->maxTotalFilesize = rand(1000, 10000);
 
         $reason = 'Тестирование API';
