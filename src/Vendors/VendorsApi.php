@@ -399,7 +399,7 @@ final class VendorsApi
         return $responseData['domains'] ?? [];
     }
 
-    public function saveVendor(Vendor $vendor): Vendor
+    public function saveVendor(Vendor $vendor, array $additionalParams = []): Vendor
     {
         $formParams = [
             'vendor' => $vendor->id,
@@ -431,6 +431,10 @@ final class VendorsApi
             foreach ($profile as $key => $value) {
                 $formParams["profile[bank][$key]"] = $value;
             }
+        }
+
+        foreach ($additionalParams as $key => $value) {
+            $formParams[$key] = $value;
         }
 
         $vendorId = !empty($vendor->id) ? $vendor->id : 0;

@@ -254,7 +254,7 @@ final class OrdersApi
         return Status::createByCode($responseData['status']['code']);
     }
 
-    public function saveOrder(Order $order): Order
+    public function saveOrder(Order $order, array $additionalParams = []): Order
     {
         $formParams = [
           'course' => $order->course->id,
@@ -263,6 +263,10 @@ final class OrdersApi
         ];
         foreach ($order->listeners as $listener) {
            $formParams['listeners'][] = $listener->id;
+        }
+
+        foreach ($additionalParams as $key => $value) {
+            $formParams[$key] = $value;
         }
 
         $orderId = !empty($order->id) ? $order->id : 0;

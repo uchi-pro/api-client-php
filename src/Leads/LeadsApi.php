@@ -41,9 +41,9 @@ final class LeadsApi
         return self::newComment($id, $text);
     }
 
-    public function save(Lead $lead, Comment $comment = null): Lead
+    public function save(Lead $lead, Comment $comment = null, array $additionalParams = []): Lead
     {
-        $params = [
+        $formParams = [
           'number' => $lead->number,
           'contact_person' => $lead->contactPerson,
           'email' => $lead->email,
@@ -51,20 +51,24 @@ final class LeadsApi
         ];
 
         if (!empty($comment->text)) {
-            $params['comments'] = $comment->text;
+            $formParams['comments'] = $comment->text;
         }
 
         if (!empty($lead->contractor->id)) {
-            $params['contractor'] = $lead->contractor->id;
+            $formParams['contractor'] = $lead->contractor->id;
         }
 
         if (!empty($lead->courses)) {
-            $params['courses'] = array_map(function (Course $course) {
+            $formParams['courses'] = array_map(function (Course $course) {
                 return $course->id;
             }, $lead->courses);
         }
 
-        $responseData = $this->apiClient->request('leads/0/edit', $params);
+        foreach ($additionalParams as $key => $value) {
+            $formParams[$key] = $value;
+        }
+
+        $responseData = $this->apiClient->request('leads/0/edit', $formParams);
 
         if (isset($responseData['lead']['uuid'])) {
             $lead->id = $responseData['lead']['uuid'] ?? null;
@@ -79,11 +83,16 @@ final class LeadsApi
      *
      * @return Comment
      */
-    public function saveLeadComment(Lead $lead, Comment $comment): Comment
+    public function saveLeadComment(Lead $lead, Comment $comment, array $additionalParams = []): Comment
     {
         $params = [
             'comments' => $comment->text,
         ];
+
+        foreach ($additionalParams as $key => $value) {
+            $formParams[$key] = $value;
+        }
+
         $responseData = $this->apiClient->request("leads/$lead->id/comments/0", $params);
 
         if (isset($responseData['comment']['uuid'])) {

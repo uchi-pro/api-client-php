@@ -437,7 +437,7 @@ final class CoursesApi
         return false;
     }
 
-    public function saveCourse(Course $course): Course
+    public function saveCourse(Course $course, array $additionalParams = []): Course
     {
         $formParams = [
             'course' => $course->id,
@@ -448,6 +448,10 @@ final class CoursesApi
             $formParams['display_title'] = $course->title;
         }
 
+        foreach ($additionalParams as $key => $value) {
+            $formParams[$key] = $value;
+        }
+
         $courseId = !empty($course->id) ? $course->id : 0;
         $uri = "/courses/$courseId";
         $responseData = $this->apiClient->request($uri, $formParams);
@@ -455,7 +459,7 @@ final class CoursesApi
         return $this->parseCourse($responseData['course']);
     }
 
-    public function saveLesson(Course $course, Lesson $lesson): Lesson
+    public function saveLesson(Course $course, Lesson $lesson, array $additionalParams = []): Lesson
     {
         $formParams = [
             'lesson' => $lesson->id ?? 0,
@@ -463,6 +467,10 @@ final class CoursesApi
             'type' => $lesson->type->id,
             'title' => $lesson->title,
         ];
+
+        foreach ($additionalParams as $key => $value) {
+            $formParams[$key] = $value;
+        }
 
         $uri = "/courses/$course->id/lessons/0";
         $responseData = $this->apiClient->request($uri, $formParams);

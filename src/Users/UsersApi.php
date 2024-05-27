@@ -26,6 +26,11 @@ final class UsersApi
         return User::create($id, $name);
     }
 
+    public function newAdministrator(?string $id = null, ?string $name = null): User
+    {
+        return User::createAdministrator($id, $name);
+    }
+
     public function newContractor(?string $id = null, ?string $name = null): User
     {
         return User::createContractor($id, $name);
@@ -145,10 +150,11 @@ final class UsersApi
     /**
      * @param User $user
      * @param string|null $password
+     * @param array $additionalParams Дополнительные параметры в виде ключ => значение, которые будут переданы в POST-запросе.
      *
      * @return User
      */
-    public function saveUser(User $user, string $password = null): User
+    public function saveUser(User $user, string $password = null, array $additionalParams = []): User
     {
         $formParams = [
           'role' => $user->role->id,
@@ -163,6 +169,10 @@ final class UsersApi
 
         if (!empty($user->parent)) {
             $formParams['parent'] = $user->parent->id;
+        }
+
+        foreach ($additionalParams as $key => $value) {
+            $formParams[$key] = $value;
         }
 
         $userId = !empty($user->id) ? $user->id : 0;
