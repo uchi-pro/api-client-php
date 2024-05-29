@@ -26,21 +26,9 @@ final class VendorsApi
         return Vendor::create($id, $title);
     }
 
-    /** @deprecated */
-    public function createVendor(string $id = '', string $title = ''): Vendor
-    {
-        return self::newVendor($id, $title);
-    }
-
     public function newCriteria(): Criteria
     {
         return new Criteria();
-    }
-
-    /** @deprecated */
-    public function createCriteria(): Criteria
-    {
-        return self::newCriteria();
     }
 
     public function newLimits(): Limits

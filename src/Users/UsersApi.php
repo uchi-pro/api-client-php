@@ -41,21 +41,9 @@ final class UsersApi
         return User::createListener($id, $name);
     }
 
-    /** @deprecated */
-    public function createUser(): User
-    {
-        return self::newUser();
-    }
-
     public function newCriteria(): Criteria
     {
         return new Criteria();
-    }
-
-    /** @deprecated */
-    public function createCriteria(): Criteria
-    {
-        return self::newCriteria();
     }
 
     /**
@@ -104,15 +92,6 @@ final class UsersApi
         }
 
         return $this->findById((string)$responseData['settings']['default_listener']);
-    }
-
-    /**
-     * @deprecated
-     * @see getContractorDefaultListener
-     */
-    public function fetchContractorDefaultListener(User $contractor): ?User
-    {
-        return $this->getContractorDefaultListener($contractor);
     }
 
     public function findContractorByEmail(string $email): ?User

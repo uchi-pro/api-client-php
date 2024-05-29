@@ -24,21 +24,9 @@ final class LeadsApi
         return new Lead();
     }
 
-    /** @deprecated */
-    public function createLead(): Lead
-    {
-        return self::newLead();
-    }
-
     public function newComment(string $id = null, string $text = null): Comment
     {
         return Comment::create($id, $text);
-    }
-
-    /** @deprecated */
-    public function createComment(string $id = null, string $text = null): Comment
-    {
-        return self::newComment($id, $text);
     }
 
     public function save(Lead $lead, Comment $comment = null, array $additionalParams = []): Lead

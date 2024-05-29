@@ -29,21 +29,9 @@ final class SessionsApi
         return new Session();
     }
 
-    /** @deprecated */
-    public function createSession(): Session
-    {
-        return self::newSession();
-    }
-
     public function newCriteria(): Criteria
     {
         return new Criteria();
-    }
-
-    /** @deprecated  */
-    public function createCriteria(): Criteria
-    {
-        return self::newCriteria();
     }
 
     /**

@@ -40,12 +40,6 @@ final class OrdersApi
         return new Criteria();
     }
 
-    /** @deprecated */
-    public function createCriteria(): Criteria
-    {
-        return self::newCriteria();
-    }
-
     public function findById(string $id): ?Order
     {
         $responseData = $this->apiClient->request("/orders/$id");
@@ -170,7 +164,6 @@ final class OrdersApi
         $order = new Order();
         $order->id = $data['uuid'] ?? null;
         $order->createdAt = $this->apiClient->parseDate($data['created_at']);
-        $order->createAt = clone $order->createdAt;
         $order->updatedAt = $this->apiClient->parseDate($data['updated_at']);
         $order->deletedAt = $this->apiClient->parseDate($data['deleted_at']);
         $order->number = $data['number'] ?? null;

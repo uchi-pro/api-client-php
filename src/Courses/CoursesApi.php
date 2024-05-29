@@ -32,12 +32,6 @@ final class CoursesApi
         return Course::create($id, $title);
     }
 
-    /** @deprecated */
-    public function createCourse(?string $id = null, ?string $title = null): Course
-    {
-        return self::newCourse($id, $title);
-    }
-
     public function newLesson(): Lesson
     {
         return new Lesson();
@@ -46,12 +40,6 @@ final class CoursesApi
     public function newCriteria(): Criteria
     {
         return new Criteria();
-    }
-
-    /** @deprecated */
-    public function createCriteria(): Criteria
-    {
-        return self::newCriteria();
     }
 
     public function newTag(?string $id = null, ?string $title = null): Tag
@@ -352,15 +340,6 @@ final class CoursesApi
             }
         }
         return $tags;
-    }
-
-    /**
-     * @deprecated
-     * @see getTagsTree
-     */
-    public function fetchTagsTree(): iterable
-    {
-        return $this->getTagsTree();
     }
 
     public function parseTag(array $data): ?Tag
