@@ -4,37 +4,13 @@ declare(strict_types=1);
 
 namespace UchiPro\Tests;
 
-use UchiPro\ApiClient;
 use UchiPro\Courses\Course;
 use UchiPro\Courses\CourseFeatures;
 use UchiPro\Courses\LessonType;
 use UchiPro\Courses\Tag;
-use UchiPro\Identity;
 
 class CoursesTest extends TestCase
 {
-    /**
-     * @var Identity
-     */
-    private $identity;
-
-    public function setUp(): void
-    {
-        $url = getenv('UCHIPRO_URL');
-        $login = getenv('UCHIPRO_LOGIN');
-        $password = getenv('UCHIPRO_PASSWORD');
-        $accessToken = getenv('UCHIPRO_ACCESS_TOKEN');
-
-        $this->identity = !empty($accessToken)
-          ? Identity::createByAccessToken($url, $accessToken)
-          : Identity::createByLogin($url, $login, $password);
-    }
-
-    private function getApiClient(): ApiClient
-    {
-        return ApiClient::create($this->identity);
-    }
-
     public function testnewCourse(): void
     {
         $courseId = 'b48a26bf-6096-4245-9591-2900d8b0cd02';
@@ -122,11 +98,14 @@ class CoursesTest extends TestCase
     {
         $coursesApi = $this->getApiClient()->courses();
 
-        $foundCourse = $coursesApi->findById('56598831-f4f1-4129-9438-272d046abefb');
+        $foundCourses = $coursesApi->findBy($coursesApi->newCriteria()->withTags([
+            $coursesApi->newTag('42c1b914-3353-11ed-bc61-b42e996750b0')
+        ]));
 
-        if (is_null($foundCourse)) {
+        if (empty($foundCourses[0])) {
             $this->markTestSkipped('Нужно указать идентификатор существующего курса с тегами.');
         }
+        $foundCourse = $coursesApi->findById($foundCourses[0]->id);
 
         $this->assertNotEmpty($foundCourse->tags[0]->id);
         $this->assertNotEmpty($foundCourse->tags[0]->title);

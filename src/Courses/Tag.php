@@ -30,4 +30,12 @@ class Tag
      * @var Tag[]
      */
     public $children = [];
+
+    public static function create(?string $id = null, ?string $title = null): self
+    {
+        $tag = new self();
+        $tag->id = $id;
+        $tag->title = $title;
+        return $tag;
+    }
 }

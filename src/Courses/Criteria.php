@@ -33,9 +33,26 @@ class Criteria
      */
     public $withDeleted;
 
+    /**
+     * @var Tag[]
+     */
+    public $tags;
+
     public function withVendor(Vendor $vendor): self
     {
         $this->vendor = $vendor;
+        return $this;
+    }
+
+    public function withGid(string $gid): self
+    {
+        $this->gid = $gid;
+        return $this;
+    }
+
+    public function withTags(array $tags): self
+    {
+        $this->tags = $tags;
         return $this;
     }
 }

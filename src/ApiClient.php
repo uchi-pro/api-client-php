@@ -9,7 +9,6 @@ use DateTimeInterface;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Query;
 use UchiPro\Courses\CoursesApi;
 use UchiPro\Exception\AccessDeniedException;
@@ -22,8 +21,6 @@ use UchiPro\Orders\OrdersApi;
 use UchiPro\Sessions\SessionsApi;
 use UchiPro\Users\UsersApi;
 use UchiPro\Vendors\VendorsApi;
-
-use function GuzzleHttp\Psr7\build_query;
 
 class ApiClient
 {

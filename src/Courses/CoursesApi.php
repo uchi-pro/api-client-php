@@ -54,6 +54,11 @@ final class CoursesApi
         return self::newCriteria();
     }
 
+    public function newTag(?string $id = null, ?string $title = null): Tag
+    {
+        return Tag::create($id, $title);
+    }
+
     public function findById(string $id): ?Course
     {
         $responseData = $this->apiClient->request("/courses/$id");
@@ -121,11 +126,19 @@ final class CoursesApi
             }
 
             if ($criteria->withInactive) {
-                $uri .= "&show_inactive=1";
+                $uri .= '&show_inactive=1';
             }
 
             if ($criteria->withDeleted) {
-                $uri .= "&show_deleted=1";
+                $uri .= '&show_deleted=1';
+            }
+
+            if (!empty($criteria->tags)) {
+                // _tree=1 отключает другие фильтры. Поэтому пока так
+                $uri = '/courses?';
+                foreach ($criteria->tags as $tag) {
+                    $uri .= "&tag=$tag->id";
+                }
             }
         }
 

@@ -4,34 +4,10 @@ declare(strict_types=1);
 
 namespace UchiPro\Tests;
 
-use UchiPro\ApiClient;
-use UchiPro\Identity;
 use UchiPro\Users\Role;
 
 class UsersTest extends TestCase
 {
-    /**
-     * @var Identity
-     */
-    private $identity;
-
-    public function setUp(): void
-    {
-        $url = getenv('UCHIPRO_URL');
-        $login = getenv('UCHIPRO_LOGIN');
-        $password = getenv('UCHIPRO_PASSWORD');
-        $accessToken = getenv('UCHIPRO_ACCESS_TOKEN');
-
-        $this->identity = !empty($accessToken)
-          ? Identity::createByAccessToken($url, $accessToken)
-          : Identity::createByLogin($url, $login, $password);
-    }
-
-    public function getApiClient(): ApiClient
-    {
-        return ApiClient::create($this->identity);
-    }
-
     public function testLogin()
     {
         $me = $this->getApiClient()->users()->getMe();
