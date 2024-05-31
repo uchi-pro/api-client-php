@@ -6,18 +6,9 @@ namespace UchiPro\Courses;
 
 class Lesson
 {
-    /**
-     * @var string
-     */
-    public $id;
+    public ?string $id = null;
 
-    /**
-     * @var string
-     */
-    public $title;
+    public ?string $title = null;
 
-    /**
-     * @var LessonType
-     */
-    public $type;
+    public ?LessonType $type = null;
 }

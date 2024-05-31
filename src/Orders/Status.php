@@ -6,37 +6,27 @@ namespace UchiPro\Orders;
 
 class Status
 {
-    const STATUS_PENDING = 'pending';
+    public const STATUS_PENDING = 'pending';
 
-    const STATUS_ACCEPTED = 'accepted';
+    public const STATUS_ACCEPTED = 'accepted';
 
-    const STATUS_AWAITING_PAYMENT = 'awaiting_payment';
+    public const STATUS_AWAITING_PAYMENT = 'awaiting_payment';
 
-    const STATUS_TRAINING = 'training';
+    public const STATUS_TRAINING = 'training';
 
-    const STATUS_TRAINING_COMPLETE = 'training_complete';
+    public const STATUS_TRAINING_COMPLETE = 'training_complete';
 
-    const STATUS_DOCUMENTS_READY = 'documents_ready';
+    public const STATUS_DOCUMENTS_READY = 'documents_ready';
 
-    const STATUS_COMPLETED = 'completed';
+    public const STATUS_COMPLETED = 'completed';
 
-    const STATUS_CANCELED = 'canceled';
+    public const STATUS_CANCELED = 'canceled';
 
-    /**
-     * @var int
-     */
-    public $id;
+    public ?int $id = null;
 
-    /**
-     * @var string
-     */
-    public $code;
+    public ?string $code = null;
 
-    /**
-     * @var string
-     */
-    public $title;
-
+    public ?string $title = null;
 
     public function isPending(): bool
     {

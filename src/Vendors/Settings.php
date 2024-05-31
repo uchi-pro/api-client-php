@@ -6,18 +6,9 @@ namespace UchiPro\Vendors;
 
 class Settings
 {
-    /**
-     * @var bool
-     */
-    public $selfRegistrationEnabled;
+    public ?bool $selfRegistrationEnabled = null;
 
-    /**
-     * @var string
-     */
-    public $smtpHost;
+    public ?string $smtpHost = null;
 
-    /**
-     * @var string
-     */
-    public $smtpUsername;
+    public ?string $smtpUsername = null;
 }

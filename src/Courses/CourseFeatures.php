@@ -8,36 +8,26 @@ class CourseFeatures
 {
     /**
      * Используются слайды.
-     *
-     * @var bool
      */
-    public $slides = false;
+    public bool $slides = false;
 
     /**
      * Используется видео.
-     *
-     * @var bool
      */
-    public $video = false;
+    public bool $video = false;
 
     /**
      * Есть тестирование.
-     *
-     * @var bool
      */
-    public $testing = false;
+    public bool $testing = false;
 
     /**
      * Есть практические задания.
-     *
-     * @var bool
      */
-    public $practice = false;
+    public bool $practice = false;
 
     /**
      * Есть интерактивные элементы.
-     *
-     * @var bool
      */
-    public $interactive = false;
+    public bool $interactive = false;
 }

@@ -6,33 +6,15 @@ namespace UchiPro\Orders;
 
 class Listener
 {
-    /**
-     * @var string
-     */
-    public $id;
+    public ?string $id = null;
 
-    /**
-     * @var string
-     */
-    public $name;
+    public ?string $name = null;
 
-    /**
-     * @var string
-     */
-    public $username;
+    public ?string $username = null;
 
-    /**
-     * @var string
-     */
-    public $password;
+    public ?string $password = null;
 
-    /**
-     * @var string
-     */
-    public $email;
+    public ?string $email = null;
 
-    /**
-     * @var string
-     */
-    public $phone;
+    public ?string $phone = null;
 }

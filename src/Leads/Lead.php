@@ -9,38 +9,20 @@ use UchiPro\Users\User;
 
 class Lead
 {
-    /**
-     * @var string
-     */
-    public $id;
+    public ?string $id = null;
 
-    /**
-     * @var User
-     */
-    public $contractor;
+    public ?User $contractor = null;
 
-    /**
-     * @var string
-     */
-    public $number;
+    public ?string $number = null;
 
-    /**
-     * @var string
-     */
-    public $contactPerson;
+    public ?string $contactPerson = null;
 
-    /**
-     * @var string
-     */
-    public $email;
+    public ?string $email = null;
 
-    /**
-     * @var string
-     */
-    public $phone;
+    public ?string $phone = null;
 
     /**
      * @var Course[]
      */
-    public $courses;
+    public ?array $courses = null;
 }

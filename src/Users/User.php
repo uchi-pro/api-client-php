@@ -8,50 +8,23 @@ use UchiPro\Vendors\Vendor;
 
 class User
 {
-    /**
-     * @var ?string
-     */
-    public $id;
+    public ?string $id = null;
 
-    /**
-     * @var ?string
-     */
-    public $username;
+    public ?string $username = null;
 
-    /**
-     * @var ?string
-     */
-    public $name;
+    public ?string $name = null;
 
-    /**
-     * @var ?string
-     */
-    public $email;
+    public ?string $email = null;
 
-    /**
-     * @var ?string
-     */
-    public $phone;
+    public ?string $phone = null;
 
-    /**
-     * @var ?Role
-     */
-    public $role;
+    public ?Role $role = null;
 
-    /**
-     * @var ?Vendor
-     */
-    public $vendor;
+    public ?Vendor $vendor = null;
 
-    /**
-     * @var ?bool
-     */
-    public $isDeleted;
+    public ?bool $isDeleted = null;
 
-    /**
-     * @var ?User
-     */
-    public $parent;
+    public ?User $parent = null;
 
     public static function create(?string $id = null, ?string $name = null): self
     {

@@ -8,58 +8,28 @@ use DateTimeImmutable;
 
 class Vendor
 {
-    /**
-     * @var string
-     */
-    public $id;
+    public ?string $id = null;
+
+    public ?DateTimeImmutable $createdAt = null;
+
+    public ?bool $isActive = null;
+
+    public ?string $title = null;
+
+    public ?string $email = null;
 
     /**
-     * @var DateTimeImmutable
+     * @var string[]
      */
-    public $createdAt;
+    public array $domains = [];
 
-    /**
-     * @var bool
-     */
-    public $isActive;
+    public Company|Person|null $profile;
 
-    /**
-     * @var ?string
-     */
-    public $title;
+    public ?Bank $bank;
 
-    /**
-     * @var string
-     */
-    public $email;
+    public ?Settings $settings;
 
-    /**
-     * @var array|string[]
-     */
-    public $domains = [];
-
-    /**
-     * @var Company|Person
-     */
-    public $profile;
-
-    /**
-     * @var Bank
-     */
-    public $bank;
-
-    /**
-     * @var Settings
-     */
-    public $settings;
-
-    /**
-     * @param $id
-     * @param $title
-     *
-     * @return Vendor
-     */
-    public static function create($id, $title)
+    public static function create(?string $id = null, ?string $title = null): self
     {
         $vendor = new self();
         $vendor->id = $id;

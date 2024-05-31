@@ -10,17 +10,11 @@ use UchiPro\Vendors\Vendor;
 class Criteria
 {
     /**
-     * @var Status|Status[]
+     * @var Status[]|Status|null
      */
-    public $status;
+    public array|Status|null $status = null;
 
-    /**
-     * @var Order
-     */
-    public $order;
+    public ?Order $order = null;
 
-    /**
-     * @var Vendor
-     */
-    public $vendor;
+    public ?Vendor $vendor = null;
 }

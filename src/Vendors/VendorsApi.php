@@ -9,19 +9,11 @@ use UchiPro\Collection;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Exception\RequestException;
 
-final class VendorsApi
+final readonly class VendorsApi
 {
-    /**
-     * @var ApiClient
-     */
-    private $apiClient;
+    private function __construct(private ApiClient $apiClient) {}
 
-    private function __construct(ApiClient $apiClient)
-    {
-        $this->apiClient = $apiClient;
-    }
-
-    public function newVendor(string $id = '', string $title = ''): Vendor
+    public function newVendor(?string $id = null, ?string $title = null): Vendor
     {
         return Vendor::create($id, $title);
     }
@@ -168,7 +160,7 @@ final class VendorsApi
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(Criteria $criteria = null): iterable
+    public function findBy(Criteria $criteria = null): iterable|Collection
     {
         $vendors = new Collection();
 
@@ -195,9 +187,9 @@ final class VendorsApi
     }
 
     /**
-     * @return array|Vendor[]
+     * @return Vendor[]|Collection
      */
-    public function findAll()
+    public function findAll(): iterable|Collection
     {
         return $this->findBy();
     }
@@ -259,7 +251,7 @@ final class VendorsApi
      *
      * @return Vendor[]|Collection
      */
-    private function parseVendors(array $list): iterable
+    private function parseVendors(array $list): iterable|Collection
     {
         $vendors = new Collection();
 
@@ -270,9 +262,6 @@ final class VendorsApi
         return $vendors;
     }
 
-    /**
-     * @param array $item
-     */
     private function parseVendor(array $item): Vendor
     {
         $vendor = $this->newVendor();
@@ -295,7 +284,7 @@ final class VendorsApi
         return $vendor;
     }
 
-    private function parseVendorProfile(array $item)
+    private function parseVendorProfile(array $item): Company|Person|null
     {
         $profile = null;
         $profileType = $item['profile']['type'] ?? '';

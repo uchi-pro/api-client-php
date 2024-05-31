@@ -10,107 +10,50 @@ use UchiPro\Vendors\Vendor;
 
 class Course
 {
-    /**
-     * @var string
-     */
-    public $id;
+    public ?string $id = null;
 
-    /**
-     * @var string
-     */
-    public $gid;
+    public ?string $gid = null;
 
-    /**
-     * @var DateTimeImmutable
-     */
-    public $createdAt;
+    public ?DateTimeImmutable $createdAt = null;
 
-    /**
-     * @var DateTimeImmutable
-     */
-    public $updatedAt;
+    public ?DateTimeImmutable $updatedAt = null;
 
-    /**
-     * @var DateTimeImmutable
-     */
-    public $deletedAt;
+    public ?DateTimeImmutable $deletedAt = null;
 
-    /**
-     * @var bool
-     */
-    public $isActive;
+    public ?bool $isActive = null;
 
-    /**
-     * @var User
-     */
-    public $author;
+    public ?User $author = null;
 
-    /**
-     * @var ?string
-     */
-    public $title;
+    public ?string $title = null;
 
-    /**
-     * @var string
-     */
-    public $description;
+    public ?string $description = null;
 
-    /**
-     * @var string
-     */
-    public $comments;
+    public ?string $comments = null;
 
-    /**
-     * @var string
-     */
-    public $parentId;
+    public ?string $parentId = null;
 
-    /**
-     * @var CourseType
-     */
-    public $type;
+    public ?CourseType $type = null;
 
-    /**
-     * @var int
-     */
-    public $hours;
+    public ?int $hours = null;
 
-    /**
-     * @var int
-     */
-    public $price;
+    public int|float|null $price = null;
 
-    /**
-     * @var int
-     */
-    public $depth = 0;
+    public int $depth = 0;
 
-    /**
-     * @var int
-     */
-    public $childrenCount = 0;
+    public int $childrenCount = 0;
 
-    /**
-     * @var int
-     */
-    public $lessonsCount = 0;
+    public int $lessonsCount = 0;
 
-    /**
-     * @var AcademicPlan\Plan
-     */
-    public $academicPlan;
+    public ?AcademicPlan\Plan $academicPlan = null;
 
-    /**
-     * @var Vendor
-     */
-    public $vendor;
+    public ?Vendor $vendor = null;
 
     /**
      * @var Tag[]
      */
-    public $tags;
+    public ?array $tags = null;
 
-    public static function create(string $id = null, string $title = null): Course
+    public static function create(?string $id = null, ?string $title = null): Course
     {
         $course = new self();
         $course->id = $id;

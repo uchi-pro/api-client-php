@@ -9,17 +9,9 @@ use UchiPro\Collection;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Vendors\Vendor;
 
-final class UsersApi
+final readonly class UsersApi
 {
-    /**
-     * @var ApiClient
-     */
-    private $apiClient;
-
-    private function __construct(ApiClient $apiClient)
-    {
-        $this->apiClient = $apiClient;
-    }
+    private function __construct(private ApiClient $apiClient) {}
 
     public function newUser(?string $id = null, ?string $name = null): User
     {
@@ -112,9 +104,10 @@ final class UsersApi
 
     public function findListenerByEmail($email): ?User
     {
-        $criteria = $this->newCriteria();
-        $criteria->q = $email;
-        $criteria->role = Role::createListener();
+        $criteria = $this->newCriteria()
+            ->withQ($email)
+            ->withRole(Role::createListener())
+        ;
 
         $users = $this->findBy($criteria);
         foreach ($users as $user) {
@@ -154,7 +147,7 @@ final class UsersApi
             $formParams[$key] = $value;
         }
 
-        $userId = !empty($user->id) ? $user->id : 0;
+        $userId = $user->id ?? 0;
         $uri = "/users/$userId/edit?role={$user->role->id}";
         $responseData = $this->apiClient->request($uri, $formParams);
 
@@ -178,7 +171,7 @@ final class UsersApi
      *
      * @return User[]|Collection
      */
-    public function findBy(Criteria $criteria = null): iterable
+    public function findBy(Criteria $criteria = null): iterable|Collection
     {
         $users = new Collection();
 
@@ -236,7 +229,7 @@ final class UsersApi
      *
      * @return User[]|Collection
      */
-    private function parseUsers(array $list): Collection
+    private function parseUsers(array $list): iterable|Collection
     {
         $users = new Collection();
 
@@ -292,8 +285,8 @@ final class UsersApi
         return (int)$responseData['pager']['total_items'];
     }
 
-    public static function create(ApiClient $apiClient): UsersApi
+    public static function create(ApiClient $apiClient): self
     {
-        return new static($apiClient);
+        return new self($apiClient);
     }
 }

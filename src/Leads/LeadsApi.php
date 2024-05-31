@@ -7,17 +7,9 @@ namespace UchiPro\Leads;
 use UchiPro\ApiClient;
 use UchiPro\Courses\Course;
 
-final class LeadsApi
+final readonly class LeadsApi
 {
-    /**
-     * @var ApiClient
-     */
-    private $apiClient;
-
-    private function __construct(ApiClient $apiClient)
-    {
-        $this->apiClient = $apiClient;
-    }
+    private function __construct(private ApiClient $apiClient) {}
 
     public function newLead(): Lead
     {
@@ -47,9 +39,7 @@ final class LeadsApi
         }
 
         if (!empty($lead->courses)) {
-            $formParams['courses'] = array_map(function (Course $course) {
-                return $course->id;
-            }, $lead->courses);
+            $formParams['courses'] = array_map(fn(Course $course) => $course->id, $lead->courses);
         }
 
         foreach ($additionalParams as $key => $value) {
@@ -59,7 +49,7 @@ final class LeadsApi
         $responseData = $this->apiClient->request('leads/0/edit', $formParams);
 
         if (isset($responseData['lead']['uuid'])) {
-            $lead->id = $responseData['lead']['uuid'] ?? null;
+            $lead->id = $responseData['lead']['uuid'];
         }
 
         return $lead;
@@ -68,12 +58,13 @@ final class LeadsApi
     /**
      * @param Lead $lead
      * @param Comment $comment
+     * @param array $additionalParams
      *
      * @return Comment
      */
     public function saveLeadComment(Lead $lead, Comment $comment, array $additionalParams = []): Comment
     {
-        $params = [
+        $formParams = [
             'comments' => $comment->text,
         ];
 
@@ -81,16 +72,16 @@ final class LeadsApi
             $formParams[$key] = $value;
         }
 
-        $responseData = $this->apiClient->request("leads/$lead->id/comments/0", $params);
+        $responseData = $this->apiClient->request("leads/$lead->id/comments/0", $formParams);
 
         if (isset($responseData['comment']['uuid'])) {
-            $comment->id = $responseData['comment']['uuid'] ?? null;
+            $comment->id = $responseData['comment']['uuid'];
         }
 
         return $comment;
     }
 
-    public static function create(ApiClient $apiClient): LeadsApi
+    public static function create(ApiClient $apiClient): self
     {
         return new self($apiClient);
     }

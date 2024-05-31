@@ -6,18 +6,9 @@ namespace UchiPro\Courses\AcademicPlan;
 
 class Item
 {
-    /**
-     * @var string
-     */
-    public $title;
+    public ?string $title;
 
-    /**
-     * @var ItemType
-     */
-    public $type;
+    public ?ItemType $type;
 
-    /**
-     * @var int|string
-     */
-    public $hours;
+    public string|int|float|null $hours;
 }

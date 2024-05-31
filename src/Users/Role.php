@@ -6,15 +6,9 @@ namespace UchiPro\Users;
 
 class Role
 {
-    /**
-     * @var string
-     */
-    public $id;
+    public ?string $id = null;
 
-    /**
-     * @var string
-     */
-    public $title;
+    public ?string $title = null;
 
     public static function create(string $id = null, string $title = null): Role
     {

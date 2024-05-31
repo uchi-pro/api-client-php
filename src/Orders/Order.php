@@ -11,73 +11,42 @@ use UchiPro\Vendors\Vendor;
 
 class Order
 {
-    /**
-     * @var string
-     */
-    public $id;
+    public ?string $id = null;
+
+    public ?DateTimeImmutable $createdAt = null;
+
+    public ?DateTimeImmutable $updatedAt = null;
+
+    public ?DateTimeImmutable $deletedAt = null;
+
+    public ?string $number = null;
+
+    public ?Status $status = null;
+
+    public ?Course $course = null;
+
+    public ?Vendor $vendor = null;
+
+    public ?User $contractor = null;
 
     /**
-     * @var DateTimeImmutable
+     * @var null|array|User[]
      */
-    public $createdAt;
+    public ?array $listeners = null;
 
-    /**
-     * @var DateTimeImmutable
-     */
-    public $updatedAt;
+    public ?int $listenersCount = null;
 
-    /**
-     * @var DateTimeImmutable
-     */
-    public $deletedAt;
+    public ?int $listenersFinished = null;
 
-    /**
-     * @var string
-     */
-    public $number;
+    public ?DateTimeImmutable $sessionStartsAt = null;
 
-    /**
-     * @var Status
-     */
-    public $status;
+    public ?DateTimeImmutable $sessionEndsAt = null;
 
-    /**
-     * @var Course
-     */
-    public $course;
-
-    /**
-     * @var Vendor
-     */
-    public $vendor;
-
-    /**
-     * @var User
-     */
-    public $contractor;
-
-    /**
-     * @var array|User[]
-     */
-    public $listeners;
-
-    /**
-     * @var int
-     */
-    public $listenersCount;
-
-    /**
-     * @var int
-     */
-    public $listenersFinished;
-
-    /**
-     * @var DateTimeImmutable
-     */
-    public $sessionStartsAt;
-
-    /**
-     * @var DateTimeImmutable
-     */
-    public $sessionEndsAt;
+    public static function create(?string $id = null, ?string $number = null): self
+    {
+        $order = new self();
+        $order->id = $id;
+        $order->number = $number;
+        return $order;
+    }
 }

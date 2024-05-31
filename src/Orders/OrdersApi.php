@@ -13,26 +13,13 @@ use UchiPro\Exception\RequestException;
 use UchiPro\Users\User;
 use UchiPro\Vendors\Vendor;
 
-final class OrdersApi
+final readonly class OrdersApi
 {
-    /**
-     * @var ApiClient
-     */
-    private $apiClient;
+    private function __construct(private ApiClient $apiClient) {}
 
-    private function __construct(ApiClient $apiClient)
+    public function newOrder(?string $id = null, ?string $number = null): Order
     {
-        $this->apiClient = $apiClient;
-    }
-
-    public function newOrder(): Order
-    {
-        return new Order();
-    }
-
-    public function createOrder(): Order
-    {
-        return self::newOrder();
+        return Order::create($id, $number);
     }
 
     public function newCriteria(): Criteria
@@ -59,7 +46,7 @@ final class OrdersApi
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(Criteria $criteria = null): iterable
+    public function findBy(Criteria $criteria = null): iterable|Collection
     {
         $orders = new Collection();
 
@@ -82,6 +69,14 @@ final class OrdersApi
     }
 
     /**
+     * @return iterable|Collection
+     */
+    public function findAll(): iterable|Collection
+    {
+        return $this->findBy();
+    }
+
+    /**
      * @param Criteria|null $criteria
      *
      * @return string
@@ -98,7 +93,7 @@ final class OrdersApi
 
             if (!empty($criteria->status)) {
                 $uriQuery['status'] = array_map(
-                  function (Status $status) { return $status->code; },
+                  fn(Status $status) => $status->code,
                   is_array($criteria->status) ? $criteria->status : [$criteria->status]
                 );
             }
@@ -136,7 +131,7 @@ final class OrdersApi
      *
      * @return Order[]|Collection
      */
-    private function parseOrders(array $list): Collection
+    private function parseOrders(array $list): iterable|Collection
     {
         $orders = new Collection();
 
@@ -262,7 +257,7 @@ final class OrdersApi
             $formParams[$key] = $value;
         }
 
-        $orderId = !empty($order->id) ? $order->id : 0;
+        $orderId = $order->id ?? 0;
         $responseData = $this->apiClient->request("/orders/$orderId/edit", $formParams);
 
         return $this->parseOrder($responseData['order']);
@@ -290,7 +285,7 @@ final class OrdersApi
         return $this->apiClient->request("/orders/$order->id/listeners/send-credentials", $formParams);
     }
 
-    public static function create(ApiClient $apiClient): OrdersApi
+    public static function create(ApiClient $apiClient): self
     {
         return new self($apiClient);
     }

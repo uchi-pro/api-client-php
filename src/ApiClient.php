@@ -22,30 +22,16 @@ use UchiPro\Sessions\SessionsApi;
 use UchiPro\Users\UsersApi;
 use UchiPro\Vendors\VendorsApi;
 
-class ApiClient
+final class ApiClient
 {
-    const EMPTY_UUID_VALUE = '00000000-0000-0000-0000-000000000000';
-    const EMPTY_DATE_VALUE = '0001-01-01T00:00:00Z';
+    public const EMPTY_UUID_VALUE = '00000000-0000-0000-0000-000000000000';
+    public const EMPTY_DATE_VALUE = '0001-01-01T00:00:00Z';
 
-    /**
-     * @var bool
-     */
-    private $isDebug = false;
+    private bool $isDebug = false;
 
-    /**
-     * @var Identity
-     */
-    private $identity;
+    private ?HttpClient $httpClient = null;
 
-    /**
-     * @var HttpClient
-     */
-    private $httpClient;
-
-    private function __construct(Identity $identity)
-    {
-        $this->identity = $identity;
-    }
+    private function __construct(private readonly Identity $identity)  {}
 
     /**
      * @param string $url
@@ -65,7 +51,7 @@ class ApiClient
 
             $response = $httpClient->request('GET', $url, ['allow_redirects' => false]);
 
-            $isRedirect = substr((string)$response->getStatusCode(), 0, 1) == '3';
+            $isRedirect = str_starts_with((string)$response->getStatusCode(), '3');
             if ($isRedirect && $response->hasHeader('Location')) {
                 $location = $response->getHeaderLine('Location');
                 if (filter_var($location, FILTER_VALIDATE_URL)) {
@@ -186,7 +172,7 @@ class ApiClient
 
             $errors = [];
             if (method_exists($e, 'getResponse')) {
-                $responseData = json_decode($e->getResponse()->getBody()->getContents(), true);
+                $responseData = json_decode((string) $e->getResponse()->getBody()->getContents(), true);
                 if (!empty($responseData['errors'])) {
                     $errors = $responseData['errors'];
                 }

@@ -98,14 +98,14 @@ class CoursesTest extends TestCase
     {
         $coursesApi = $this->getApiClient()->courses();
 
-        $foundCourses = $coursesApi->findBy($coursesApi->newCriteria()->withTags([
-            $coursesApi->newTag('42c1b914-3353-11ed-bc61-b42e996750b0')
-        ]));
+        $tag = $coursesApi->newTag('ac88d113-286b-42a4-9306-131ed982f505'); // Общая часть курса 46.Б
+        $criteria = $coursesApi->newCriteria()->withTags([$tag]);
+        $foundCourses = $coursesApi->findBy($criteria);
 
         if (empty($foundCourses[0])) {
-            $this->markTestSkipped('Нужно указать идентификатор существующего курса с тегами.');
+            $this->markTestSkipped('Курсы с тегами не найдены.');
         }
-        $foundCourse = $coursesApi->findById($foundCourses[0]->id);
+        $foundCourse = $foundCourses[0];
 
         $this->assertNotEmpty($foundCourse->tags[0]->id);
         $this->assertNotEmpty($foundCourse->tags[0]->title);

@@ -11,31 +11,35 @@ use UchiPro\Sessions\Session;
 
 class OrdersTest extends TestCase
 {
-    public function testnewOrder(): void
+    public function testNewOrder(): void
     {
-        $createdOrder = $this->getApiClient()->orders()->newOrder();
-        $this->assertInstanceOf(Order::class, $createdOrder);
+        $order = $this->getApiClient()->orders()->newOrder();
+        $this->assertInstanceOf(Order::class, $order);
     }
 
-    public function testnewSession(): void
+    public function testNewOrderWithId(): void
     {
-        $createdSession = $this->getApiClient()->sessions()->newSession();
-        $this->assertInstanceOf(Session::class, $createdSession);
+        $orderId = '123-456';
+        $order = $this->getApiClient()->orders()->newOrder($orderId);
+        $this->assertEquals($orderId, $order->id);
+    }
+
+    public function testNewSession(): void
+    {
+        $session = $this->getApiClient()->sessions()->newSession();
+        $this->assertInstanceOf(Session::class, $session);
     }
 
     public function testCreateOrderStatus()
     {
-        $createdPendingStatus = Status::createPending();
-        $this->assertTrue($createdPendingStatus->isPending());
+        $pendingStatus = Status::createPending();
+        $this->assertTrue($pendingStatus->isPending());
     }
 
     public function testFindAllOrders(): void
     {
-        $ordersApi = $this->getApiClient()->orders();
-        $criteria = $ordersApi->newCriteria();
-        $foundAllOrders = $this->getApiClient()->orders()->findBy($criteria);
-
-        $this->assertNotCount(0, $foundAllOrders, 'Не удалось найти все заявки.');
+        $allOrders = $this->getApiClient()->orders()->findAll();
+        $this->assertNotCount(0, $allOrders, 'Не удалось найти все заявки.');
     }
 
     public function testFindAllOrdersByPage(): void
@@ -122,8 +126,8 @@ class OrdersTest extends TestCase
 
         $originalOrder = $this->findOrderWithListeners(5);
         $originalOrder->listeners = $ordersApi->getOrderListeners($originalOrder);
+        $originalOrder->id = null;
 
-        $originalOrder->id = 0;
         $newOrder = $ordersApi->saveOrder($originalOrder);
 
         $this->assertNotSame($originalOrder->id, $newOrder->id, 'Не удалось сохранить заявку.');
@@ -138,7 +142,7 @@ class OrdersTest extends TestCase
     {
         $ordersApi = $this->getApiClient()->orders();
 
-        $existsOrder = $this->findOrderWithListeners(5);
+        $existsOrder = $ordersApi->findById('75e487db-836a-4980-92d0-e01d25de18f9');
 
         $copyTo = [];
         $listeners = $ordersApi->getOrderListeners($existsOrder);
@@ -167,16 +171,44 @@ class OrdersTest extends TestCase
         $this->assertEquals(Status::STATUS_CANCELED, $statuses[count($statuses) - 1]->code);
     }
 
+    public function testCreatePendingStatus()
+    {
+        $this->assertTrue(Status::createPending()->isPending());
+    }
+
+    public function testCreateAcceptedStatus()
+    {
+        $this->assertTrue(Status::createAccepted()->isAccepted());
+    }
+
     public function testCreateTrainingStatus()
     {
-        $trainingStatus = Status::createTraining();
-        $this->assertTrue($trainingStatus->isTraining());
+        $this->assertTrue(Status::createTraining()->isTraining());
+    }
+
+    public function testCreateTrainingCompleteStatus()
+    {
+        $this->assertTrue(Status::createTrainingComplete()->isTrainingComplete());
+    }
+
+    public function testCreateAwaitingPaymentStatus()
+    {
+        $this->assertTrue(Status::createAwaitingPayment()->isAwaitingPayment());
+    }
+
+    public function testCreateDocumentReadyStatus()
+    {
+        $this->assertTrue(Status::createDocumentsReady()->isDocumentsReady());
     }
 
     public function testCreateCompletedStatus()
     {
-        $completedStatus = Status::createCompleted();
-        $this->assertTrue($completedStatus->isCompleted());
+        $this->assertTrue(Status::createCompleted()->isCompleted());
+    }
+
+    public function testCreateCanceledStatus()
+    {
+        $this->assertTrue(Status::createCanceled()->isCanceled());
     }
 
     private function findAllOrders(): iterable

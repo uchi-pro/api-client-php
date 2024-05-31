@@ -10,55 +10,25 @@ use UchiPro\Users\User;
 
 class Session
 {
-    /**
-     * @var string
-     */
-    public $id;
+    public ?string $id = null;
 
-    /**
-     * @var DateTimeImmutable
-     */
-    public $createdAt;
+    public ?DateTimeImmutable $createdAt = null;
 
-    /**
-     * @var DateTimeImmutable
-     */
-    public $deletedAt;
+    public ?DateTimeImmutable $deletedAt = null;
 
-    /**
-     * @var DateTimeImmutable
-     */
-    public $startedAt;
+    public ?DateTimeImmutable $startedAt = null;
 
-    /**
-     * @var DateTimeImmutable
-     */
-    public $skippedAt;
+    public ?DateTimeImmutable $skippedAt = null;
 
-    /**
-     * @var DateTimeImmutable
-     */
-    public $acceptedAt;
+    public ?DateTimeImmutable $acceptedAt = null;
 
-    /**
-     * @var DateTimeImmutable
-     */
-    public $completedAt;
+    public ?DateTimeImmutable $completedAt = null;
 
-    /**
-     * @var Status
-     */
-    public $status;
+    public ?Status $status = null;
 
-    /**
-     * @var User
-     */
-    public $listener;
+    public ?User $listener = null;
 
-    /**
-     * @var Order
-     */
-    public $order;
+    public ?Order $order = null;
 
     public function isDeleted(): bool
     {

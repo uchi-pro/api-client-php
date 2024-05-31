@@ -6,15 +6,9 @@ namespace UchiPro\Vendors;
 
 class Criteria
 {
-    /**
-     * @var string
-     */
-    public $q;
+    public ?string $q = null;
 
-    /**
-     * @var bool
-     */
-    public $isActive;
+    public ?bool $isActive = null;
 
     public function withQ(string $q): self
     {

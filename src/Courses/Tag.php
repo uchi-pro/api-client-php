@@ -6,30 +6,18 @@ namespace UchiPro\Courses;
 
 class Tag
 {
-    /**
-     * @var string
-     */
-    public $id;
+    public ?string $id = null;
 
-    /**
-     * @var bool
-     */
-    public $isActive;
+    public ?bool $isActive = null;
 
-    /**
-     * @var string
-     */
-    public $parentId;
+    public ?string $parentId = null;
 
-    /**
-     * @var string
-     */
-    public $title;
+    public ?string $title = null;
 
     /**
      * @var Tag[]
      */
-    public $children = [];
+    public array $children = [];
 
     public static function create(?string $id = null, ?string $title = null): self
     {

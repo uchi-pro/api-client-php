@@ -6,43 +6,18 @@ namespace UchiPro;
 
 class Identity
 {
-    /**
-     * @var string
-     */
-    public $url;
+    public ?string $url = null;
 
-    /**
-     * @var string
-     */
-    public $urlScheme;
+    public ?string $urlScheme = null;
 
-    /**
-     * @var string
-     */
-    public $urlHost;
+    public ?string $urlHost = null;
 
-    /**
-     * @var string
-     */
-    public $login;
+    public ?string $login = null;
 
-    /**
-     * @var string
-     */
-    public $password;
+    public ?string $password = null;
 
-    /**
-     * @var string
-     */
-    public $accessToken;
+    public ?string $accessToken = null;
 
-    /**
-     * @param string $url
-     * @param string $login
-     * @param string $password
-     *
-     * @return Identity
-     */
     public static function createByLogin(string $url, string $login, string $password): Identity
     {
         $identity = new self();
@@ -60,12 +35,6 @@ class Identity
         return $identity;
     }
 
-    /**
-     * @param string $url
-     * @param string $accessToken
-     *
-     * @return Identity
-     */
     public static function createByAccessToken(string $url, string $accessToken): Identity
     {
         $identity = new self();

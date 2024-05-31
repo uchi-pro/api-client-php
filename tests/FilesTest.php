@@ -8,9 +8,9 @@ class FilesTest extends TestCase
 {
     public function testGetProtocolFIle()
     {
-        $protocolHtmlContent = $this->getApiClient()->getFile('/protocols/248/content?_fmt=html');
+        $protocolHtmlContent = $this->getApiClient()->getFile('/protocols/250/content?_fmt=html');
 
         $this->assertNotEmpty($protocolHtmlContent);
-        $this->assertContains('Протокол', $protocolHtmlContent);
+        $this->assertStringContainsString('Протокол', $protocolHtmlContent);
     }
 }

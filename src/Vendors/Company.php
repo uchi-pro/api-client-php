@@ -6,20 +6,20 @@ namespace UchiPro\Vendors;
 
 class Company
 {
-    public $title;
-    public $email;
-    public $phone;
-    public $locality;
-    public $address;
-    public $physicalAddress;
-    public $postalAddress;
-    public $website;
-    public $director;
-    public $inn;
-    public $kpp;
-    public $ogrn;
-    public $okpo;
-    public $oktmo;
-    public $okved;
-    public $kbk;
+    public ?string $title = null;
+    public ?string $email = null;
+    public ?string $phone = null;
+    public ?string $locality = null;
+    public ?string $address = null;
+    public ?string $physicalAddress = null;
+    public ?string $postalAddress = null;
+    public ?string $website = null;
+    public ?string $director = null;
+    public null|string|int $inn = null;
+    public null|string|int $kpp = null;
+    public null|string|int $ogrn = null;
+    public null|string|int $okpo = null;
+    public null|string|int $oktmo = null;
+    public null|string|int $okved = null;
+    public null|string|int $kbk = null;
 }

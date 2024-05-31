@@ -8,20 +8,11 @@ use UchiPro\Vendors\Vendor;
 
 class Criteria
 {
-    /**
-     * @var string
-     */
-    public $q;
+    public ?string $q = null;
 
-    /**
-     * @var Role
-     */
-    public $role;
+    public ?Role $role = null;
 
-    /**
-     * @var Vendor
-     */
-    public $vendor;
+    public ?Vendor $vendor = null;
 
     public function withQ(string $q): self
     {

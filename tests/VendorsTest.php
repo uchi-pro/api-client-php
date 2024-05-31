@@ -97,13 +97,8 @@ class VendorsTest extends TestCase
     {
         $vendorsApi = $this->getApiClient()->vendors();
 
-        $vendors = $vendorsApi->findAll();
+        $vendor = $vendorsApi->findById('c7cb8e88-518b-415b-bfa5-1d0288db74fd');
 
-        if (empty($vendors[0])) {
-            $this->markTestSkipped('Вендор для теста не найден.');
-        }
-
-        $vendor = $vendors[0];
         $totalFilesize = $vendorsApi->getVendorTotalFilesize($vendor);
 
         $this->assertGreaterThan(0, $totalFilesize, "У вендора $vendor->title ($vendor->id) не загружены файлы.");

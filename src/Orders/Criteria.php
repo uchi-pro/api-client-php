@@ -9,38 +9,17 @@ use UchiPro\Vendors\Vendor;
 
 class Criteria
 {
-    /**
-     * @var string
-     */
-    public $number;
+    public ?string $number = null;
 
-    /**
-     * @var Status|Status[]
-     */
-    public $status;
+    public array|null|Status $status = null;
 
-    /**
-     * @var Vendor
-     */
-    public $vendor;
+    public ?Vendor $vendor = null;
 
-    /**
-     * @var bool
-     */
-    public $withFullAcceptedOnly;
+    public ?bool $withFullAcceptedOnly = null;
 
-    /**
-     * @var ?int
-     */
-    public $page;
+    public ?int $page = null;
 
-    /**
-     * @var ?int
-     */
-    public $perPage;
+    public ?int $perPage = null;
 
-    /**
-     * @var DateTimeInterface
-     */
-    public $updatedSince;
+    public ?DateTimeInterface $updatedSince = null;
 }

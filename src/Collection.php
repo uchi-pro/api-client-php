@@ -11,32 +11,15 @@ use IteratorAggregate;
 
 class Collection implements ArrayAccess, Countable, IteratorAggregate
 {
-    private $values = [];
+    private ?int $page = null;
 
-    /**
-     * @var ?int
-     */
-    private $page;
+    private ?int $perPage = null;
 
-    /**
-     * @var ?int
-     */
-    private $perPage;
+    private ?int $totalItems = null;
 
-    /**
-     * @var ?int
-     */
-    private $totalItems;
+    private ?int $totalPages = null;
 
-    /**
-     * @var ?int
-     */
-    private $totalPages;
-
-    public function __construct(array $values = [])
-    {
-        $this->values = $values;
-    }
+    public function __construct(private array $values = []) {}
 
     public function offsetExists($offset)
     {
@@ -48,7 +31,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
         return array_key_exists($offset, $this->values) ? $this->values[$offset] : null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->values[] = $value;
@@ -57,7 +40,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
         }
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->values[$offset]);
     }

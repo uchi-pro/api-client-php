@@ -8,87 +8,63 @@ class Limits
 {
     /**
      * Максимальный общий размер всех файлов.
-     *
-     * @var int
      */
-    public $maxTotalFilesize;
+    public ?int $maxTotalFilesize = null;
 
     /**
      * Доступна фиксация обучения.
-     *
-     * @var bool
      */
-    public $sessionCheatAvailable;
+    public ?bool $sessionCheatAvailable = null;
 
     /**
      * Вебинары и подобные мероприятия.
-     *
-     * @var bool
      */
-    public $meetingsAvailable;
+    public ?bool $meetingsAvailable = null;
 
     /**
      * Лиды заявок и календарь событий по лидам.
-     *
-     * @var bool
      */
-    public $leadsEventsAvailable;
+    public ?bool $leadsEventsAvailable = null;
 
     /**
      * Финансовый документооборот (договоры, счета/оплаты, акты выполненных работ).
-     *
-     * @var bool
      */
-    public $billingDocsAvailable;
+    public ?bool $billingDocsAvailable = null;
 
     /**
      * Группы по курсу, приказы, выписки, учебные планы.
-     *
-     * @var bool
      */
-    public $groupsWritsAvailable;
+    public ?bool $groupsWritsAvailable = null;
 
     /**
      * База знаний.
-     *
-     * @var bool
      */
-    public $infobaseAvailable;
+    public ?bool $infobaseAvailable = null;
 
     /**
      * Онлайн-заказ обучения.
-     *
-     * @var bool
      */
-    public $shopAvailable;
+    public ?bool $shopAvailable = null;
 
     /**
      * Доступен конструктор курсов по тегам
-     *
-     * @var bool
      */
-    public $courseCompilerAvailable;
+    public ?bool $courseCompilerAvailable = null;
 
     /**
      * Доступны расписания по заявкам, группам по курсу
-     *
-     * @var bool
      */
-    public $schedulesAvailable;
+    public ?bool $schedulesAvailable = null;
 
     /**
      * Доступны опросы по заявкам
-     *
-     * @var bool
      */
-    public $surveysAvailable;
+    public ?bool $surveysAvailable = null;
 
     /**
      * Разрешено использовать мобильное приложение?
-     *
-     * @var bool
      */
-    public $mobileAppEnabled;
+    public ?bool $mobileAppEnabled = null;
 
     public static function create(): self
     {

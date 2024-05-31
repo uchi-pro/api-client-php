@@ -15,17 +15,9 @@ use UchiPro\Exception\RequestException;
 use UchiPro\Users\User;
 use UchiPro\Vendors\Vendor;
 
-final class CoursesApi
+final readonly class CoursesApi
 {
-    /**
-     * @var ApiClient
-     */
-    private $apiClient;
-
-    private function __construct(ApiClient $apiClient)
-    {
-        $this->apiClient = $apiClient;
-    }
+    private function __construct(private ApiClient $apiClient) {}
 
     public function newCourse(?string $id = null, ?string $title = null): Course
     {
@@ -66,7 +58,7 @@ final class CoursesApi
      * @throws RequestException
      * @throws BadResponseException
      */
-    public function findBy(?Criteria $criteria = null): iterable
+    public function findBy(Criteria $criteria = null): iterable|Collection
     {
         $courses = new Collection();
 
@@ -136,7 +128,7 @@ final class CoursesApi
     /**
      * @param array $list
      *
-     * @return Course[]|Collection
+     * @return Collection<int, Course>
      */
     private function parseCourses(array $list): Collection
     {
@@ -223,13 +215,13 @@ final class CoursesApi
 
         if (!empty($courseData['settings']['academic_plan'])) {
             try {
-                $json = json_decode($courseData['settings']['academic_plan'], true);
+                $json = json_decode((string) $courseData['settings']['academic_plan'], true);
                 if (is_array($json)) {
                     foreach ($json as $jsonItem) {
                         $itemType = new ItemType();
                         if (isset($jsonItem['type_title'])) {
                             $itemType->id = $jsonItem['type'] ?? '';
-                            $itemType->title = $jsonItem['type_title'] ?? '';
+                            $itemType->title = $jsonItem['type_title'];
                         } else {
                             $itemType->title = $jsonItem['type'] ?? '';
                         }
@@ -242,7 +234,7 @@ final class CoursesApi
                         $planItems[] = $planItem;
                     }
                 }
-            } catch (Exception $e) {
+            } catch (Exception) {
                 // Ничего не делать.
             }
         }
@@ -252,7 +244,7 @@ final class CoursesApi
                 $itemType = new ItemType();
                 if (isset($item['type_title'])) {
                     $itemType->id = $item['type'] ?? '';
-                    $itemType->title = $item['type_title'] ?? '';
+                    $itemType->title = $item['type_title'];
                 } else {
                     $itemType->title = $item['type'] ?? '';
                 }
@@ -291,7 +283,7 @@ final class CoursesApi
     /**
      * @param array $courseData
      *
-     * @return iterable|Tag[]|null
+     * @return iterable<Tag>|null
      */
     public function parseTags(array $courseData): ?iterable
     {
@@ -364,7 +356,7 @@ final class CoursesApi
         return $tag;
     }
 
-    private function extractLessonFeatures(array $lesson, CourseFeatures $courseFeatures)
+    private function extractLessonFeatures(array $lesson, CourseFeatures $courseFeatures): void
     {
         if (isset($lesson['type'])) {
             // Старый вариант.
@@ -397,7 +389,7 @@ final class CoursesApi
         }
     }
 
-    private function extractResourceFeatures(array $resource, CourseFeatures $courseFeatures)
+    private function extractResourceFeatures(array $resource, CourseFeatures $courseFeatures): void
     {
         if ($resource['slides_count']) {
             $courseFeatures->slides = true;
@@ -478,7 +470,7 @@ final class CoursesApi
         return $lesson;
     }
 
-    public static function create(ApiClient $apiClient): CoursesApi
+    public static function create(ApiClient $apiClient): self
     {
         return new self($apiClient);
     }

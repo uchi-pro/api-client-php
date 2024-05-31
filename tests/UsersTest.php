@@ -73,6 +73,41 @@ class UsersTest extends TestCase
         }
     }
 
+    public function testFindListenerByEmail()
+    {
+        $usersApi = $this->getApiClient()->users();
+
+        $email = 'andrey@uchipro.ru';
+        $foundListener = $usersApi->findListenerByEmail($email);
+
+        $this->assertNotEmpty($foundListener);
+        $this->assertSame($email, $foundListener->email);
+    }
+
+    public function testCreateUser()
+    {
+        $usersApi = $this->getApiClient()->users();
+        $this->assertNull($usersApi->newUser()->role);
+    }
+
+    public function testCreateUserAdministrator()
+    {
+        $usersApi = $this->getApiClient()->users();
+        $this->assertSame('administrator', $usersApi->newAdministrator()->role->id);
+    }
+
+    public function testCreateUserContractor()
+    {
+        $usersApi = $this->getApiClient()->users();
+        $this->assertSame('contractor', $usersApi->newContractor()->role->id);
+    }
+
+    public function testCreateUserListener()
+    {
+        $usersApi = $this->getApiClient()->users();
+        $this->assertSame('listener', $usersApi->newListener()->role->id);
+    }
+
     public function testRoleAdministrator()
     {
         $this->assertSame('administrator', Role::createAdministrator()->id);
@@ -83,32 +118,32 @@ class UsersTest extends TestCase
         $this->assertSame('manager', Role::createManager()->id);
     }
 
-    public function testCreateEditor()
+    public function testCreateRoleEditor()
     {
         $this->assertSame('editor', Role::createEditor()->id);
     }
 
-    public function testCreateTeacher()
+    public function testCreateRoleTeacher()
     {
         $this->assertSame('teacher', Role::createTeacher()->id);
     }
 
-    public function testCreateAgent()
+    public function testCreateRoleAgent()
     {
         $this->assertSame('agent', Role::createAgent()->id);
     }
 
-    public function testCreateContractor()
+    public function testCreateRoleContractor()
     {
         $this->assertSame('contractor', Role::createContractor()->id);
     }
 
-    public function testCreateListener()
+    public function testCreateRoleListener()
     {
         $this->assertSame('listener', Role::createListener()->id);
     }
 
-    public function testCreateGuest()
+    public function testCreateRoleGuest()
     {
         $this->assertSame('guest', Role::createGuest()->id);
     }

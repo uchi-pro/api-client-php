@@ -8,35 +8,20 @@ use UchiPro\Vendors\Vendor;
 
 class Criteria
 {
-    /**
-     * @var Vendor
-     */
-    public $vendor;
+    public ?Vendor $vendor = null;
 
-    /**
-     * @var Course
-     */
-    public $parent;
+    public ?Course $parent = null;
 
-    /**
-     * @var string
-     */
-    public $gid;
+    public ?string $gid = null;
 
-    /**
-     * @var bool
-     */
-    public $withInactive;
+    public ?bool $withInactive = null;
 
-    /**
-     * @var bool
-     */
-    public $withDeleted;
+    public ?bool $withDeleted = null;
 
     /**
      * @var Tag[]
      */
-    public $tags;
+    public ?array $tags = null;
 
     public function withVendor(Vendor $vendor): self
     {
