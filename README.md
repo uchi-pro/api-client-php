@@ -24,7 +24,7 @@ $courses = $apiClient->courses()->findBy();
 print 'Найдено курсов: '.count($courses).PHP_EOL;
 
 $ordersApi = $apiClient->orders();
-$ordersCriteria = $ordersApi->createCriteria();
+$ordersCriteria = $ordersApi->newCriteria();
 $ordersCriteria->status = Status::createTraining();
 $orders = $ordersApi->findBy($ordersCriteria);
 print 'Заявок в статусе обучения: '.count($orders).PHP_EOL;
