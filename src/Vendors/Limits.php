@@ -90,6 +90,20 @@ class Limits
      */
     public $mobileAppEnabled;
 
+    /**
+     * Доступен раздел новостей
+     *
+     * @var bool
+     */
+    public $newsAvailable;
+
+    /**
+     * Доступна синхронизация данных между СДО
+     *
+     * @var bool
+     */
+    public $syncEnabled;
+
     public static function create(): self
     {
         return new self();

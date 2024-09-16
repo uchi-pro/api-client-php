@@ -98,6 +98,12 @@ final class VendorsApi
         if (isset($limitsData['mobile_app_enabled'])) {
             $limits->mobileAppEnabled = filter_var($limitsData['mobile_app_enabled'], FILTER_VALIDATE_BOOLEAN);
         }
+        if (isset($limitsData['news_available'])) {
+            $limits->newsAvailable = filter_var($limitsData['news_available'], FILTER_VALIDATE_BOOLEAN);
+        }
+        if (isset($limitsData['sync_enabled'])) {
+            $limits->syncEnabled = filter_var($limitsData['sync_enabled'], FILTER_VALIDATE_BOOLEAN);
+        }
 
         return $limits;
     }
@@ -154,6 +160,12 @@ final class VendorsApi
         }
         if (!is_null($limits->mobileAppEnabled)) {
             $params['mobile_app_enabled'] = (int)$limits->mobileAppEnabled;
+        }
+        if (!is_null($limits->newsAvailable)) {
+            $params['news_available'] = (int)$limits->newsAvailable;
+        }
+        if (!is_null($limits->syncEnabled)) {
+            $params['sync_enabled'] = (int)$limits->syncEnabled;
         }
 
         $responseData = $this->apiClient->request("/vendors/$vendor->id/limits", $params);
