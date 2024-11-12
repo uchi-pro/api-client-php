@@ -8,6 +8,7 @@ use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
+use Traversable;
 
 class Collection implements ArrayAccess, Countable, IteratorAggregate
 {
@@ -21,12 +22,12 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 
     public function __construct(private array $values = []) {}
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->values);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return array_key_exists($offset, $this->values) ? $this->values[$offset] : null;
     }
@@ -45,7 +46,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
         unset($this->values[$offset]);
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->values);
     }
@@ -78,7 +79,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
         return $this->totalPages;
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->values);
     }
