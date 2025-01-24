@@ -398,6 +398,10 @@ final readonly class VendorsApi
             $formParams['title'] = $vendor->title;
         }
 
+        if (!empty($vendor->email)) {
+            $formParams['email'] = $vendor->email;
+        }
+
         if (!empty($vendor->profile)) {
             if ($vendor->profile instanceof Company) {
                 $formParams['profile[type]'] = 'company';
