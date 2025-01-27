@@ -6,6 +6,7 @@ namespace UchiPro\Vendors;
 
 use UchiPro\ApiClient;
 use UchiPro\Collection;
+use UchiPro\Courses\Course;
 use UchiPro\Exception\BadResponseException;
 use UchiPro\Exception\RequestException;
 
@@ -394,6 +395,19 @@ final readonly class VendorsApi
         $responseData = $this->apiClient->request($uri, ['domain' => $domains, '_replace' => true]);
 
         return $responseData['domains'] ?? [];
+    }
+
+    public function setVendorCourses(Vendor $vendor, array $courses): array
+    {
+        $uri = "/vendors/$vendor->id/courses";
+        foreach ($courses as $key => $course) {
+            if ($course instanceof Course) {
+                $courses[$key] = $course->id;
+            }
+        }
+        $responseData = $this->apiClient->request($uri, ['course' => $courses, '_replace' => true]);
+
+        return $responseData['courses'] ?? [];
     }
 
     public function saveVendor(Vendor $vendor, array $additionalParams = []): Vendor

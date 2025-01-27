@@ -313,4 +313,27 @@ class VendorsTest extends TestCase
 
         $this->assertSameSize($savedDomains, $domains);
     }
+
+    public function testSetVendorCourses()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $vendor = $vendorsApi->newVendor('6dabb1bc-f6bb-44ef-ac2f-af80d0e0520e');
+
+        $allCourses = [
+            'c4d49bac-42b7-4b77-b4f2-8743a64e5fad',
+            'ba288384-e521-410f-ac52-13c02dac58d6',
+            'b6249e81-bd4b-47d3-bcec-a8d66f050eff',
+            '7a20ebe9-a686-462c-8d04-59048a9df0cc',
+            '6aa62a13-f36f-4dc7-bf4c-189cd3ace2d4',
+        ];
+        $randomKeys = array_rand($allCourses, rand(2, 4));
+        $courses = array_filter($allCourses, function ($key) use ($randomKeys) {
+            return in_array($key, $randomKeys);
+        }, ARRAY_FILTER_USE_KEY);
+
+        $savedCourses = $vendorsApi->setVendorCourses($vendor, $courses);
+
+        $this->assertSameSize($savedCourses, $courses);
+    }
 }
