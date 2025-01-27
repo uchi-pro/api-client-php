@@ -287,4 +287,35 @@ class VendorsTest extends TestCase
 
         $this->assertEquals($person->locality, $vendor->profile->locality);
     }
+
+    public function testCreateVendor()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $name = "test{$this->time()}";
+        $email = "$name@test.ru";
+
+        $newVendor = $vendorsApi->newVendor();
+        $newVendor->email = $email;
+        $newVendor->title = $name;
+        $savedVendor = $vendorsApi->saveVendor($newVendor);
+
+        $this->assertNotEmpty($savedVendor->id);
+        $this->assertEquals($savedVendor->email, $email);
+    }
+
+    public function testSetVendorDomains()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $vendor = $vendorsApi->newVendor('6dabb1bc-f6bb-44ef-ac2f-af80d0e0520e');
+
+        $domains = [];
+        foreach (range(1, rand(1, 6)) as $i) {
+            $domains[] = "test{$this->time()}-$i.profit.uchi.red";
+        }
+        $savedDomains = $vendorsApi->setVendorDomains($vendor, $domains);
+
+        $this->assertSameSize($savedDomains, $domains);
+    }
 }

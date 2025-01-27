@@ -40,4 +40,15 @@ abstract class TestCase extends BaseTestCase
     {
         return in_array('--debug', $_SERVER['argv']);
     }
+
+    protected function time(): int
+    {
+        static $time;
+
+        if (empty($time)) {
+            $time = time();
+        }
+
+        return $time;
+    }
 }
