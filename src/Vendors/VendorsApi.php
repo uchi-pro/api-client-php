@@ -388,6 +388,14 @@ final readonly class VendorsApi
         return $responseData['domains'] ?? [];
     }
 
+    public function setVendorDomains(Vendor $vendor, array $domains): array
+    {
+        $uri = "/vendors/$vendor->id/domains";
+        $responseData = $this->apiClient->request($uri, ['domain' => $domains, '_replace' => true]);
+
+        return $responseData['domains'] ?? [];
+    }
+
     public function saveVendor(Vendor $vendor, array $additionalParams = []): Vendor
     {
         $formParams = [
