@@ -46,6 +46,11 @@ class User
     /**
      * @var ?bool
      */
+    public $isActive;
+
+    /**
+     * @var ?bool
+     */
     public $isDeleted;
 
     /**
