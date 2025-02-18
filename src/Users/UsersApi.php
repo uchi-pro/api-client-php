@@ -267,6 +267,7 @@ final readonly class UsersApi
         $user->name = $data['title'] ?? null;
         $user->email = $data['email'] ?? null;
         $user->phone = $data['phone'] ?? null;
+        $user->isActive = !empty($data['is_active']);
         $user->isDeleted = !empty($data['is_deleted']);
         $user->role = $role;
         $user->vendor = $vendor;

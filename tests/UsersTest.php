@@ -275,4 +275,15 @@ class UsersTest extends TestCase
         $listenersNumber = $this->getApiClient()->users()->getListenersNumber();
         $this->assertTrue($listenersNumber >= 0);
     }
+
+    public function testFindAdministrators()
+    {
+        $usersApi = $this->getApiClient()->users();
+
+        $criteria = $usersApi->newCriteria()->withRole(Role::createAdministrator());
+        $foundAdministrators = $usersApi->findBy($criteria);
+
+        $this->assertNotEmpty($foundAdministrators);
+        $this->assertEquals('administrator', $foundAdministrators[0]->role->id);
+    }
 }

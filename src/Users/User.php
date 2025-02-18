@@ -22,6 +22,8 @@ class User
 
     public ?Vendor $vendor = null;
 
+    public ?bool $isActive = null;
+
     public ?bool $isDeleted = null;
 
     public ?User $parent = null;
