@@ -27,6 +27,11 @@ class Criteria
     /**
      * @var bool
      */
+    public $selectedVendorOnly = false;
+
+    /**
+     * @var bool
+     */
     public $withFullAcceptedOnly;
 
     /**

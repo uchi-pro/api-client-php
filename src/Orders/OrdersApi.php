@@ -113,6 +113,10 @@ final class OrdersApi
                 $uriQuery['vendor'] = $criteria->vendor->id;
             }
 
+            if (!is_null($criteria->selectedVendorOnly)) {
+                $uriQuery['selected_vendor_only'] = $criteria->selectedVendorOnly ? 1 : 0;
+            }
+
             if (!empty($criteria->withFullAcceptedOnly)) {
                 $uriQuery['with_full_accepted_only'] = 1;
             }
