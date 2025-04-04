@@ -105,6 +105,9 @@ final class VendorsApi
         if (isset($limitsData['sync_enabled'])) {
             $limits->syncEnabled = filter_var($limitsData['sync_enabled'], FILTER_VALIDATE_BOOLEAN);
         }
+        if (isset($limitsData['protocols_available'])) {
+            $limits->protocolsAvailable = filter_var($limitsData['protocols_available'], FILTER_VALIDATE_BOOLEAN);
+        }
 
         return $limits;
     }
@@ -167,6 +170,9 @@ final class VendorsApi
         }
         if (!is_null($limits->syncEnabled)) {
             $params['sync_enabled'] = (int)$limits->syncEnabled;
+        }
+        if (!is_null($limits->protocolsAvailable)) {
+            $params['protocols_available'] = (int)$limits->protocolsAvailable;
         }
 
         $responseData = $this->apiClient->request("/vendors/$vendor->id/limits", $params);
