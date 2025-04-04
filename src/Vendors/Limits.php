@@ -76,6 +76,11 @@ class Limits
      */
     public ?bool $syncEnabled = null;
 
+    /**
+     * Доступен базовый учебный документооборот
+     */
+    public ?bool $protocolsAvailable = null;
+
     public static function create(): self
     {
         return new self();
