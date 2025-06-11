@@ -304,6 +304,27 @@ class VendorsTest extends TestCase
         $this->assertEquals($savedVendor->email, $email);
     }
 
+    public function testCreateVendorWithoutParent()
+    {
+        $vendorsApi = $this->getApiClient()->vendors();
+
+        $name = "test{$this->time()}";
+        $email = "$name@test.ru";
+
+        $parentVendor = $vendorsApi->newVendor();
+        $parentVendor->id = '0';
+
+        $newVendor = $vendorsApi->newVendor();
+        $newVendor->parent = $parentVendor;
+        $newVendor->email = $email;
+        $newVendor->title = $name;
+        $savedVendor = $vendorsApi->saveVendor($newVendor);
+
+        $this->assertNotEmpty($savedVendor->id);
+        $this->assertEquals($savedVendor->email, $email);
+    }
+
+
     public function testSetVendorDomains()
     {
         $vendorsApi = $this->getApiClient()->vendors();

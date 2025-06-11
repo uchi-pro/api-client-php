@@ -54,6 +54,11 @@ class Vendor
     public $settings;
 
     /**
+     * @var ?Vendor
+     */
+    public $parent;
+
+    /**
      * @param $id
      * @param $title
      *

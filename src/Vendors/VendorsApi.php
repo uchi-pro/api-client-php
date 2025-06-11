@@ -481,6 +481,10 @@ final class VendorsApi
             $formParams[$key] = $value;
         }
 
+        if (!empty($vendor->parent)) {
+            $formParams['parent'] = $vendor->parent->id;
+        }
+
         $vendorId = !empty($vendor->id) ? $vendor->id : 0;
         $uri = "/vendors/$vendorId";
         $responseData = $this->apiClient->request($uri, $formParams);
