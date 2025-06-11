@@ -29,6 +29,8 @@ class Vendor
 
     public ?Settings $settings;
 
+    public ?Vendor $parent;
+
     public static function create(?string $id = null, ?string $title = null): self
     {
         $vendor = new self();
