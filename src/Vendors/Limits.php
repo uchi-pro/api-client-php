@@ -81,6 +81,11 @@ class Limits
      */
     public ?bool $protocolsAvailable = null;
 
+    /**
+     * Доступен раздел документов с простой электронной подписью (ПЭП)
+     */
+    public ?bool $signedFilesAvailable = null;
+
     public static function create(): self
     {
         return new self();
