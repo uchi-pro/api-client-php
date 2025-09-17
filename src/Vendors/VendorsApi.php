@@ -108,6 +108,9 @@ final class VendorsApi
         if (isset($limitsData['protocols_available'])) {
             $limits->protocolsAvailable = filter_var($limitsData['protocols_available'], FILTER_VALIDATE_BOOLEAN);
         }
+        if (isset($limitsData['signed_files_available'])) {
+            $limits->signedFilesAvailable = filter_var($limitsData['signed_files_available'], FILTER_VALIDATE_BOOLEAN);
+        }
 
         return $limits;
     }
@@ -173,6 +176,9 @@ final class VendorsApi
         }
         if (!is_null($limits->protocolsAvailable)) {
             $params['protocols_available'] = (int)$limits->protocolsAvailable;
+        }
+        if (!is_null($limits->signedFilesAvailable)) {
+            $params['signed_files_available'] = (int)$limits->signedFilesAvailable;
         }
 
         $responseData = $this->apiClient->request("/vendors/$vendor->id/limits", $params);
