@@ -91,6 +91,9 @@ final readonly class VendorsApi
         if (isset($limitsData['signed_files_available'])) {
             $limits->signedFilesAvailable = filter_var($limitsData['signed_files_available'], FILTER_VALIDATE_BOOLEAN);
         }
+        if (isset($limitsData['custom_courses_disabled'])) {
+            $limits->customCoursesDisabled = filter_var($limitsData['custom_courses_disabled'], FILTER_VALIDATE_BOOLEAN);
+        }
 
         return $limits;
     }
@@ -159,6 +162,9 @@ final readonly class VendorsApi
         }
         if (!is_null($limits->signedFilesAvailable)) {
             $params['signed_files_available'] = (int)$limits->signedFilesAvailable;
+        }
+        if (!is_null($limits->customCoursesDisabled)) {
+            $params['custom_courses_disabled'] = (int)$limits->customCoursesDisabled;
         }
 
         $responseData = $this->apiClient->request("/vendors/$vendor->id/limits", $params);
