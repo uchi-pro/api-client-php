@@ -118,6 +118,13 @@ class Limits
      */
     public $signedFilesAvailable;
 
+    /**
+     * Создание собственных курсов обучения запрещено
+     *
+     * @var bool
+     */
+    public $customCoursesDisabled;
+
     public static function create(): self
     {
         return new self();
