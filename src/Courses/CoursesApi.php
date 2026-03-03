@@ -387,15 +387,18 @@ final class CoursesApi
 
     private function extractLessonFeatures(array $lesson, CourseFeatures $courseFeatures)
     {
-        if (isset($lesson['type'])) {
-            // Старый вариант.
-            if ($lesson['type'] === 'quiz') {
+        if (!empty($lesson['type']['code'])) {
+            if ($lesson['type']['code'] === 'quiz') {
                 $courseFeatures->testing = true;
             }
-            if ($lesson['type'] === 'essay') {
+            if ($lesson['type']['code'] === 'essay') {
                 $courseFeatures->practice = true;
             }
-        } elseif ($lesson['type_info']) {
+            if ($lesson['type']['code'] === 'scorm') {
+                $courseFeatures->interactive = true;
+            }
+        }
+        elseif (!empty($lesson['type_info']['code'])) {
             if ($lesson['type_info']['code'] === 'quiz') {
                 $courseFeatures->testing = true;
             }
@@ -404,6 +407,15 @@ final class CoursesApi
             }
             if ($lesson['type_info']['code'] === 'scorm') {
                 $courseFeatures->interactive = true;
+            }
+        }
+        elseif (!empty($lesson['type'])) {
+            // Старый вариант.
+            if ($lesson['type'] === 'quiz') {
+                $courseFeatures->testing = true;
+            }
+            if ($lesson['type'] === 'essay') {
+                $courseFeatures->practice = true;
             }
         }
 
@@ -495,7 +507,12 @@ final class CoursesApi
         $lesson = new Lesson();
         $lesson->id = $this->apiClient->parseId($data, 'uuid');
         $lesson->title = $data['title'] ?? null;
-        $lesson->type = LessonType::create($data['type_info']['code'], $data['type_info']['title']);
+        if (!empty($data['type']['code'])) {
+            $lesson->type = LessonType::create($data['type']['code'], $data['type']['title']);
+        }
+        elseif (!empty($data['type_info']['code'])) {
+            $lesson->type = LessonType::create($data['type_info']['code'], $data['type_info']['title']);
+        }
         return $lesson;
     }
 
