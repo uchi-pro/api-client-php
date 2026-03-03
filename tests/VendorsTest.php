@@ -250,7 +250,7 @@ class VendorsTest extends TestCase
         $company->director = 'Иванов Иван Петрович';
         $company->email = 'test@test.ru';
         $company->inn = 1840083124;
-        $company->kpp = rand(11111111, 99999999);
+        $company->kpp = rand(111111111, 999999999);
         $company->ogrn = 1181832021854;
         $company->locality = 'с. Шаркан';
         $vendor->profile = $company;

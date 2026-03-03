@@ -115,11 +115,12 @@ final class UsersApi
         return $this->getContractorDefaultListener($contractor);
     }
 
-    public function findContractorByEmail(string $email): ?User
+    public function findContractorByEmail(string $email, Vendor $vendor = null): ?User
     {
         $criteria = $this->newCriteria();
         $criteria->q = $email;
         $criteria->role = Role::createContractor();
+        $criteria->vendor = $vendor;
 
         $users = $this->findBy($criteria);
         foreach ($users as $user) {

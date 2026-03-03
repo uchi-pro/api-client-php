@@ -136,11 +136,12 @@ class UsersTest extends TestCase
         $user->vendor = $vendor;
 
         $password = $user->email;
-        $usersApi->saveUser($user, $password);
+        $a = $usersApi->saveUser($user, $password);
 
         $criteria = $usersApi->newCriteria()
             ->withQ($user->email)
-            ->withRole(Role::createContractor());
+            ->withRole(Role::createContractor())
+            ->withVendor($vendor);
         $foundContractors = $usersApi->findBy($criteria);
 
         $this->assertArrayHasKey(0, $foundContractors, 'Созданный контрагент не найден.');
@@ -190,7 +191,8 @@ class UsersTest extends TestCase
 
         $criteria = $usersApi->newCriteria()
             ->withQ($listener->email)
-            ->withRole(Role::createListener());
+            ->withRole(Role::createListener())
+            ->withVendor($vendor);
         $foundListeners = $usersApi->findBy($criteria);
 
         $this->assertArrayHasKey(0, $foundListeners, 'Созданный слушатель не найден.');
@@ -229,7 +231,7 @@ class UsersTest extends TestCase
         $password = $newContractor->email;
         $usersApi->saveUser($newContractor, $password);
 
-        $foundContractor = $usersApi->findContractorByEmail($newContractor->email);
+        $foundContractor = $usersApi->findContractorByEmail($newContractor->email, $vendor);
 
         $deletedContractor = $usersApi->deleteUser($foundContractor);
         $this->assertTrue($deletedContractor->isDeleted);

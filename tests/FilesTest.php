@@ -11,6 +11,6 @@ class FilesTest extends TestCase
         $protocolHtmlContent = $this->getApiClient()->getFile('/protocols/248/content?_fmt=html');
 
         $this->assertNotEmpty($protocolHtmlContent);
-        $this->assertContains('Протокол', $protocolHtmlContent);
+        $this->assertStringContainsString('Протокол', $protocolHtmlContent);
     }
 }
