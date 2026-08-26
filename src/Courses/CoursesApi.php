@@ -419,8 +419,10 @@ final class CoursesApi
             }
         }
 
-        if (!$courseFeatures->interactive && $this->checkForInteractiveContent($lesson['description'])) {
-            $courseFeatures->interactive = true;
+        if (!$courseFeatures->interactive) {
+            if (isset($lesson['description']) && $this->checkForInteractiveContent($lesson['description'])) {
+                $courseFeatures->interactive = true;
+            }
         }
 
         if (!empty($lesson['resources']) && is_array($lesson['resources'])) {
