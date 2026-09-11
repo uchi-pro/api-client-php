@@ -106,6 +106,13 @@ class Course
     public $vendor;
 
     /**
+     * Курс обучения разработан на основании типовой программы.
+     *
+     * @var bool|null
+     */
+    public $isStandardProgram = null;
+
+    /**
      * @var Tag[]
      */
     public $tags;
