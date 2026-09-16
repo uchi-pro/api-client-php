@@ -191,8 +191,8 @@ final class CoursesApi
         $course->vendor = $this->parseVendor($data);
         $course->tags = $this->parseTags($data);
 
-        if (array_key_exists('is_standard_program', $data)) {
-            $course->isStandardProgram = (bool)$data['is_standard_program'];
+        if (isset($data['settings']) && array_key_exists('is_standard_program', $data['settings'])) {
+            $course->isStandardProgram = (bool)$data['settings']['is_standard_program'];
         }
 
         return $course;
