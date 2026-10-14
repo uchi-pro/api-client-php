@@ -33,6 +33,11 @@ class ApiClient
     private $isDebug = false;
 
     /**
+     * @var bool
+     */
+    private $verifySsl = true;
+
+    /**
      * @var Identity
      */
     private $identity;
@@ -108,6 +113,7 @@ class ApiClient
 
         $httpClientConfig = [
             'base_uri' => $this->identity->url,
+            'verify' => $this->verifySsl,
         ];
 
         if ($this->identity->accessToken) {
@@ -274,6 +280,16 @@ class ApiClient
     public function enableDebugging(): void
     {
         $this->isDebug = true;
+    }
+
+    /**
+     * Отключить проверку SSL-сертификата.
+     *
+     * @param bool $verify
+     */
+    public function setVerifySsl(bool $verify): void
+    {
+        $this->verifySsl = $verify;
     }
 
     public function dump(): void
